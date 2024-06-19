@@ -1,0 +1,37 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-cart",
+      "blocks": {
+        "3922ac93-c1b2-45be-bbb1-c14e2d5d1d13": {
+          "type": "shipping-bar",
+          "settings": {}
+        },
+        "9859ee05-566e-4568-bfc3-3ab473fb0959": {
+          "type": "line-items",
+          "settings": {}
+        },
+        "98e8dc72-90db-4b16-b513-ce5dba9588a5": {
+          "type": "order-note",
+          "settings": {}
+        },
+        "e6cfe965-860c-4142-9d25-75b31bb74419": {
+          "type": "footer",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "3922ac93-c1b2-45be-bbb1-c14e2d5d1d13",
+        "9859ee05-566e-4568-bfc3-3ab473fb0959",
+        "98e8dc72-90db-4b16-b513-ce5dba9588a5",
+        "e6cfe965-860c-4142-9d25-75b31bb74419"
+      ],
+      "settings": {
+        "title": "Your cart is empty",
+        "button_text": "Continue shopping",
+        "button_url": ""
+      }
+    }
+  },
+  "order": ["main"]
+}

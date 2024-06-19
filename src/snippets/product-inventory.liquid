@@ -1,0 +1,98 @@
+{% for variant in product.variants %}
+  {%- liquid
+    if variant == product.selected_or_first_available_variant
+      assign variant_selected = true
+    else
+      assign variant_selected = false
+    endif
+  -%}
+
+  {%- if variant.available -%}
+    {%- if variant.inventory_management
+      and variant.inventory_policy == 'deny'
+      and variant.inventory_quantity <= low_threshold
+      and low_threshold > 0
+    -%}
+      <span
+        {% unless variant_selected %}
+          hidden
+        {% endunless %}
+        data-variant-id="{{ variant.id }}"
+        class="before:bg-caution"
+      >
+        {{ 'product.inventory.low_stock_label' | t: count: variant.inventory_quantity }}
+      </span>
+    {%- else -%}
+      {%- if variant.inventory_policy == 'continue'
+        and variant.inventory_quantity <= 0
+        and variant.requires_shipping
+      -%}
+        {%- if variant.incoming and variant.next_incoming_date -%}
+          {%- capture next_incoming_date -%}{{ variant.next_incoming_date | date: format: 'date' }}{%- endcapture -%}
+          <span
+            {% unless variant_selected %}
+              hidden
+            {% endunless %}
+            data-variant-id="{{ variant.id }}"
+            class="before:bg-caution"
+          >
+            {{ 'product.inventory.incoming_stock_label' | t: date: next_incoming_date }}
+          </span>
+        {%- else -%}
+          <span
+            {% unless variant_selected %}
+              hidden
+            {% endunless %}
+            data-variant-id="{{ variant.id }}"
+            class="before:bg-success"
+          >
+            {{ 'product.inventory.in_stock_label' | t }}
+          </span>
+        {%- endif -%}
+      {%- else -%}
+        <span
+          {% unless variant_selected %}
+            hidden
+          {% endunless %}
+          data-variant-id="{{ variant.id }}"
+          class="before:bg-success"
+        >
+          {{ 'product.inventory.in_stock_label' | t }}
+        </span>
+      {%- endif -%}
+    {%- endif -%}
+  {%- elsif variant.incoming -%}
+    {%- if variant.next_incoming_date -%}
+      {%- capture next_incoming_date -%}{{ variant.next_incoming_date | date: format: 'date' }}{%- endcapture -%}
+      <span
+        {% unless variant_selected %}
+          hidden
+        {% endunless %}
+        data-variant-id="{{ variant.id }}"
+        class="before:bg-caution"
+      >
+        {{ 'product.inventory.incoming_stock_label' | t: date: next_incoming_date }}
+      </span>
+    {%- else -%}
+      <span
+        {% unless variant_selected %}
+          hidden
+        {% endunless %}
+        data-variant-id="{{ variant.id }}"
+        class="before:bg-error"
+      >
+        {{ 'product.inventory.out_of_stock_label' | t }}
+      </span>
+    {%- endif -%}
+  {%- else -%}
+    <span
+      {% unless variant_selected %}
+        hidden
+      {% endunless %}
+      data-variant-id="{{ variant.id }}"
+      class="before:bg-error"
+    >
+      {{ 'product.inventory.out_of_stock_label' | t }}
+    </span>
+  {%- endif -%}
+{% endfor %}

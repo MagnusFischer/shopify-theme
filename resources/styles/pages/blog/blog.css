@@ -1,0 +1,25 @@
+@layer components {
+  .blog {
+    &__tags {
+      &--item {
+        &[aria-selected='true'] {
+          a {
+            @apply bg-accent-2-bg;
+          }
+        }
+
+        a {
+          @apply block rounded border border-transparent bg-secondary-bg px-2 py-1.5;
+        }
+
+        a:hover {
+          @apply border-primary-text;
+        }
+
+        &:not(:first-child) a::before {
+          @apply content-['#'];
+        }
+      }
+    }
+  }
+}

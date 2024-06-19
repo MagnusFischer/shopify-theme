@@ -1,0 +1,70 @@
+<select name="id" id="product-{{ product.id }}" form="{{ form_id }}" hidden>
+  {%- for variant in product.variants -%}
+    <option
+      {% if variant == product.selected_or_first_available_variant %}
+        selected="selected"
+      {% endif %}
+      value="{{ variant.id }}"
+    >
+      {{ variant.title }} - {{ variant.price | money }}
+    </option>
+  {%- endfor -%}
+</select>
+
+{% unless settings.hide_variants == true and product.variants.size <= 1 %}
+  {% unless product.has_only_default_variant %}
+    {%- liquid
+      assign variants_available_arr = product.variants | map: 'available'
+      assign variants_option1_arr = product.variants | map: 'option1'
+      assign variants_option2_arr = product.variants | map: 'option2'
+      assign variants_option3_arr = product.variants | map: 'option3'
+    -%}
+
+    {% for option in product.options_with_values %}
+      <div data-option>
+        <p class="mb-3 font-bold">{{ option.name }}</p>
+
+        <ul class="flex flex-wrap gap-2">
+          {% for variant in option.values %}
+            {%- liquid
+              assign option_disabled = true
+
+              for option1_name in variants_option1_arr
+                case option.position
+                  when 1
+                    if variants_option1_arr[forloop.index0] == variant and variants_available_arr[forloop.index0]
+                      assign option_disabled = false
+                    endif
+                  when 2
+                    if option1_name == product.selected_or_first_available_variant.option1 and variants_option2_arr[forloop.index0] == variant and variants_available_arr[forloop.index0]
+                      assign option_disabled = false
+                    endif
+                  when 3
+                    if option1_name == product.selected_or_first_available_variant.option1 and variants_option2_arr[forloop.index0] == product.selected_or_first_available_variant.option2 and variants_option3_arr[forloop.index0] == variant and variants_available_arr[forloop.index0]
+                      assign option_disabled = false
+                    endif
+                endcase
+              endfor
+            -%}
+
+            <li>
+              <button
+                class="product__variants--swatch"
+                data-index="{{ option.position | minus: 1 }}"
+                data-variant="{{ variant }}"
+                {% if option.selected_value == variant %}
+                  data-selected
+                {% endif %}
+                {% if option_disabled %}
+                  data-disabled="true"
+                {% endif %}
+              >
+                {{ variant }}
+              </button>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  {% endunless %}
+{% endunless %}

@@ -1,0 +1,37 @@
+{
+  "type": "custom.account",
+  "name": "Forms",
+  "sections": {
+    "forms": {
+      "type": "main-account-forms",
+      "blocks": {
+        "login": {
+          "type": "login",
+          "settings": {
+            "title": "Login",
+            "content": "<p>Write some text here</p>"
+          }
+        },
+        "register": {
+          "type": "register",
+          "settings": {
+            "title": "Register account",
+            "content": "<p>Write some text here</p>"
+          }
+        },
+        "recover": {
+          "type": "recover",
+          "settings": {
+            "title": "Reset password",
+            "content": "<p>Write some text here</p>"
+          }
+        }
+      },
+      "block_order": ["login", "register", "recover"],
+      "settings": {
+        "image": "shopify://shop_images/Frontpage-_resize-scaled.jpg"
+      }
+    }
+  },
+  "order": ["forms"]
+}

@@ -1,0 +1,450 @@
+<div class="section bg-primary-bg color-scheme__{{ section.settings.color_scheme }} ">
+  <section class="{{ section.settings.width }} accordion--group mx-auto bg-primary-bg px-3 py-6 lg:px-6">
+    {% for block in section.blocks %}
+      {% assign this = block.settings %}
+
+      {% case block.type %}
+        {% when 'heading' %}
+          <h2 class="h3 mb-6 font-semibold last:mb-0">{{ this.title }}</h2>
+        {% when 'accordion' %}
+          {% capture title %}
+          <div class="flex items-center gap-2">
+            {% if this.custom_icon != blank %}
+              {{-
+                this.custom_icon
+                | image_url: width: '24'
+                | image_tag: sizes: '24px', widths: '24', class: 'object-contain'
+              -}}
+            {% else %}
+              {% unless this.icon == 'none' %}
+                <span
+                  class="block w-6 h-6"
+                  style="margin-bottom:{{ this.icon_size | divided_by: 3 }}px;"
+                >
+                  {% render 'customizer-icons', icon: this.icon %}
+                </span>
+              {% endunless %}
+            {% endif %}
+            <h3 class="text-base m-0">{{ this.title }}</h3>
+          </div>
+  
+          {% endcapture %}
+          {% render 'accordion', title: title, content: this.text %}
+      {% endcase %}
+    {% endfor %}
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "Accordions",
+  "settings": [
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Section width",
+      "options": [
+        {
+          "value": "max-w-4xl",
+          "label": "Narrow"
+        },
+        {
+          "value": "w-full",
+          "label": "Full-width"
+        }
+      ],
+      "default": "max-w-4xl"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "heading",
+      "name": "Heading",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Heading"
+        }
+      ]
+    },
+    {
+      "type": "accordion",
+      "name": "Accordion",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "star",
+              "label": "Star"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "heart",
+              "label": "Heart"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "gift",
+              "label": "Gift"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "trophy",
+              "label": "Trophy"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "cart",
+              "label": "Cart"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "bag",
+              "label": "Bag"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "basket",
+              "label": "Basket"
+            },
+            {
+              "group": "Communication",
+              "value": "mail",
+              "label": "Mail"
+            },
+            {
+              "group": "Communication",
+              "value": "phone",
+              "label": "Phone"
+            },
+            {
+              "group": "Communication",
+              "value": "send",
+              "label": "Send"
+            },
+            {
+              "group": "Communication",
+              "value": "party",
+              "label": "Party"
+            },
+            {
+              "group": "Communication",
+              "value": "circle-exclamation",
+              "label": "Circle-exclamation"
+            },
+            {
+              "group": "Communication",
+              "value": "circle-question",
+              "label": "Circle-question"
+            },
+            {
+              "group": "Communication",
+              "value": "circle-info",
+              "label": "Circle-info"
+            },
+            {
+              "group": "Communication",
+              "value": "message-chat",
+              "label": "Message-chat"
+            },
+            {
+              "group": "Communication",
+              "value": "message-heart",
+              "label": "Message-heart"
+            },
+            {
+              "group": "Communication",
+              "value": "message-lines",
+              "label": "Message-lines"
+            },
+            {
+              "group": "Communication",
+              "value": "message-info",
+              "label": "Message-info"
+            },
+            {
+              "group": "Communication",
+              "value": "message-exclamation",
+              "label": "Message-exclamation"
+            },
+            {
+              "group": "Arrows",
+              "value": "rotate",
+              "label": "Rotate"
+            },
+            {
+              "group": "Arrows",
+              "value": "infinity",
+              "label": "Infinity"
+            },
+            {
+              "group": "Arrows",
+              "value": "loop",
+              "label": "Loop"
+            },
+            {
+              "group": "Arrows",
+              "value": "refresh",
+              "label": "Refresh"
+            },
+            {
+              "group": "Arrows",
+              "value": "repeat",
+              "label": "Repeat"
+            },
+            {
+              "group": "Arrows",
+              "value": "shuffle",
+              "label": "Shuffle"
+            },
+            {
+              "group": "Devices",
+              "value": "camera",
+              "label": "Camera"
+            },
+            {
+              "group": "Devices",
+              "value": "headphones",
+              "label": "Headphones"
+            },
+            {
+              "group": "Devices",
+              "value": "keyboard",
+              "label": "Keyboard"
+            },
+            {
+              "group": "Devices",
+              "value": "microphone",
+              "label": "Microphone"
+            },
+            {
+              "group": "Devices",
+              "value": "laptop",
+              "label": "Laptop"
+            },
+            {
+              "group": "Devices",
+              "value": "mobile",
+              "label": "Mobile"
+            },
+            {
+              "group": "Devices",
+              "value": "tablet",
+              "label": "Tablet"
+            },
+            {
+              "group": "Devices",
+              "value": "tv",
+              "label": "Tv"
+            },
+            {
+              "group": "Devices",
+              "value": "watch",
+              "label": "Watch"
+            },
+            {
+              "group": "Automotive",
+              "value": "truck",
+              "label": "Truck"
+            },
+            {
+              "group": "Automotive",
+              "value": "car",
+              "label": "Car"
+            },
+            {
+              "group": "Automotive",
+              "value": "motorcycle",
+              "label": "Motorcycle"
+            },
+            {
+              "group": "Automotive",
+              "value": "rocket",
+              "label": "Rocket"
+            },
+            {
+              "group": "Automotive",
+              "value": "engine",
+              "label": "Engine"
+            },
+            {
+              "group": "Automotive",
+              "value": "gauge",
+              "label": "Gauge"
+            },
+            {
+              "group": "Buildings",
+              "value": "house",
+              "label": "House"
+            },
+            {
+              "group": "Buildings",
+              "value": "hotel",
+              "label": "Hotel"
+            },
+            {
+              "group": "Buildings",
+              "value": "shop",
+              "label": "Shop"
+            },
+            {
+              "group": "Buildings",
+              "value": "city",
+              "label": "City"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud",
+              "label": "Cloud"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud-rain",
+              "label": "Cloud-rain"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud-sun",
+              "label": "Cloud-sun"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud-thunder",
+              "label": "Cloud-thunder"
+            },
+            {
+              "group": "Weather",
+              "value": "umbrella",
+              "label": "Umbrella"
+            },
+            {
+              "group": "Weather",
+              "value": "water",
+              "label": "Water"
+            },
+            {
+              "group": "Weather",
+              "value": "snow",
+              "label": "Snow"
+            },
+            {
+              "group": "Weather",
+              "value": "droplet",
+              "label": "Droplet"
+            },
+            {
+              "group": "Halloween",
+              "value": "bat",
+              "label": "Bat"
+            },
+            {
+              "group": "Halloween",
+              "value": "ghost",
+              "label": "Ghost"
+            },
+            {
+              "group": "Halloween",
+              "value": "spider",
+              "label": "Spider"
+            },
+            {
+              "group": "Halloween",
+              "value": "bones",
+              "label": "Bones"
+            },
+            {
+              "group": "Halloween",
+              "value": "jack-o-lantern",
+              "label": "Jack-o-lantern"
+            },
+            {
+              "group": "Holidays",
+              "value": "tree-decorated",
+              "label": "Tree-decorated"
+            },
+            {
+              "group": "Holidays",
+              "value": "cookie-man",
+              "label": "Cookie-man"
+            },
+            {
+              "group": "Holidays",
+              "value": "snowman",
+              "label": "Snowman"
+            },
+            {
+              "group": "Holidays",
+              "value": "stocking",
+              "label": "Stocking"
+            },
+            {
+              "group": "Holidays",
+              "value": "angel",
+              "label": "Angel"
+            },
+            {
+              "group": "Holidays",
+              "value": "snowflake",
+              "label": "Snowflake"
+            }
+          ],
+          "default": "none"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "Custom icon",
+          "info": ".svg format recommended"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Title"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Write some text here</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Accordions",
+      "blocks": [
+        {
+          "type": "heading"
+        },
+        {
+          "type": "accordion"
+        },
+        {
+          "type": "accordion"
+        },
+        {
+          "type": "accordion"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

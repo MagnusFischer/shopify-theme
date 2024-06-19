@@ -1,0 +1,81 @@
+<section class="flex min-h-[calc(100vh-var(--navigation-height))] items-center justify-center text-primary-text color-scheme__{{ section.settings.color_scheme }} ">
+  <div class="flex flex-col items-center justify-center">
+    <h1 class="mb-2 font-bold">
+      {{ section.settings.heading }}
+    </h1>
+    <div class="mb-8">
+      {{ section.settings.content }}
+    </div>
+    <a class="button button--primary" href="{{ section.settings.button_url }}">
+      <span>{{ section.settings.button_label }}</span>
+    </a>
+  </div>
+
+  <div class="absolute top-0 left-0 -z-10 h-full w-full bg-primary-bg/50"></div>
+  {% if section.settings.image != blank %}
+    {{-
+      section.settings.image
+      | image_url: width: section.settings.image.width
+      | image_tag:
+        sizes: '100vw',
+        widths: '300, 330, 410, 490, 570, 650, 730, 810, 890, 970, 1050, 1200, 1500, 2000',
+        class: 'object-cover absolute top-0 left-0 w-full h-full -z-20 bg-secondary-bg'
+    -}}
+  {% else %}
+    {{
+      'hero-apparel-1'
+      | placeholder_svg_tag: 'placeholder-svg object-cover absolute top-0 left-0 w-full h-full -z-20'
+    }}
+  {% endif %}
+</section>
+
+{% schema %}
+{
+  "name": "404 page",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "404"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content",
+      "default": "<p>page not found</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Label",
+      "default": "Continue shopping"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "URL",
+      "default": "/collections/all"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    }
+  ]
+}
+{% endschema %}

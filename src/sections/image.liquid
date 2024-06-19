@@ -1,0 +1,431 @@
+{%- liquid
+  capture classes
+    case section.settings.desktop_height
+      when 'small'
+        echo 'lg:h-[30vh] fullscreen '
+      when 'medium'
+        echo 'lg:h-[50vh] fullscreen '
+      when 'large'
+        echo 'lg:h-[75vh] fullscreen '
+      when 'fullscreen'
+        echo 'lg:h-[var(--fullscreen-height)] lg:fullscreen '
+    endcase
+
+    case section.settings.mobile_height
+      when 'small'
+        echo 'max-lg:h-[30vh] max-lg:fullscreen '
+      when 'medium'
+        echo 'max-lg:h-[50vh] max-lg:fullscreen '
+      when 'large'
+        echo 'max-lg:h-[75vh] max-lg:fullscreen '
+      when 'fullscreen'
+        echo 'max-lg:h-[var(--fullscreen-height)] max-lg:fullscreen '
+    endcase
+  endcapture
+
+  if section.settings.rounding == 'on'
+    assign rounding = 'rounded'
+  endif
+
+  if section.index < 3
+    assign loadingStrategy = 'eager'
+  else
+    assign loadingStrategy = 'lazy'
+  endif
+-%}
+
+<section
+  class="{% if section.settings.box == 'contained' %} section{% endif %} bg-primary-bg text-primary-text color-scheme__{{ section.settings.color_scheme }} "
+>
+  <div class="image {{ classes }} {{ rounding }} overflow-hidden">
+    {%- if section.settings.desktop_image != blank -%}
+      {%- capture sizes -%}{% if section.settings.box == 'full' %}100vw{% else %}min({{ settings.page_width }}px, 100vw){% endif %}{%- endcapture -%}
+
+      {%- if section.settings.mobile_image == blank -%}
+        {% assign imgClass = 'image--element bg-secondary-bg object-cover ' | append: rounding %}
+        {{-
+          section.settings.desktop_image
+          | image_url: width: section.settings.desktop_image.width
+          | image_tag:
+            loading: loadingStrategy,
+            sizes: sizes,
+            widths: '150, 180, 210, 240, 270, 300, 330, 410, 490, 570, 650, 730, 810, 890, 970, 1050, 1290, 1530, 1770, 2090, 2410, 2730',
+            class: imgClass
+        -}}
+      {%- else -%}
+        {% assign imgClass = 'image--element hidden lg:block bg-secondary-bg object-cover '
+          | append: rounding
+        %}
+        {{-
+          section.settings.desktop_image
+          | image_url: width: section.settings.desktop_image.width
+          | image_tag:
+            loading: loadingStrategy,
+            sizes: sizes,
+            widths: '150, 180, 210, 240, 270, 300, 330, 410, 490, 570, 650, 730, 810, 890, 970, 1050, 1290, 1530, 1770, 2090, 2410, 2730',
+            class: imgClass
+        -}}
+        {% assign imgClass = 'image--element lg:hidden bg-secondary-bg object-cover '
+          | append: rounding
+        %}
+        {{-
+          section.settings.mobile_image
+          | image_url: width: section.settings.mobile_image.width
+          | image_tag:
+            loading: loadingStrategy,
+            sizes: sizes,
+            widths: '150, 180, 210, 240, 270, 300, 330, 410, 490, 570, 650, 730, 810, 890, 970, 1050, 1290, 1530, 1770, 2090, 2410, 2730',
+            class: imgClass
+        -}}
+      {%- endif -%}
+    {%- else -%}
+      {% assign imgClass = 'placeholder image--element ' | append: rounding %}
+      {{-
+        'hero-apparel-1'
+        | placeholder_svg_tag: imgClass
+        | replace: '<svg', '<svg preserveAspectRatio="xMinYMin slice"'
+      -}}
+    {%- endif -%}
+
+    {% if section.blocks.size > 0 %}
+      {% assign this = section.blocks[0].settings %}
+      <div
+        class="image--content {{ this.mobile_position }} {{ this.desktop_position }} "
+        style="--overlay-color: 0 0 0 / {{ this.overlay_opacity | divided_by: 100.0 }}"
+      >
+        {% if this.sub_heading != blank %}
+          <p>
+            {{ this.sub_heading }}
+          </p>
+        {% endif %}
+        {% if this.heading != blank %}
+          <p class="{{ this.heading_size }} mt-0 mb-4 font-bold">
+            {{ this.heading }}
+          </p>
+        {% endif %}
+        {% if this.paragraph != blank %}
+          <div class="rte pb-4">
+            {{ this.paragraph }}
+          </div>
+        {% endif %}
+        {% if this.button_text != blank and this.button_url != blank %}
+          <a href="{{ this.button_url }}" class="button button--primary inline-block">
+            <span>{{ this.button_text }}</span>
+          </a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Image",
+  "max_blocks": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Desktop"
+    },
+    {
+      "type": "image_picker",
+      "id": "desktop_image",
+      "label": "Image"
+    },
+    {
+      "type": "select",
+      "id": "desktop_height",
+      "label": "Height",
+      "options": [
+        {
+          "value": "aspect",
+          "label": "Original aspect ratio"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        },
+        {
+          "value": "fullscreen",
+          "label": "Full screen height"
+        }
+      ],
+      "default": "aspect"
+    },
+    {
+      "type": "header",
+      "content": "Mobile"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Image"
+    },
+    {
+      "type": "select",
+      "id": "mobile_height",
+      "label": "Height",
+      "options": [
+        {
+          "value": "aspect",
+          "label": "Original aspect ratio"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        },
+        {
+          "value": "fullscreen",
+          "label": "Full screen height"
+        }
+      ],
+      "default": "aspect"
+    },
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "select",
+      "id": "box",
+      "label": "Box",
+      "options": [
+        {
+          "value": "full",
+          "label": "Full"
+        },
+        {
+          "value": "contained",
+          "label": "Contained"
+        }
+      ],
+      "default": "contained"
+    },
+    {
+      "type": "select",
+      "id": "rounding",
+      "label": "Rounding",
+      "options": [
+        {
+          "value": "off",
+          "label": "Off"
+        },
+        {
+          "value": "on",
+          "label": "On"
+        }
+      ],
+      "default": "on"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "overlay",
+      "name": "Overlayed content",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Content"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "sub_heading",
+          "label": "Subheading",
+          "default": "Tagline"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Slide title"
+        },
+        {
+          "type": "select",
+          "id": "heading_size",
+          "label": "Heading size",
+          "options": [
+            {
+              "value": "h--2",
+              "label": "H-2"
+            },
+            {
+              "value": "h--1",
+              "label": "H-1"
+            },
+            {
+              "value": "h--0",
+              "label": "H0"
+            },
+            {
+              "value": "h1",
+              "label": "H1"
+            },
+            {
+              "value": "h2",
+              "label": "H2"
+            },
+            {
+              "value": "h3",
+              "label": "H3"
+            },
+            {
+              "value": "h4",
+              "label": "H4"
+            },
+            {
+              "value": "h5",
+              "label": "H5"
+            },
+            {
+              "value": "h6",
+              "label": "H6"
+            }
+          ],
+          "default": "h1"
+        },
+        {
+          "type": "richtext",
+          "id": "paragraph",
+          "label": "Paragraph",
+          "default": "<p>Tell your story</p>"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button text"
+        },
+        {
+          "type": "url",
+          "id": "button_url",
+          "label": "Button link"
+        },
+        {
+          "type": "header",
+          "content": "Positioning"
+        },
+        {
+          "type": "select",
+          "id": "desktop_position",
+          "label": "Desktop position",
+          "options": [
+            {
+              "value": "lg:position-start-start",
+              "label": "Top left"
+            },
+            {
+              "value": "lg:position-start-center",
+              "label": "Top center"
+            },
+            {
+              "value": "lg:position-start-end",
+              "label": "Top right"
+            },
+            {
+              "value": "lg:position-center-start",
+              "label": "Middle left"
+            },
+            {
+              "value": "lg:position-center-center",
+              "label": "Middle center"
+            },
+            {
+              "value": "lg:position-center-end",
+              "label": "Middle right"
+            },
+            {
+              "value": "lg:position-end-start",
+              "label": "Bottom left"
+            },
+            {
+              "value": "lg:position-end-center",
+              "label": "Bottom center"
+            }
+          ],
+          "default": "lg:position-end-start"
+        },
+        {
+          "type": "select",
+          "id": "mobile_position",
+          "label": "Mobile position",
+          "options": [
+            {
+              "value": "position-start-start",
+              "label": "Top left"
+            },
+            {
+              "value": "position-start-center",
+              "label": "Top center"
+            },
+            {
+              "value": "position-start-end",
+              "label": "Top right"
+            },
+            {
+              "value": "position-center-start",
+              "label": "Middle left"
+            },
+            {
+              "value": "position-center-center",
+              "label": "Middle center"
+            },
+            {
+              "value": "position-center-end",
+              "label": "Middle right"
+            },
+            {
+              "value": "position-end-start",
+              "label": "Bottom left"
+            },
+            {
+              "value": "position-end-center",
+              "label": "Bottom center"
+            }
+          ],
+          "default": "position-end-start"
+        },
+        {
+          "type": "header",
+          "content": "Overlay"
+        },
+        {
+          "type": "range",
+          "id": "overlay_opacity",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Overlay opacity",
+          "default": 30
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Image"
+    }
+  ]
+}
+{% endschema %}

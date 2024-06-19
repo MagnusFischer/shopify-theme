@@ -1,0 +1,188 @@
+<style>
+  #section__{{ section.id }} {
+    grid-template-columns: repeat({{ section.settings.cols_mobile }}, 1fr);
+  }
+
+  @media screen and (min-width: 1024px) {
+    #section__{{ section.id }} {
+      grid-template-columns: repeat({{ section.blocks.size | at_most: section.settings.cols_desktop }}, 1fr);
+    }
+  }
+</style>
+<div class="section bg-primary-bg color-scheme__{{ section.settings.color_scheme }} ">
+  <div
+    id="section__{{ section.id }}"
+    class="{% if section.settings.mobile_slider %}flex overflow-x-auto scrollbar-hide{% else %}grid{% endif %} section--bleed gap-4 text-primary-text lg:grid"
+  >
+    {% for block in section.blocks %}
+      {% assign this = block.settings %}
+      {% assign image = this.image | default: this.collection.image %}
+      <div
+        class="group relative rounded overflow-hidden hover:cursor-pointer {% if section.settings.mobile_slider %}max-lg:flex-[90%_0_0]{% endif %}"
+      >
+        <div class="{{ section.settings.media_aspect }} ">
+          {% if image == blank %}
+            {%- liquid
+              capture placeholder_image
+                cycle 'placeholder': 'hero-apparel-1', 'hero-apparel-2', 'hero-apparel-3'
+              endcapture
+              echo placeholder_image | placeholder_svg_tag: 'placeholder'
+            -%}
+          {% else %}
+            {% assign minimumWidth = 100 | divided_by: section.blocks.size %}
+            {%- capture sizes -%}
+            (min-width: 1024px) {{ 100 | divided_by: section.blocks.size | times: image.aspect_ratio | at_least: minimumWidth }}vw, 100vw
+            {%- endcapture -%}
+            {{
+              image
+              | image_url: width: image.width
+              | image_tag:
+                loading: 'lazy',
+                sizes: sizes,
+                widths: '150, 180, 210, 240, 270, 300, 330, 410, 490, 570, 650, 730, 810, 890, 970, 1050, 1290, 1530, 1770, 2090, 2410, 2730',
+                class: 'object-cover rounded bg-secondary-bg group-hover:scale-[1.025] transition-transform duration-500 ease-in-out'
+            }}
+          {% endif %}
+        </div>
+        <div class="absolute top-0 left-0 flex h-full w-full items-end before:absolute before:left-0 before:bottom-0 before:h-1/3 before:w-full before:bg-gradient-to-t before:from-black/30 before:to-transparent before:content-['']">
+          <div class="z-10 flex w-full items-center justify-between px-4 py-6">
+            <a
+              href="{{ this.url | default: this.collection.url }}"
+              class="text-4xl font-semibold text-secondary-text after:absolute after:top-0 after:left-0 after:h-full after:w-full after:content-['']"
+            >
+              {{- this.title | default: this.collection.title | default: 'Collection' -}}
+            </a>
+            <span class="relative flex h-12 w-12">
+              <span
+                class="absolute inset-0 m-auto inline-flex h-4/6 w-4/6 animate-horizon-ping rounded-full bg-secondary-button-bg opacity-75"
+              ></span>
+              <span class="relative inline-flex h-12 w-12 rounded-full bg-secondary-button-bg">
+                <span class="absolute inset-0 m-auto h-6 w-6 text-secondary-button-text">
+                  {% render 'icons', icon: 'chevron-right' %}
+                </span>
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collection list",
+  "settings": [
+    {
+      "type": "select",
+      "id": "media_aspect",
+      "label": "Media aspect ratio",
+      "options": [
+        {
+          "value": "aspect-w-1 aspect-h-1",
+          "label": "1:1"
+        },
+        {
+          "value": "aspect-w-16 aspect-h-9",
+          "label": "16:9"
+        },
+        {
+          "value": "aspect-w-4 aspect-h-6",
+          "label": "4:6"
+        },
+        {
+          "value": "aspect-w-4 aspect-h-5",
+          "label": "4:5"
+        }
+      ],
+      "default": "aspect-w-1 aspect-h-1",
+      "info": "Applies to all media in this section"
+    },
+    {
+      "type": "range",
+      "id": "cols_desktop",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "label": "Max columns on desktop",
+      "default": 4
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_slider",
+      "label": "Enable carousel on mobile",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "cols_mobile",
+      "label": "Number of columns on mobile",
+      "options": [
+        {
+          "value": "1",
+          "label": "1 column"
+        },
+        {
+          "value": "2",
+          "label": "2 columns"
+        }
+      ],
+      "default": "1",
+      "info": "Only applicable if carousel is turned off for mobile"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "info": "Defaults to collection"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "URL",
+          "info": "Defaults to collection"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Defaults to collection"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection list",
+      "blocks": [
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

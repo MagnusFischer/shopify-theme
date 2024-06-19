@@ -1,0 +1,77 @@
+@layer components {
+  .accordion {
+    --product-info-block-spacing: 0;
+
+    & + .accordion {
+      @apply border-t-0;
+    }
+    @apply border-t border-b border-accent-1-bg;
+
+    &__header {
+      @apply flex items-center justify-between py-6 text-primary-text;
+    }
+
+    &__icon {
+      @apply relative h-6 w-6;
+
+      &--open,
+      &--close {
+        @apply absolute top-0 left-0 h-full w-full transition-all duration-200;
+      }
+
+      &--close {
+        @apply -rotate-90 opacity-0;
+      }
+    }
+
+    &__toggle {
+      @apply block cursor-pointer list-none;
+
+      &::-webkit-details-marker {
+        @apply hidden;
+      }
+    }
+
+    &__content {
+      @apply max-h-0 overflow-hidden transition-[max-height] duration-200;
+    }
+
+    &[open] {
+      .accordion__content {
+        @apply max-h-none;
+      }
+
+      .accordion__icon--open {
+        @apply rotate-90 opacity-0;
+      }
+
+      .accordion__icon--close {
+        @apply rotate-0 opacity-100;
+      }
+    }
+
+    &--group .accordion {
+      @apply border-none;
+
+      &:not(:last-child) {
+        @apply mb-3;
+      }
+
+      &__toggle {
+        @apply rounded bg-accent-1-bg;
+      }
+
+      &__header {
+        @apply py-3 px-4;
+      }
+
+      &__content div {
+        @apply p-3;
+      }
+
+      &[open] .accordion__header {
+        @apply font-semibold;
+      }
+    }
+  }
+}

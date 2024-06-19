@@ -1,0 +1,11 @@
+{
+  "emmet.includeLanguages": {
+    "liquid": "html"
+  },
+  "editor.formatOnPaste": false,
+  "editor.formatOnType": false,
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "files.insertFinalNewline": false,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}

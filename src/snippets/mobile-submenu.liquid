@@ -1,0 +1,44 @@
+{%- liquid
+  assign openMenu = index
+  if index2 == null
+    assign openMenu = 0
+  endif
+-%}
+
+<section
+  class="header__drawer__submenu"
+  data-menu="{{ index }}{% if index2 %}{{ index2 | prepend: '-' }}{% endif %}"
+  hidden
+>
+  <header class="flex items-center justify-center gap-2">
+    <button
+      class="flex items-center py-6 px-4 text-sm"
+      data-open-menu="{{ openMenu }}"
+    >
+      <span class="block h-6 w-6">
+        {% render 'icons', icon: 'chevron-left' %}
+      </span>
+    </button>
+    <h2 class="h5 m-0 flex-1 text-center font-bold">
+      {{ links.title }}
+    </h2>
+    <button class="flex items-center py-6 px-4 text-sm" data-close>
+      <span class="block h-6 w-6">
+        {% render 'icons', icon: 'xmark' %}
+      </span>
+    </button>
+  </header>
+
+  {% render 'mobile-search' %}
+
+  <div class="h-full overflow-hidden">
+    <div class="flex h-full flex-col overflow-y-auto px-4 py-6" data-scrollable>
+      {% render 'mobile-navigation',
+        links: links,
+        index: index,
+        section: section,
+        parentLink: parentLink
+      %}
+    </div>
+  </div>
+</section>

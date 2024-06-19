@@ -1,0 +1,13 @@
+@layer base {
+  body {
+    @apply touch-manipulation font-sans antialiased;
+  }
+
+  [hidden] {
+    @apply !hidden;
+  }
+
+  div[hidden] {
+    @apply !invisible !z-[-1] !hidden !h-0;
+  }
+}

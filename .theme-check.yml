@@ -1,0 +1,14 @@
+root: src
+RemoteAsset:
+  enabled: false
+ImgWidthAndHeight:
+  enabled: false
+ImgLazyLoading:
+  enabled: false
+SchemaJsonFormat:
+  enabled: true
+  severity: style
+  start_level: 0
+  indent: '  '
+NestedSnippet:
+  enabled: false

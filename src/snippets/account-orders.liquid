@@ -1,0 +1,200 @@
+<section
+  id="{{ 'account.navigation.orders_title' | t | strip | downcase | handleize }}"
+  class="flex scroll-m-[calc(var(--navigation-height)+1rem)] flex-col gap-4"
+  data-component="account-orders"
+>
+  <header class="flex items-center gap-4">
+    <h2 class="font-bold">{{ 'account.navigation.orders_title' | t }}</h2>
+    <span class="block h-6 w-6 text-neutral-400">{% render 'icons', icon: 'mailbox' %}</span>
+  </header>
+
+  <div class="flex flex-col" data-orders>
+    {% paginate customer.orders by 6 %}
+      <table class="hidden border-separate border-spacing-0 text-left lg:table">
+        <thead>
+          <tr>
+            <th class="rounded-tl rounded-bl bg-neutral-100 py-3 px-4">
+              {{ 'account.order_section.order_number_title' | t }}
+            </th>
+            <th class="bg-neutral-100 py-3 pr-4">
+              {{ 'account.order_section.date_title' | t }}
+            </th>
+            <th class="bg-neutral-100 py-3 pr-4">
+              {{ 'account.order_section.delivery_title' | t }}
+            </th>
+            <th class="bg-neutral-100 py-3 pr-4">
+              {{ 'account.order_section.payment_title' | t }}
+            </th>
+            <th class="rounded-tr rounded-br bg-neutral-100 py-3 pr-4">
+              {{ 'order.fields.total' | t }}
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for order in customer.orders %}
+            {% if forloop.first %}
+              <tr>
+                <td colspan="5" class="py-3"></td>
+              </tr>
+            {% endif %}
+            <tr
+              class="group hover:cursor-pointer hover:bg-neutral-100"
+              onclick="window.location.href = '{{ order.customer_url }}'"
+            >
+              <td class="relative mb-4 rounded-tl rounded-bl border-y border-l border-neutral-200 py-3 px-4">
+                <span class="absolute left-0 top-0 -translate-y-1/2 translate-x-2 bg-white px-2 text-xs group-hover:bg-transparent">
+                  {{- order.name -}}
+                </span>
+                <div class="flex gap-2">
+                  <div class="grid w-20 grid-cols-4">
+                    {% for line_item in order.line_items limit: 3 %}
+                      <div
+                        class="aspect {{ settings.product_media_aspect }} col-span-2 row-start-1 overflow-hidden rounded-sm shadow-sm"
+                        style="grid-column-start:{{ forloop.index }}; z-index: {{ forloop.rindex }};"
+                      >
+                        {% if line_item.image != blank %}
+                          {{
+                            line_item.image
+                            | image_url: width: line_item.image.width
+                            | image_tag:
+                              loading: 'lazy',
+                              sizes: '80px',
+                              widths: '80',
+                              class: 'rounded-sm object-cover'
+                          }}
+                        {% else %}
+                          {{ 'image' | placeholder_svg_tag: 'bg-neutral-100' }}
+                        {% endif %}
+                      </div>
+                    {% endfor %}
+                  </div>
+                  <div class="flex flex-col justify-center">
+                    <p class="text-xs">{{ order.item_count }}</p>
+                    <p class="text-xs text-neutral-400">
+                      {{ 'account.order_section.line_items_title' | t }}
+                    </p>
+                  </div>
+                </div>
+              </td>
+              <td class="mb-4 border-y border-neutral-200 py-3 pr-4">
+                {{ order.created_at | time_tag: format: 'abbreviated_date' }}
+              </td>
+              <td class="mb-4 border-y border-neutral-200 py-3 pr-4">
+                {{ order.fulfillment_status_label }}
+              </td>
+              <td class="mb-4 border-y border-neutral-200 py-3 pr-4">
+                {{ order.financial_status_label }}
+              </td>
+              <td class="rounded-tr rounded-br border-y border-r border-neutral-200 py-3 pr-4">
+                {{ order.total_net_amount | money_with_currency }}
+              </td>
+            </tr>
+            {% unless forloop.last %}
+              <tr>
+                <td colspan="5" class="py-1.5"></td>
+              </tr>
+            {% endunless %}
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <ul class="grid gap-4 lg:hidden">
+        {% for order in customer.orders %}
+          <li>
+            <a
+              class="flex flex-col gap-4 rounded border border-neutral-200 p-4"
+              href="{{ order.customer_url }}"
+            >
+              <div class="flex items-start justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="grid w-20 grid-cols-4">
+                    {% for line_item in order.line_items limit: 3 %}
+                      <div
+                        class="aspect {{ settings.product_media_aspect }} col-span-2 row-start-1 overflow-hidden rounded-sm shadow-sm"
+                        style="grid-column-start:{{ forloop.index }}; z-index: {{ forloop.rindex }};"
+                      >
+                        {% if line_item.image != blank %}
+                          {{
+                            line_item.image
+                            | image_url: width: line_item.image.width
+                            | image_tag:
+                              loading: 'lazy',
+                              sizes: '80px',
+                              widths: '80',
+                              class: 'rounded-sm object-cover'
+                          }}
+                        {% else %}
+                          {{ 'image' | placeholder_svg_tag: 'bg-neutral-100' }}
+                        {% endif %}
+                      </div>
+                    {% endfor %}
+                  </div>
+                  <div class="flex flex-col justify-center">
+                    <p class="text-xs">{{ order.item_count }}</p>
+                    <p class="text-xs text-neutral-400">
+                      {{ 'account.order_section.line_items_title' | t }}
+                    </p>
+                  </div>
+                </div>
+                {{ order.created_at | time_tag: format: 'abbreviated_date' }}
+              </div>
+              <ul class="grid grid-cols-3 items-center">
+                <li class="flex shrink-0 justify-start gap-2">
+                  <span class="block h-6 w-6 shrink-0 text-neutral-400">
+                    {%- render 'icons', icon: 'coins' -%}
+                  </span>
+                  {{ order.financial_status_label }}
+                </li>
+                <li class="flex shrink-0 justify-center gap-2">
+                  <span class="block h-6 w-6 shrink-0 text-neutral-400">
+                    {%- render 'icons', icon: 'truck' -%}
+                  </span>
+                  {{ order.fulfillment_status_label }}
+                </li>
+                <li class="flex shrink-0 justify-end">
+                  {{ order.total_net_amount | money_with_currency }}
+                </li>
+              </ul>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+
+      {%- if paginate.pages > 1 -%}
+        {%- if paginate.parts.size > 0 -%}
+          <nav class="mt-4 text-xs" role="navigation" data-pagination>
+            <ul class="flex gap-1" role="list">
+              {%- for part in paginate.parts -%}
+                <li>
+                  {%- if part.is_link -%}
+                    <button
+                      class="flex h-8 w-8 items-center justify-center rounded-sm border border-neutral-200 hover:border-neutral-400"
+                      type="button"
+                      data-page="{{ part.url }}"
+                    >
+                      {{- part.title -}}
+                    </button>
+                  {%- else -%}
+                    {%- if part.title == paginate.current_page -%}
+                      <span
+                        class="flex h-8 w-8 items-center justify-center rounded-sm border border-neutral-200 bg-neutral-200"
+                        aria-current="page"
+                      >
+                        {{- part.title -}}
+                      </span>
+                    {%- else -%}
+                      <span class="flex h-8 w-8 items-center justify-center rounded-sm border border-neutral-200">
+                        {{- part.title -}}
+                      </span>
+                    {%- endif -%}
+                  {%- endif -%}
+                </li>
+              {%- endfor -%}
+            </ul>
+          </nav>
+        {%- endif -%}
+      {%- endif -%}
+    {% endpaginate %}
+  </div>
+</section>

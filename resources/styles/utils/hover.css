@@ -1,0 +1,16 @@
+@layer components {
+  .hover {
+    &__underline {
+      @apply relative;
+
+      &::before {
+        @apply absolute bottom-0 right-0 block h-px w-0 bg-primary-button-bg-hover content-[''];
+        @apply transition-all duration-300 ease-in-out;
+      }
+
+      &:hover::before {
+        @apply left-0 w-full;
+      }
+    }
+  }
+}

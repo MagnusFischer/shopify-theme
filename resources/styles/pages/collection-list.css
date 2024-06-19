@@ -1,0 +1,11 @@
+@layer components {
+  .collection-list {
+    &__card {
+      @apply relative;
+
+      &::before {
+        @apply absolute top-0 left-0 h-full w-full bg-black/30 content-[''];
+      }
+    }
+  }
+}

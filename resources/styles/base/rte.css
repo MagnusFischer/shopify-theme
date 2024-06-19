@@ -1,0 +1,34 @@
+@layer base {
+  .rte {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      @apply font-bold;
+    }
+
+    ol {
+      @apply list-inside list-decimal;
+    }
+
+    ul {
+      @apply list-inside list-disc;
+    }
+
+    a {
+      @apply underline;
+    }
+
+    p:not(:last-child),
+    ul:not(:last-child),
+    ol:not(:last-child) {
+      @apply mb-4;
+    }
+
+    img {
+      @apply rounded;
+    }
+  }
+}

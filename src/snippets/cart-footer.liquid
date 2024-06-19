@@ -1,0 +1,173 @@
+<footer class="mt-auto flex flex-col gap-3 p-4 lg:p-6">
+  <div class="flex flex-col" data-cart-total>
+    <div class="flex justify-between">
+      <p class="font-bold">{{ 'cart.footer.total_label' | t }}</p>
+      <p class="font-bold">{{ cart.total_price | money }}</p>
+    </div>
+
+    {%- liquid
+      assign total_savings = 0
+      assign product_discounts = 0
+      assign discount_types = ''
+      for line_item in cart.items
+        if line_item.original_line_price > line_item.final_line_price
+          assign amount_saved = line_item.original_line_price | minus: line_item.final_line_price
+          assign total_savings = total_savings | plus: amount_saved
+          assign product_discounts = product_discounts | plus: amount_saved
+          assign discount_types = discount_types | append: 'product' | append: ','
+        elsif line_item.variant.price < line_item.variant.compare_at_price
+          assign amount_saved = line_item.variant.compare_at_price | minus: line_item.variant.price | times: line_item.quantity
+          assign total_savings = total_savings | plus: amount_saved
+          assign product_discounts = product_discounts | plus: amount_saved
+          assign discount_types = discount_types | append: 'product' | append: ','
+        endif
+      endfor
+
+      if cart.cart_level_discount_applications.size > 0
+        for discount in cart.cart_level_discount_applications
+          assign total_savings = total_savings | plus: discount.total_allocated_amount
+          assign discount_types = discount_types | append: 'discount' | append: ','
+        endfor
+      endif
+
+      assign discount_types = discount_types | split: ',' | uniq
+    -%}
+
+    {%- if total_savings != 0 -%}
+      <ul class="flex flex-col">
+        <li class="flex justify-between text-accent-1">
+          <p class="text-sm">{{ 'cart.footer.savings_label' | t }}</p>
+          {% if discount_types.size > 1 %}
+            <p class="text-sm">- {{ total_savings | money }}</p>
+          {% else %}
+            {% if product_discounts != 0 %}
+              <div class="flex items-center gap-1">
+                <span class="block h-4 w-4">
+                  {%- render 'icons', icon: 'coins' -%}
+                </span>
+                <p class="text-sm">
+                  {{ 'search.predictive.products_title' | t }} - {{ product_discounts | money }}
+                </p>
+              </div>
+            {% else %}
+              <div class="flex items-center gap-1">
+                <span class="block h-4 w-4">
+                  {%- render 'icons', icon: 'discount' -%}
+                </span>
+                <p class="text-sm">
+                  {{ cart.cart_level_discount_applications[0].title }} -
+                  {{ cart.cart_level_discount_applications[0].total_allocated_amount | money }}
+                </p>
+              </div>
+            {% endif %}
+          {% endif %}
+        </li>
+
+        {% if discount_types.size > 1 %}
+          {% if product_discounts != 0 %}
+            <li class="flex justify-between text-accent-1">
+              <div class="flex items-center gap-1">
+                <span class="block h-4 w-4">
+                  {%- render 'icons', icon: 'coins' -%}
+                </span>
+                <p class="text-xs">{{ 'search.predictive.products_title' | t }}</p>
+              </div>
+              <p class="text-xs">- {{ product_discounts | money }}</p>
+            </li>
+          {% endif %}
+
+          {%- for discount in cart.cart_level_discount_applications -%}
+            <li class="flex justify-between text-accent-1">
+              <div class="flex items-center gap-1">
+                <span class="block h-4 w-4">
+                  {%- render 'icons', icon: 'discount' -%}
+                </span>
+                <p class="text-xs">{{ discount.title }}</p>
+              </div>
+              <p class="text-xs">- {{ discount.total_allocated_amount | money }}</p>
+            </li>
+          {%- endfor -%}
+        {% endif %}
+      </ul>
+    {%- endif -%}
+
+    <div class="mt-2 flex justify-between">
+      <p class="font-bold">{{ 'cart.footer.shipping_label' | t }}</p>
+      {% if settings.free_shipping_threshold == 0 %}
+        <p>{{ 'cart.shipping.calculated_at_checkout_label' | t }}</p>
+      {% else %}
+        {% if cart.total_price >= settings.free_shipping_threshold %}
+          <p>{{ 'cart.shipping.free_label' | t }}</p>
+        {% else %}
+          <p>{{ 'cart.shipping.calculated_at_checkout_label' | t }}</p>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+
+  {% if settings.enable_terms %}
+    <label class="form__input--checkbox" for="cart-drawer-terms">
+      <input type="checkbox" name="terms" id="cart-drawer-terms">
+      {{ settings.terms_label }}
+    </label>
+  {% endif %}
+
+  <form action="{{ routes.cart_url }}" method="post">
+    <button type="submit" class="button button--primary w-full" name="checkout">
+      <span>{{ 'cart.footer.go_to_checkout_button_label' | t }}</span>
+    </button>
+  </form>
+
+  <div class="flex justify-center">
+    <ul class="flex flex-wrap gap-2">
+      {%- for type in shop.enabled_payment_types -%}
+        <li class="h-6 w-8">
+          <img class="h-full w-full" src="{{ type | payment_type_img_url }}" alt="{{ type }}">
+        </li>
+      {%- endfor -%}
+
+      {%- capture manualPaymentMethods -%}
+        {%- render 'payment-methods' -%}
+      {%- endcapture -%}
+
+      {% assign manualPaymentMethods = manualPaymentMethods | split: ',' %}
+      {% for manualPayment in manualPaymentMethods %}
+        <li class="h-6 w-8">
+          <img
+            class="h-full w-full"
+            src="{{ manualPayment | payment_type_img_url }}"
+            alt="{{ manualPayment }}"
+          >
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</footer>
+
+{% if settings.enable_terms %}
+  <div
+    class="absolute bottom-0 left-0 z-20 w-full translate-y-full border-t border-neutral-300 bg-white px-4 pb-4 pt-6 transition-transform duration-300"
+    data-terms-popup
+  >
+    <div class="mb-4">
+      <p class="h4 font-bold">
+        {{ settings.terms_popup_title }}
+      </p>
+      <div class="rte">
+        {{ settings.terms_popup_text }}
+      </div>
+    </div>
+    <div class="flex flex-col">
+      <button type="button" data-terms-decline class="button button--secondary mb-2 w-full">
+        <span>{{ 'cart.terms.decline_button_label' | t }}</span>
+      </button>
+      <button type="button" data-terms-accept class="button button--primary w-full">
+        <span>{{ 'cart.terms.accept_button_label' | t }}</span>
+      </button>
+    </div>
+  </div>
+  <div
+    class="cart-drawer__terms--overlay"
+    data-terms-overlay
+  ></div>
+{% endif %}

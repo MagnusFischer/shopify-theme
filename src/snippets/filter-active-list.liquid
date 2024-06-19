@@ -1,0 +1,71 @@
+{%- capture active_filter_items -%}
+  {%- liquid 
+    assign activeFilterCount = 0
+  -%}
+  {% for filter in results.filters %}
+    {% case filter.type %}
+      {% when 'boolean', 'list' %}
+        {% for active_filter in filter.active_values %}
+          {% assign activeFilterCount = activeFilterCount | plus: 1 %}
+          <li>
+            <button
+              type="button" 
+              class="button button--small text-xs font-normal button--accent whitespace-nowrap"
+              data-remove-filter="{{ active_filter.url_to_remove }}"
+            >
+              <span class="flex gap-1 items-center">
+                {{ active_filter.label }}
+
+                <span class="w-4 h-4 block opacity-30">
+                  {% render 'icons', icon: 'xmark' %}
+                </span>
+              </span>
+            </button>
+          </li>
+        {% endfor %}
+      {% when 'price_range' %}
+        {% if filter.max_value.value != filter.range_max or filter.min_value.value != 0 %}
+          {% if filter.max_value.value and filter.min_value.value %}
+            {% assign activeFilterCount = activeFilterCount | plus: 1 %}
+            <li>
+              <button 
+                type="button" 
+                class="button button--small text-xs font-normal button--accent"
+                data-remove-filter="{{ filter.url_to_remove }}"
+              >
+                <span class="flex gap-1 items-center">
+                  {{ filter.min_value.value | money_with_currency }} - {{ filter.max_value.value | money_with_currency }}
+    
+                  <span class="w-4 h-4 block opacity-30">
+                    {% render 'icons', icon: 'xmark' %}
+                  </span>
+                </span>
+              </button>
+            </li>
+          {% endif %}
+        {% endif %}
+    {% endcase %}
+  {% endfor %}
+
+  {% if activeFilterCount > 1 %}
+    <li>
+      <button
+        type="button" 
+        class="text-xs underline whitespace-nowrap"
+        data-remove-filter="{{ results.url }}"
+      >
+        {{ 'collection.filter.clear_all_button_label' | t }}
+      </button>
+    </li>
+  {% endif %}
+{%- endcapture -%}
+
+<ul
+  class="scrollbar-hide flex gap-2 max-lg:overflow-auto"
+  data-active-filters
+  {% if active_filter_items == blank %}
+    hidden
+  {% endif %}
+>
+  {{ active_filter_items }}
+</ul>

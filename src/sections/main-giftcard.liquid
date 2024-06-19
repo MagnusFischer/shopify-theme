@@ -1,0 +1,179 @@
+<style>
+  #shopify-section-{{ section.id }} {
+    {%- if section.settings.logo != blank -%}
+      --header-logo-width: {{ section.settings.logo_width }}px;
+      --header-logo-height: {{ section.settings.logo_width | divided_by: section.settings.logo.aspect_ratio | round }}px;
+    {%- endif -%}
+  }
+</style>
+
+{%- capture logo_content -%}
+  {%- if section.settings.logo -%}
+    {%- assign logo_alt = section.settings.logo.alt | default: shop.name | escape -%}
+    {%- capture sizes -%}{{ section.settings.logo_width }}px{%- endcapture -%}
+    {%- capture widths -%}{{ section.settings.logo_width }}{%- endcapture -%}
+    {{- section.settings.logo 
+      | image_url: width: section.settings.logo.width 
+      | image_tag: sizes: sizes, widths: widths, class: 'header__logo--image', alt: logo_alt
+    -}}
+  {%- else -%}
+    <span>{{ shop.name }}</span>
+  {%- endif -%}
+{%- endcapture -%}
+
+<section
+  class="section relative flex min-h-screen flex-col items-center gap-12"
+  data-component="giftcard"
+>
+  <header class="grid place-items-center">
+    <a class="block" href="{{ routes.root_url }}">
+      {{ logo_content }}
+    </a>
+  </header>
+
+  <div class="flex w-full max-w-[600px] flex-col justify-center gap-20 rounded-3xl bg-black px-9 py-7 text-white">
+    <div class="flex flex-col gap-6 lg:flex-row lg:justify-between">
+      <div>
+        <p>{{ 'giftcard.current_balance_label' | t }}</p>
+        <p class="h2 m-0 font-bold">{{ gift_card.balance | money }}</p>
+      </div>
+
+      <div class="lg:text-right">
+        <p>{{ 'giftcard.initial_balance_label' | t }}</p>
+        <p class="h4 m-0">{{ gift_card.initial_value | money }}</p>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-6">
+      <p class="max-lg:h4 lg:h2 m-0">{{ gift_card.code | format_code }}</p>
+
+      <div class="flex items-center gap-2">
+        <div>
+          <p class="table-caption text-sm uppercase">
+            {{ 'giftcard.valid_until_label' | t }}
+          </p>
+        </div>
+        {{ gift_card.expires_on | time_tag: '%d/%m/%Y' }}
+      </div>
+    </div>
+  </div>
+
+  <ul class="flex w-full max-w-[400px] flex-col gap-3">
+    <li>
+      <button
+        class="flex w-full items-center gap-2 rounded bg-slate-50 p-3 text-left"
+        data-copy="{{ gift_card.code | format_code }}"
+      >
+        <span class="block h-6 w-6">
+          {% render 'icons', icon: 'copy' %}
+        </span>
+        <p data-status>{{ 'giftcard.copy_giftcard_code_label' | t }}</p>
+      </button>
+    </li>
+    <li>
+      <button
+        class="flex w-full items-center gap-2 rounded bg-slate-50 p-3 text-left"
+        data-show-qr-code
+      >
+        <span class="block h-6 w-6">
+          {% render 'icons', icon: 'scan' %}
+        </span>
+        <p>{{ 'giftcard.show_qr_code_label' | t }}</p>
+      </button>
+    </li>
+
+    {%- if gift_card.pass_url -%}
+      <li>
+        <a
+          href="{{ gift_card.pass_url }}"
+          class="flex w-full items-center gap-2 rounded bg-slate-50 p-3 text-left"
+        >
+          <span class="block h-6 w-6">
+            {% render 'icons', icon: 'wallet' %}
+          </span>
+          {{ 'giftcard.add_to_apple_pass_label' | t }}
+        </a>
+      </li>
+    {%- endif -%}
+
+    <li>
+      <a
+        href="{{ routes.root_url }}"
+        class="flex w-full items-center gap-2 rounded bg-slate-50 p-3 text-left"
+      >
+        <span class="block h-6 w-6">
+          {% render 'icons', icon: 'shop' %}
+        </span>
+        {{ 'giftcard.visit_online_store_label' | t }}
+      </a>
+    </li>
+  </ul>
+
+  <div class="modal" data-qr-code-modal>
+    <div class="rounded-3xl bg-white p-12">
+      <div id="qr-code"></div>
+    </div>
+  </div>
+
+  <div class="pointer-events-none absolute top-0 left-0 h-full w-full">
+    {% if section.settings.background_image != blank %}
+      {{-
+        section.settings.background_image
+        | image_url: width: section.settings.background_image.width
+        | image_tag:
+          sizes: '100vw',
+          widths: '300, 330, 410, 490, 570, 650, 730, 810, 890, 970, 1050, 1200, 1500, 2000',
+          class: 'object-cover absolute top-0 left-0 w-full h-full -z-20 bg-secondary-bg'
+      -}}
+    {% endif %}
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    new QRCode(document.getElementById('qr-code'), {
+      text: '{{ gift_card.qr_identifier }}',
+      width: 240,
+      height: 240,
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Giftcard",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Image",
+      "info": "280 x 80px .png recommended"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 60,
+      "max": 300,
+      "step": 10,
+      "label": "Width",
+      "unit": "px",
+      "default": 120
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background image"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    }
+  ]
+}
+{% endschema %}

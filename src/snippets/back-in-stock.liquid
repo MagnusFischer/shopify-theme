@@ -1,0 +1,98 @@
+<div
+  class="back-in-stock modal w-full max-w-[450px] bg-transparent px-3"
+  data-load-event="load:back-in-stock"
+  data-load-target="back-in-stock"
+  data-component="back-in-stock"
+  hidden
+>
+  <form
+    class="relative flex h-full w-full flex-col overflow-hidden rounded bg-primary-bg text-primary-text"
+    data-completed="false"
+  >
+    <div class="flex items-center justify-between">
+      <h2 class="h5 mb-0 pl-4 font-bold lg:pl-6">
+        {{ 'product.back_in_stock.get_notified_button_label' | t }}
+      </h2>
+      <button type="button" class="flex items-center p-4 text-sm lg:p-6" data-close>
+        {{ 'general.navigation.close_button_label' | t }}
+        <span class="block h-6 w-6">
+          {% render 'icons', icon: 'xmark' %}
+        </span>
+      </button>
+    </div>
+    <div class="back-in-stock__completed">
+      <div class="grid h-12 w-12 place-content-center rounded-full bg-success">
+        <span class="block h-6 w-6 text-secondary-text">
+          {% render 'icons', icon: 'success' %}
+        </span>
+      </div>
+      <p>{{ 'product.back_in_stock.success_message' | t }}</p>
+    </div>
+    <div class="px-4 lg:px-6" data-select-variant>
+      <h2>{{ product.title }}</h2>
+      <p class="mb-3 font-bold">{{ 'product.back_in_stock.selected_variant_label' | t }}</p>
+      <div class="relative">
+        <select
+          name="variant"
+          data-variants
+          class="w-full cursor-pointer rounded border-none bg-accent-1-bg bg-none py-5 px-4"
+        >
+          {% for variant in variants %}
+            <option value="{{ variant.id }}">{{ variant.title }}</option>
+          {% endfor %}
+        </select>
+        <span class="pointer-events-none absolute top-0 bottom-0 right-0 z-10 m-auto mx-4 block h-6 w-6 text-accent-1">
+          {% render 'icons', icon: 'select' %}
+        </span>
+      </div>
+    </div>
+    <footer class="mt-auto flex flex-col gap-3 p-4 lg:p-6" data-submit>
+      {%- comment -%}
+        <ul class="grid grid-cols-2 rounded bg-accent-1-bg p-1">
+          <li>
+            <button type="button" class="w-full rounded-sm bg-primary-bg py-1 px-2">Email</button>
+          </li>
+          <li>
+            <button type="button" class="w-full py-1 px-2">SMS</button>
+          </li>
+        </ul>
+      {%- endcomment -%}
+
+      <div class="form__input">
+        <input
+          id="back-in-stock-{{ section.id }}"
+          type="email"
+          name="email"
+          class="form__input--text"
+          {% if customer %}
+            value="{{ customer.email }}"
+          {% endif %}
+          aria-required="true"
+          autocorrect="off"
+          autocapitalize="off"
+          autocomplete="email"
+          {% if form.errors %}
+            autofocus
+            aria-invalid="true"
+            aria-describedby="ContactFooter-error"
+          {% elsif form.posted_successfully? %}
+            aria-describedby="ContactFooter-success"
+          {% endif %}
+          placeholder=" "
+          required
+        >
+        <div class="form__input--text--hover"></div>
+        <label
+          class="form__input--label"
+          for="NewsletterForm--{{ section.id }}"
+        >
+          {{ 'sections.newsletter.email_label' | t }}
+        </label>
+      </div>
+
+      <button type="submit" class="button button--primary w-full">
+        <span>{{ 'product.back_in_stock.submit_button_label' | t }}</span>
+      </button>
+    </footer>
+  </form>
+</div>

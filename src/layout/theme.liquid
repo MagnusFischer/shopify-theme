@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    {%- liquid
+      render 'theme-metadata'
+      render 'theme-microdata'
+      render 'theme-seo'
+      render 'theme-variables'
+      render 'theme-colors'
+      render 'theme-assets'
+      render 'theme-events'
+    -%}
+
+    {% if request.page_type == 'gift_card' %}
+      <script src="{{ 'vendor/qrcode.js' | shopify_asset_url }}" defer></script>
+    {% endif %}
+
+    {{ content_for_header }}
+
+    {{ settings.custom_scripts_head }}
+  </head>
+
+  <body class="color-scheme__background-1 bg-primary-bg">
+    {%- liquid
+      unless request.page_type == 'gift_card'
+        sections 'header-group'
+        sections 'overlay-group'
+      endunless
+    -%}
+
+    <main role="main">
+      {%- liquid
+        case request.page_type
+          when 'customers/login', 'customers/register'
+            sections 'account-group'
+        endcase
+
+        echo content_for_layout
+      -%}
+    </main>
+
+    {%- liquid
+      unless request.page_type == 'gift_card'
+        unless template.directory == 'customers' or request.page_type == 'cart'
+          sections 'subfooter-group'
+        endunless
+
+        sections 'footer-group'
+
+        render 'store-picker'
+      endunless
+    -%}
+  </body>
+</html>

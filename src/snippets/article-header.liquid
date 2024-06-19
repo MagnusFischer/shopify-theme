@@ -1,0 +1,58 @@
+{% if settings.enable_breadcrumbs %}
+  <div class="mb-4">
+    {% render 'breadcrumbs' %}
+  </div>
+{% endif %}
+
+{%- capture media_height -%}
+  {%- case section.settings.image_size -%}
+    {%- when '5:2' -%}
+      aspect-w-5 aspect-h-2
+    {%- when '16:9' -%}
+      aspect-w-16 aspect-h-9
+  {%- endcase -%}
+{%- endcapture -%}
+
+{% if section.settings.show_image %}
+  <div class="aspect {{ media_height }} mb-6 lg:mb-12">
+    {% if article.image != blank %}
+      {{
+        article.image
+        | image_url: width: article.image.width
+        | image_tag:
+          loading: 'lazy',
+          sizes: '100vw',
+          widths: '30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 410, 490, 570, 650, 730, 810, 890, 970, 1050',
+          class: 'rounded object-cover bg-secondary-bg'
+      }}
+    {% else %}
+      {{ 'image' | placeholder_svg_tag: 'placeholder-svg placeholder rounded bg-secondary-bg' }}
+    {% endif %}
+  </div>
+{% endif %}
+
+<header
+  {% if section.settings.show_image %}
+    class="px-3 lg:px-12"
+  {% endif %}
+>
+  <h1 class="font-bold">{{ article.title }}</h1>
+
+  {% render 'article-byline',
+    article: article,
+    show_date: section.settings.show_date,
+    show_author: section.settings.show_author
+  %}
+
+  <div class="rte mb-4 max-w-2xl">
+    {{ article.excerpt }}
+  </div>
+
+  {% render 'article-categories', article: article, show: section.settings.show_categories %}
+
+  {% if section.settings.show_share %}
+    <div class="mt-4">
+      {% render 'share-buttons' %}
+    </div>
+  {% endif %}
+</header>

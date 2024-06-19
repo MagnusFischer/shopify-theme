@@ -1,0 +1,49 @@
+name: Shopify CLI deploy
+
+on:
+  workflow_call:
+    inputs:
+      target-env:
+        required: true
+        type: string
+    secrets:
+      THEME_ACCESS:
+        required: true
+
+jobs:
+  deploy:
+    name: Deploy to ${{ inputs.target-env }}
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.target-env }}
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: shopify-theme
+
+      - name: unzip artifact for deployment
+        run: unzip release.zip
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1
+          bundler: 'latest'
+
+      - name: Install Shopify CLI
+        run: npm install -g @shopify/cli @shopify/theme
+
+      - name: Theme deploy
+        id: theme-deploy
+        env:
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.THEME_ACCESS }}
+          SHOPIFY_FLAG_THEME_ID: ${{ vars.THEME_ID }}
+          SHOPIFY_FLAG_STORE: ${{ vars.SHOPIFY_URL }}
+          SHOPIFY_FLAG_PATH: '.'
+          SHOPIFY_CLI_TTY: 0
+        run: shopify theme push --allow-live --json

@@ -1,0 +1,57 @@
+@layer components {
+  .megamenu {
+    @apply absolute bottom-0 left-0 hidden translate-y-full group-hover:block;
+
+    &__container {
+      @apply flex flex-wrap gap-24 bg-secondary-bg text-secondary-text;
+    }
+
+    &--tab {
+      @apply w-full bg-secondary-bg;
+
+      .megamenu__container {
+        @apply w-full justify-center py-12 px-6;
+      }
+    }
+
+    &--card {
+      @apply pt-3;
+
+      .megamenu__container {
+        @apply max-w-[calc(100vw-var(--link-x-position)-var(--scrollbar-width)-var(--container-gutter))] rounded p-12;
+      }
+
+      .block-container {
+        @apply m-0 w-max;
+      }
+    }
+
+    &__parent {
+      &:hover ~ .megamenu__overlay {
+        @apply opacity-100;
+      }
+    }
+
+    &__overlay {
+      @apply pointer-events-none absolute top-0 left-0 -z-10 h-screen w-full bg-black/30 opacity-0;
+      @apply transition-opacity;
+    }
+
+    &__grid {
+      &--icon {
+        @apply grid h-24 w-24 place-content-center rounded;
+        @apply bg-[hsl(var(--background-color))] transition-colors;
+      }
+
+      &--item {
+        @apply w-24 text-center;
+
+        &:hover {
+          .megamenu__grid--icon {
+            @apply bg-[hsl(var(--background-color-hover))];
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,121 @@
+{% if list.count > 0 and drawer == false %}
+  {%- capture sizes -%}
+  (min-width: 1024px) calc((100vw * 0.33) * / 6),
+  calc(100w / 6)
+  {%- endcapture -%}
+
+  {% if list.count == 6 %}
+    {% assign limit = 6 %}
+  {% else %}
+    {% assign limit = 5 %}
+  {% endif %}
+
+  <div
+    {% if list.count > 6 %}
+      data-component="product-variations"
+    {% endif %}
+  >
+    <p class="mb-3 font-bold">{{ name }}</p>
+
+    <ul class="grid grid-cols-6 gap-2">
+      {% for variation in list limit: limit %}
+        {%- if variation == product -%}
+          {%- assign selected = true -%}
+        {%- else -%}
+          {%- assign selected = false -%}
+        {%- endif -%}
+        <li
+          class="product__variation"
+          {% if selected %}
+            data-current
+          {% endif %}
+        >
+          <a
+            href="{%- if selected == false -%}{{- variation.url -}}{%- else -%} #{%- endif -%}"
+            {% if selected %}
+              class="pointer-events-none"
+            {% endif %}
+          >
+            <div
+              class="aspect"
+              style="padding-bottom:{{ variation.featured_image.height | times: 1.0 | divided_by: variation.featured_image.width | times: 100.0 }}%;"
+            >
+              {{
+                variation.featured_image
+                | image_url: width: 200
+                | image_tag:
+                  loading: lazy,
+                  sizes: sizes,
+                  widths: '60, 100, 150, 200',
+                  class: 'rounded-sm bg-secondary-bg'
+              }}
+            </div>
+          </a>
+        </li>
+      {% endfor %}
+      {% if list.count > 6 %}
+        <li class="flex cursor-pointer flex-col items-center justify-center" data-open-variations>
+          <div class="mb-1 h-6 w-6 bg-accent-button-bg">
+            <span class="text-accent-button-text">{% render 'icons', icon: 'plus' %}</span>
+          </div>
+          <span class="text-sm">
+            {{ 'product.variations.view_all_button_label' | t }}
+          </span>
+        </li>
+      {% endif %}
+    </ul>
+  </div>
+{% endif %}
+
+{% if drawer %}
+  <div
+    class="drawer drawer--right w-[450px] bg-transparent lg:p-4 lg:pl-0"
+    data-drawer="variations"
+  >
+    <div class="flex h-full w-full flex-col rounded bg-primary-bg text-primary-text">
+      <div class="flex items-center justify-between">
+        <h2 class="pl-4 text-xl font-bold">{{ name }}</h2>
+        <button class="flex items-center p-4 text-sm" data-close>
+          {{ 'general.navigation.close_button_label' | t }}
+          <span class="block h-6 w-6">
+            {% render 'icons', icon: 'xmark' %}
+          </span>
+        </button>
+      </div>
+
+      <div
+        class="grid grid-cols-3 gap-4 overflow-y-auto py-6 px-4"
+      >
+        {% for variation in list %}
+          {% if variation == product %}
+            {% continue %}
+          {% endif %}
+          <div
+            class="product__variation"
+          >
+            <a
+              href="{%- if selected == false -%}{{- variation.url -}}{%- else -%} #{%- endif -%}"
+              {% if selected %}
+                class="pointer-events-none"
+              {% endif %}
+            >
+              <div
+                class="aspect-w-1 aspect-h-1"
+              >
+                {{
+                  variation.featured_image
+                  | image_url: width: 200
+                  | image_tag:
+                    loading: lazy,
+                    sizes: sizes,
+                    widths: '60, 100, 150, 200',
+                    class: 'rounded-sm bg-secondary-bg'
+                }}
+              </div>
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endif %}

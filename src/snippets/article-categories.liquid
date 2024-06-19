@@ -1,0 +1,11 @@
+{% assign show = show | default: true, allow_false: true %}
+
+{% if show %}
+  <ul class="article__tags">
+    {% for tag in article.tags %}
+      <li class="inline-block">
+        <a href="{{ blog.url | append: '/tagged/' | append: tag }}">#{{ tag }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}

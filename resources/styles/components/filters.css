@@ -1,0 +1,49 @@
+@layer components {
+  .filters {
+    &__menu {
+      @apply z-10 hidden;
+
+      &[data-active='true'] {
+        @apply block;
+      }
+
+      &--toggle {
+        @apply button button--small button--accent flex items-center gap-1 text-sm font-normal;
+
+        &[data-toggle='true'] {
+          & + [data-menu] {
+            @apply block;
+          }
+
+          @apply bg-accent-button-bg-hover;
+
+          span {
+            @apply text-accent-button-text-hover;
+
+            &.accent {
+              @apply bg-accent-button-bg;
+            }
+          }
+
+          .filters__menu--toggle--icon {
+            @apply rotate-180;
+          }
+        }
+      }
+    }
+
+    &__sort {
+      &--item {
+        @apply block cursor-pointer;
+
+        &:hover {
+          @apply underline;
+        }
+
+        input:checked + span {
+          @apply font-bold;
+        }
+      }
+    }
+  }
+}

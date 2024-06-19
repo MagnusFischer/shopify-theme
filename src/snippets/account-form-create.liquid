@@ -1,0 +1,153 @@
+{% assign block = section.blocks | where: 'type', 'register' | first %}
+
+{%- form 'create_customer',
+  novalidate: 'novalidate',
+  class: 'account__forms--container',
+  id: 'register'
+-%}
+  <div class="mb-6" {{ block.shopify_attributes }}>
+    <h1>{{ block.settings.title }}</h1>
+
+    <div class="rte max-w-md">
+      {{ block.settings.content }}
+    </div>
+  </div>
+
+  {%- if form.errors -%}
+    <div>
+      <ul>
+        {%- for field in form.errors -%}
+          <li>
+            {%- if field == 'form' -%}
+              {{ form.errors.messages[field] }}
+            {%- else -%}
+              <p>
+                {{ form.errors.translated_fields[field] | capitalize }}
+                {{ form.errors.messages[field] }}
+              </p>
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  {%- endif -%}
+
+  <div class="form__input">
+    <input
+      class="form__input--text"
+      type="text"
+      name="customer[first_name]"
+      id="register-first_name"
+      {% if form.first_name %}
+        value="{{ form.first_name }}"
+      {% endif %}
+      autocomplete="given-name"
+      placeholder=" "
+    >
+    <div class="form__input--text--hover"></div>
+    <label
+      class="form__input--label"
+      for="register-first_name"
+    >
+      {{ 'account.fields.first_name' | t }}
+    </label>
+  </div>
+
+  <div class="form__input">
+    <input
+      class="form__input--text"
+      type="text"
+      name="customer[last_name]"
+      id="register-last_name"
+      {% if form.last_name %}
+        value="{{ form.last_name }}"
+      {% endif %}
+      autocomplete="family-name"
+      placeholder=" "
+    >
+    <div class="form__input--text--hover"></div>
+    <label
+      class="form__input--label"
+      for="register-last_name"
+    >
+      {{ 'account.fields.last_name' | t }}
+    </label>
+  </div>
+
+  <div class="form__input">
+    <input
+      class="form__input--text"
+      type="email"
+      name="customer[email]"
+      id="register-email"
+      {% if form.email %}
+        value="{{ form.email }}"
+      {% endif %}
+      spellcheck="false"
+      autocapitalize="off"
+      autocomplete="email"
+      aria-required="true"
+      {% if form.errors contains 'email' %}
+        aria-invalid="true"
+        aria-describedby="register-email-error"
+      {% endif %}
+      placeholder=" "
+    >
+    <div class="form__input--text--hover"></div>
+    <label
+      class="form__input--label"
+      for="register-email"
+    >
+      {{ 'account.fields.email' | t }}
+    </label>
+  </div>
+
+  {%- if form.errors contains 'email' -%}
+    <span id="register-email-error" class="form__message">
+      {{ form.errors.translated_fields.email | capitalize }}
+      {{ form.errors.messages.email }}.
+    </span>
+  {%- endif -%}
+
+  <div class="form__input">
+    <input
+      class="form__input--text"
+      type="password"
+      name="customer[password]"
+      id="register-password"
+      autocomplete="new-password"
+      aria-required="true"
+      {% if form.errors contains 'password' %}
+        aria-invalid="true"
+        aria-describedby="register-password-error"
+      {% endif %}
+      placeholder=" "
+    >
+    <div class="form__input--text--hover"></div>
+    <label
+      class="form__input--label"
+      for="register-password"
+    >
+      {{ 'account.fields.password' | t }}
+    </label>
+  </div>
+
+  {%- if form.errors contains 'password' -%}
+    <span id="register-password-error">
+      {{ form.errors.translated_fields.password | capitalize }}
+      {{ form.errors.messages.password }}.
+    </span>
+  {%- endif -%}
+
+  <div class="flex flex-col gap-3 lg:flex-row">
+    <button type="submit" class="button button--primary w-full">
+      <span>{{ 'account.form.create_account_button_label' | t }}</span>
+    </button>
+  </div>
+
+  {%- capture login_link -%}{%- endcapture -%}
+  <p>
+    {{ 'account.form.existing_account_text' | t }}
+    <a class="underline" href="#login">{{ 'account.form.login_button_label' | t }}</a>
+  </p>
+{%- endform -%}

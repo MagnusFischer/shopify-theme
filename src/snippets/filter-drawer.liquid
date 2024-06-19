@@ -1,0 +1,66 @@
+<div class="drawer drawer--right w-[450px]" data-component="drawer" data-drawer="filter">
+  <div
+    class="relative flex h-full w-full flex-col overflow-hidden bg-primary-bg text-primary-text lg:rounded"
+  >
+    <div class="flex items-center justify-between">
+      <h2 class="pl-4 text-xl font-bold lg:pl-6">
+        {{ 'collection.filter_drawer.title' | t }}
+      </h2>
+      <button class="flex items-center p-4 text-sm lg:p-6" data-close>
+        {{ 'general.navigation.close_button_label' | t }}
+        <span class="block h-6 w-6">
+          {% render 'icons', icon: 'xmark' %}
+        </span>
+      </button>
+    </div>
+
+    <form class="h-full overflow-auto px-3 lg:px-6" data-scrollable>
+      {%- if results.terms -%}
+        <input type="hidden" name="q" value="{{ results.terms | escape }}">
+      {%- endif -%}
+
+      {% for filter in results.filters %}
+        {%- capture content -%}
+          {% render 'filter-option-list', filter: filter %}
+        {%- endcapture -%}
+
+        {% capture title %}
+          <p class="flex items-center gap-2">
+            {{ filter.label }}
+            <span data-count class="accent flex h-4 items-center justify-center rounded-[2px] bg-accent-button-bg-hover px-1 text-[10px] {% if filter.active_values.size == 0 or filter.active_values == null %}hidden{% endif %}">{{ filter.active_values.size }}</span>
+          </p>
+        {% endcapture %}
+
+        <div data-filter-category="{{ filter.param_name }}-{{ forloop.index }}-mobile">
+          {% render 'accordion', title: title, content: content %}
+        </div>
+      {% endfor %}
+    </form>
+
+    <footer class="mt-auto p-3 lg:p-6">
+      <div class="flex gap-4">
+        <button class="button button--primary w-full" type="button" data-close>
+          {%- capture results -%}
+            <span data-total-results>
+              {%- if results.products_count %}
+                {{ results.products_count }}
+              {% else %}
+                {{ results.results_count }}
+              {% endif -%}
+            </span>
+          {%- endcapture -%}
+          <span>
+            {{ 'collection.filter_drawer.show_button_label_html' | t: count: results }}
+          </span>
+        </button>
+        <button
+          type="button"
+          data-remove-filter="{{ results.url }}"
+          class="button button--secondary w-full"
+        >
+          <span>{{ 'collection.filter_drawer.clear_button_label' | t }}</span>
+        </button>
+      </div>
+    </footer>
+  </div>
+</div>

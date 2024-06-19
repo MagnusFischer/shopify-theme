@@ -1,0 +1,47 @@
+@layer components {
+  .range-slider {
+    @apply flex flex-col gap-4;
+
+    &__input {
+      &--container {
+        @apply flex gap-2;
+      }
+    }
+
+    &__range--container {
+      @apply relative py-3;
+
+      input[type='range'] {
+        appearance: none;
+
+        @apply pointer-events-none absolute h-0.5 w-full appearance-none bg-secondary-bg;
+
+        &[data-from-range] {
+          @apply z-10 h-0;
+        }
+      }
+
+      input[type='range']::-webkit-slider-thumb {
+        appearance: none;
+        @apply pointer-events-auto h-6 w-6 cursor-pointer rounded-full bg-primary-bg;
+
+        box-shadow: 0 0 0 1px rgb(var(--accent-2-bg));
+      }
+
+      input[type='range']::-moz-range-thumb {
+        appearance: none;
+        @apply pointer-events-auto h-6 w-6 cursor-pointer rounded-full bg-primary-bg;
+
+        box-shadow: 0 0 0 1px rgb(var(--accent-2-bg));
+      }
+
+      input[type='range']::-webkit-slider-thumb:hover {
+        @apply bg-accent-button-bg-hover;
+      }
+
+      input[type='range']::-webkit-slider-thumb:active {
+        @apply bg-accent-button-text-hover;
+      }
+    }
+  }
+}

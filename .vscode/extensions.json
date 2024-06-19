@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "shopify.theme-check-vscode",
+    "eamodio.gitlens",
+    "bradlc.vscode-tailwindcss",
+    "csstools.postcss",
+    "editorconfig.editorconfig",
+    "killalau.vscode-liquid-snippets",
+    "esbenp.prettier-vscode"
+  ]
+}

@@ -1,0 +1,9 @@
+@layer components {
+  .overlay {
+    @apply fixed inset-0 z-40 bg-transparent transition-all duration-300;
+
+    &--active {
+      @apply bg-black/30;
+    }
+  }
+}

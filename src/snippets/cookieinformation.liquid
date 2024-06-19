@@ -1,0 +1,31 @@
+<script
+  id="CookieConsent"
+  src="https://policy.app.cookieinformation.com/uc.js"
+  data-culture="{{ localization.language.iso_code | upcase }}"
+  type="text/javascript"
+></script>
+
+<script>
+  function setTrackingConsent() {
+    window.Shopify.loadFeatures(
+      [{ name: 'consent-tracking-api', version: '0.1' }],
+      function (error) {
+        if (error) {
+          throw error;
+        }
+
+        window.Shopify.customerPrivacy.setTrackingConsent(
+          {
+            analytics: window.CookieInformation.getConsentGivenFor('cookie_cat_statistic'),
+            marketing: window.CookieInformation.getConsentGivenFor('cookie_cat_marketing'),
+            preferences: true,
+            sale_of_data: window.CookieInformation.getConsentGivenFor('cookie_cat_marketing'),
+          },
+          () => {}
+        );
+      }
+    );
+  }
+
+  window.addEventListener('CookieInformationConsentGiven', setTrackingConsent, false);
+</script>

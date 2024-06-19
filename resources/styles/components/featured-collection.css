@@ -1,0 +1,9 @@
+@layer components {
+  .featured-collection {
+    &__product {
+      &:nth-child(n + 5) {
+        @apply max-lg:hidden;
+      }
+    }
+  }
+}

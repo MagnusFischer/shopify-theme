@@ -1,0 +1,136 @@
+{%- capture sizes -%}
+(min-width: 1280px) calc((100vw * 0.60) * 0.10),
+(min-width: 1024px) calc((100vw * 0.66) / 6),
+70px
+{%- endcapture -%}
+
+{%- capture aspectClasses -%}
+  {% if section.settings.media_aspect == 'original' %}
+    aspect
+  {%- else -%}
+    aspect {{ section.settings.media_aspect }} overflow-hidden
+  {% endif %}
+{%- endcapture -%}
+
+{%- capture imageClasses -%}
+  bg-secondary-bg object-cover
+  {% if section.settings.media_radius %}
+    lg:rounded-sm 
+  {% endif %}
+{%- endcapture -%}
+
+<div
+  class="flex flex-col gap-4 lg:flex-row xl:gap-8"
+  data-component="product-media"
+  data-config="{{ section.settings.media_style }}"
+>
+  <div class="relative order-2 w-full lg:order-1 lg:w-1/6 xl:w-[10%]{% if section.settings.media_style == 'waterfall' %} lg:hidden{% endif %}">
+    <div class="h-full w-full overflow-hidden lg:absolute">
+      <ul class="scrollbar-hide flex h-full w-full gap-2 overflow-x-auto lg:flex-col lg:overflow-y-auto lg:px-0">
+        {% for media in product.media %}
+          {% assign aspect = media.preview_image.height
+            | times: 1.0
+            | divided_by: media.preview_image.width
+            | times: 100
+          %}
+
+          <li
+            class="product__media--thumbnail"
+            data-thumbnail="{{ forloop.index0 }}"
+            {% if forloop.first %}
+              data-current
+            {% endif %}
+          >
+            <div
+              class="{{ aspectClasses }}"
+              {% if section.settings.media_aspect == 'original' %}
+                style="padding-bottom: {{ aspect }}%;"
+              {% endif %}
+            >
+              {% assign thumbnailImageClasses = imageClasses %}
+
+              {% if section.settings.media_radius %}
+                {% assign thumbnailImageClasses = thumbnailImageClasses
+                  | append: ' max-lg:rounded-sm'
+                %}
+              {% endif %}
+              {{
+                media.preview_image
+                | image_url: width: 500
+                | image_tag:
+                  loading: 'lazy',
+                  sizes: sizes,
+                  widths: '90, 120, 150, 180, 210, 240, 270, 300, 330, 410',
+                  class: thumbnailImageClasses
+              }}
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  {%- case section.settings.media_style -%}
+    {%- when 'slider' -%}
+      {%- capture sizes -%}
+        (min-width: 1280px) calc((100vw * 0.60) * 0.90),
+        (min-width: 1024px) calc((100vw * 0.66) * 0.84),
+        100vw
+      {%- endcapture -%}
+    {%- when 'waterfall' -%}
+      {%- capture sizes -%}
+        (min-width: 1280px) calc((100vw * 0.60) / 2),
+        (min-width: 1024px) calc((100vw * 0.66) / 2),
+        100vw
+      {%- endcapture -%}
+  {%- endcase -%}
+
+  {%- capture media_classes -%}
+    {% case section.settings.media_style %}
+      {% when 'slider' %}
+        flex flex-nowrap
+      {% when 'waterfall' %}
+        flex flex-nowrap lg:!grid lg:!grid-cols-2
+    {% endcase %}
+  {%- endcapture -%}
+
+  <div class="order-1 w-full lg:order-2 {% if section.settings.media_style == "slider" %} lg:w-5/6 xl:w-[90%]{% endif %}">
+    <div class="product__media--swiper swiper overflow-hidden{% if section.settings.media_radius %} lg:rounded-sm{% endif %}">
+      <div
+        class="swiper-wrapper product__media--swiper--wrapper {{ media_classes }}"
+        {% if section.settings.media_style == 'waterfall' %}
+          style="--gap:{{ section.settings.media_gap }}px;"
+        {% endif %}
+      >
+        {% for media in product.media %}
+          {% assign aspect = media.preview_image.height
+            | times: 1.0
+            | divided_by: media.preview_image.width
+            | times: 100
+          %}
+          <div class="swiper-slide h-fit w-full flex-shrink-0{% if section.settings.media_style == "waterfall" and section.settings.waterfall_mode == "highlight" and forloop.first %} lg:col-span-2{% endif %}">
+            <div
+              class="{{ aspectClasses }}"
+              {% if section.settings.media_aspect == 'original' %}
+                style="padding-bottom: {{ aspect }}%;"
+              {% endif %}
+            >
+              {% unless media.position == 1 %}
+                {% assign lazy = 'lazy' %}
+              {% endunless %}
+              {{
+                media.preview_image
+                | image_url: width: 2048
+                | image_tag:
+                  loading: lazy,
+                  sizes: sizes,
+                  widths: '410, 490, 570, 650, 730, 810, 890, 970, 1050, 1290, 1530, 1770, 2090, 2410, 2730',
+                  class: imageClasses
+              }}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>

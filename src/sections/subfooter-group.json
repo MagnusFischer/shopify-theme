@@ -1,0 +1,34 @@
+{
+  "type": "custom.sub_footer",
+  "name": "Subfooter",
+  "sections": {
+    "newsletter": {
+      "type": "newsletter",
+      "blocks": {
+        "image": {
+          "type": "image",
+          "settings": {
+            "title": "How can we help?",
+            "subtext": "<p>Mon - Fri, 10:00 - 18:00<br/>Sat, 10:00 - 14:00<br/>Sun, 12:00 - 14:00</p><p>tel: +45 1234 5678<br/>info@company.com</p>",
+            "image": "shopify://shop_images/in-office-working-on-laptop.jpg"
+          }
+        },
+        "newsletter": {
+          "type": "newsletter",
+          "settings": {
+            "title": "Join our monthly newsletter!",
+            "subtext": "<p>Don’t miss out on the latest and greatest. Be the first to know about the latest promotional offers.</p>",
+            "footer": "<p>By signing up to our newsletter you agree to our <a href=\"/policies/privacy-policy\">privacy policy</a>.</p>",
+            "button_text": "Signup",
+            "show_name_input": true
+          }
+        }
+      },
+      "block_order": ["image", "newsletter"],
+      "settings": {
+        "color_scheme": ""
+      }
+    }
+  },
+  "order": ["newsletter"]
+}

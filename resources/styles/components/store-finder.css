@@ -1,0 +1,11 @@
+@layer components {
+  .store-finder {
+    &__filter {
+      @apply button button--small button--accent h-fit border;
+
+      &--active {
+        @apply border border-black;
+      }
+    }
+  }
+}

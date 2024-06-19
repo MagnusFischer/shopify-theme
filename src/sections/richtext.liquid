@@ -1,0 +1,138 @@
+{%- capture rteClasses -%}
+  {%- liquid
+    echo 'rte '
+
+    if section.settings.page_columns != "columns-1"
+      echo section.settings.page_columns
+      echo ' gap-24 ' 
+    else
+        echo ' max-w-2xl '
+    endif 
+
+    echo section.settings.content_alignment
+    echo ' '
+    echo section.settings.text_alignment
+  -%}
+{%- endcapture -%}
+
+<div class="section bg-primary-bg color-scheme__{{ section.settings.color_scheme }} ">
+  {%- if section.settings.content != blank -%}
+    {% if section.settings.spacing == 'contained' %}
+      <section class="rounded bg-secondary-bg text-primary-text px-6 py-12">
+        <div class="{{- rteClasses -}}">
+          {{- section.settings.content -}}
+        </div>
+      </section>
+    {% else %}
+      <div class="{{- rteClasses -}}">
+        {{- section.settings.content -}}
+      </div>
+    {% endif %}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Richtext",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content",
+      "default": "<p>Write your text here</p>"
+    },
+    {
+      "type": "select",
+      "id": "page_columns",
+      "label": "Max columns",
+      "options": [
+        {
+          "value": "columns-1",
+          "label": "1"
+        },
+        {
+          "value": "md:columns-2",
+          "label": "2"
+        },
+        {
+          "value": "md:columns-2 lg:columns-3",
+          "label": "3"
+        },
+        {
+          "value": "md:columns-2 lg:columns-3 xl:columns-4",
+          "label": "4"
+        }
+      ],
+      "default": "columns-1"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "text-left",
+          "label": "Left"
+        },
+        {
+          "value": "text-center",
+          "label": "Center"
+        },
+        {
+          "value": "text-right",
+          "label": "Right"
+        }
+      ],
+      "default": "text-left"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Content alignment",
+      "options": [
+        {
+          "value": "mr-auto",
+          "label": "Left"
+        },
+        {
+          "value": "m-auto",
+          "label": "Center"
+        },
+        {
+          "value": "ml-auto",
+          "label": "Right"
+        }
+      ],
+      "default": "mr-auto"
+    },
+    {
+      "type": "select",
+      "id": "spacing",
+      "label": "Spacing",
+      "options": [
+        {
+          "value": "full",
+          "label": "Full-width"
+        },
+        {
+          "value": "contained",
+          "label": "Contained"
+        }
+      ],
+      "default": "contained"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Richtext"
+    }
+  ]
+}
+{% endschema %}

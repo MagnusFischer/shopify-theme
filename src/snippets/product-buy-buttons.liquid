@@ -1,0 +1,45 @@
+{% assign backInStock = section.blocks | where: 'type', 'back_in_stock' | first %}
+
+{% capture backInStockConfig %}
+  {% if backInStock != blank %}
+    back-in-stock-behavior="{{ backInStock.settings.button_behavior }}"
+    back-in-stock="{{ backInStock.settings.show_button }}"
+  {% endif %}
+{% endcapture %}
+
+{%- form 'product', product, id: form_id -%}
+  {%- if product.selected_or_first_available_variant.available -%}
+    <button
+      class="button button--primary w-full"
+      data-add-to-cart
+      data-add-to-cart-button
+      {{ backInStockConfig }}
+    >
+      <span>{{- 'product.form.add_to_cart_button_label' | t -}}</span>
+    </button>
+  {%- else -%}
+    {% if backInStock.settings.button_behavior == 'replace'
+      and backInStock.settings.show_button == 'sold_out'
+    %}
+      <button
+        class="button button--primary w-full"
+        data-add-to-cart
+        data-add-to-cart-button
+        data-back-in-stock-variant="{{ product.selected_or_first_available_variant.id }}"
+        {{ backInStockConfig }}
+      >
+        <span>{{ 'product.back_in_stock.get_notified_button_label' | t }}</span>
+      </button>
+    {% else %}
+      <button
+        class="button button--primary w-full"
+        data-add-to-cart
+        data-add-to-cart-button
+        disabled
+        {{ backInStockConfig }}
+      >
+        <span>{{- 'product.form.sold_out_button_label' | t -}}</span>
+      </button>
+    {% endif %}
+  {%- endif -%}
+{%- endform -%}

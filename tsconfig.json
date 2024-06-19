@@ -1,0 +1,19 @@
+{
+  "include": ["./**/*.ts", "./**/*.js", ".*.js"],
+  "exclude": ["node_modules", "src/assets"],
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "target": "es2022",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "baseUrl": "./resources/scripts",
+    "paths": {
+      "app": ["../app"],
+      "@ts/*": ["../types/*"],
+      "@utils/*": ["utils/*"],
+      "@components/*": ["components/*"],
+      "@pages/*": ["pages/*"],
+      "@vendor/*": ["vendor/*"]
+    }
+  }
+}

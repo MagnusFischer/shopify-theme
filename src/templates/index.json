@@ -1,0 +1,282 @@
+{
+  "sections": {
+    "191e6712-915c-4515-9c8a-207dc42db935": {
+      "type": "slideshow",
+      "blocks": {
+        "template--19545783107868__191e6712-915c-4515-9c8a-207dc42db935-image-1": {
+          "type": "image",
+          "settings": {
+            "desktop_position": "lg:position-end-start",
+            "mobile_position": "position-end-start",
+            "sub_heading": "Discover a new dimension of",
+            "heading": "Auditory excellence",
+            "button_text": "Explore",
+            "button_url": "shopify://collections/all",
+            "overlay_opacity": 0,
+            "color_scheme": "scheme-63276c48-06ab-4690-9ff9-bcaee04ce69e"
+          }
+        },
+        "template--19545783107868__191e6712-915c-4515-9c8a-207dc42db935-image-2": {
+          "type": "image",
+          "settings": {
+            "desktop_position": "lg:position-center-center",
+            "mobile_position": "position-end-start",
+            "sub_heading": "Immersive",
+            "heading": "Wired headphones",
+            "button_text": "Explore",
+            "button_url": "shopify://collections",
+            "overlay_opacity": 30,
+            "color_scheme": "scheme-63276c48-06ab-4690-9ff9-bcaee04ce69e"
+          }
+        }
+      },
+      "block_order": [
+        "template--19545783107868__191e6712-915c-4515-9c8a-207dc42db935-image-1",
+        "template--19545783107868__191e6712-915c-4515-9c8a-207dc42db935-image-2"
+      ],
+      "settings": {
+        "pagination": "dots",
+        "transition": "slide",
+        "autoplay": true,
+        "timing": 4,
+        "desktop_height": "fullscreen",
+        "mobile_height": "fullscreen",
+        "spacing": "fill",
+        "color_scheme": ""
+      }
+    },
+    "16fb6bfd-3c94-4029-83a0-9bf619ad7bb9": {
+      "type": "text-with-icons",
+      "blocks": {
+        "template--19545783107868__16fb6bfd-3c94-4029-83a0-9bf619ad7bb9-item-1": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Free shipping",
+            "content": "<p>Free worldwide shipping and returns</p>"
+          }
+        },
+        "template--19545783107868__16fb6bfd-3c94-4029-83a0-9bf619ad7bb9-item-2": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Trusted worldwide",
+            "content": "<p>Over 100.000 happy customers</p>"
+          }
+        },
+        "template--19545783107868__16fb6bfd-3c94-4029-83a0-9bf619ad7bb9-item-3": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Customer service",
+            "content": "<p>We are available mon-fri to answer your questions.</p>"
+          }
+        },
+        "template--19545783107868__16fb6bfd-3c94-4029-83a0-9bf619ad7bb9-item-4": {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "title": "Secure payment",
+            "content": "<p>Your payment information is processed securely.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "template--19545783107868__16fb6bfd-3c94-4029-83a0-9bf619ad7bb9-item-1",
+        "template--19545783107868__16fb6bfd-3c94-4029-83a0-9bf619ad7bb9-item-2",
+        "template--19545783107868__16fb6bfd-3c94-4029-83a0-9bf619ad7bb9-item-3",
+        "template--19545783107868__16fb6bfd-3c94-4029-83a0-9bf619ad7bb9-item-4"
+      ],
+      "settings": {
+        "color_scheme": ""
+      }
+    },
+    "77753136-93f6-4dee-8139-a7355cfc0d54": {
+      "type": "testimonials",
+      "blocks": {
+        "template--19545783107868__77753136-93f6-4dee-8139-a7355cfc0d54-testimonial-1": {
+          "type": "testimonial",
+          "settings": {
+            "show_rating": true,
+            "rating": 5,
+            "author": "Magnus F.",
+            "title": "Recieved order fast",
+            "content": "<p>I encountered no issues. Overall a great experience, would purchase again.</p>"
+          }
+        },
+        "template--19545783107868__77753136-93f6-4dee-8139-a7355cfc0d54-testimonial-2": {
+          "type": "testimonial",
+          "settings": {
+            "show_rating": true,
+            "rating": 4,
+            "author": "Mads H.",
+            "title": "Nice quality",
+            "content": "<p>Very happy with the quality of the headphones i bought. Good sound.</p>"
+          }
+        },
+        "template--19545783107868__77753136-93f6-4dee-8139-a7355cfc0d54-testimonial-3": {
+          "type": "testimonial",
+          "settings": {
+            "show_rating": true,
+            "rating": 5,
+            "author": "Lukas M.",
+            "title": "The best",
+            "content": "<p>Thanks for another great shopping experience. 11/10 would buy again.</p>"
+          }
+        },
+        "template--19545783107868__77753136-93f6-4dee-8139-a7355cfc0d54-testimonial-4": {
+          "type": "testimonial",
+          "settings": {
+            "show_rating": true,
+            "rating": 5,
+            "author": "Simon P.",
+            "title": "Testimonial 4",
+            "content": "<p>Share what your customers are saying about your products, customer service or shipping rates.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "template--19545783107868__77753136-93f6-4dee-8139-a7355cfc0d54-testimonial-1",
+        "template--19545783107868__77753136-93f6-4dee-8139-a7355cfc0d54-testimonial-2",
+        "template--19545783107868__77753136-93f6-4dee-8139-a7355cfc0d54-testimonial-3",
+        "template--19545783107868__77753136-93f6-4dee-8139-a7355cfc0d54-testimonial-4"
+      ],
+      "settings": {
+        "title": "<strong>What our customers have to say</strong>",
+        "color_scheme": ""
+      }
+    },
+    "314ddc4f-721b-4729-b5ad-f57a7f16fe48": {
+      "type": "collection-list",
+      "blocks": {
+        "template--19545783107868__314ddc4f-721b-4729-b5ad-f57a7f16fe48-collection-2": {
+          "type": "collection",
+          "settings": {
+            "collection": "frontpage",
+            "title": "Accessories",
+            "url": ""
+          }
+        },
+        "template--19545783107868__314ddc4f-721b-4729-b5ad-f57a7f16fe48-collection-3": {
+          "type": "collection",
+          "settings": {
+            "collection": "all",
+            "title": "Smartwatches",
+            "url": ""
+          }
+        },
+        "template--19545783107868__314ddc4f-721b-4729-b5ad-f57a7f16fe48-collection-1": {
+          "type": "collection",
+          "settings": {
+            "collection": "all",
+            "title": "Stands",
+            "url": ""
+          }
+        }
+      },
+      "block_order": [
+        "template--19545783107868__314ddc4f-721b-4729-b5ad-f57a7f16fe48-collection-2",
+        "template--19545783107868__314ddc4f-721b-4729-b5ad-f57a7f16fe48-collection-3",
+        "template--19545783107868__314ddc4f-721b-4729-b5ad-f57a7f16fe48-collection-1"
+      ],
+      "settings": {
+        "media_aspect": "aspect-w-4 aspect-h-5",
+        "cols_desktop": 4,
+        "mobile_slider": false,
+        "cols_mobile": "1",
+        "color_scheme": ""
+      }
+    },
+    "18e031d6-8cb5-422c-bdf7-fa0315738ab3": {
+      "type": "featured-collection",
+      "settings": {
+        "title": "<strong>Our bestsellers</strong>",
+        "link_url": "",
+        "link_text": "View all",
+        "collection": "all",
+        "product_count": 8,
+        "desktop_carousel": true,
+        "desktop_columns": 4,
+        "mobile_carousel": false,
+        "mobile_columns": "columns_2",
+        "color_scheme": ""
+      }
+    },
+    "d724a08a-cdff-4ec3-b3f4-a8ed420c1231": {
+      "type": "multi-column",
+      "blocks": {
+        "template--19545783107868__d724a08a-cdff-4ec3-b3f4-a8ed420c1231-image-1": {
+          "type": "image",
+          "settings": {}
+        },
+        "template--19545783107868__d724a08a-cdff-4ec3-b3f4-a8ed420c1231-text-1": {
+          "type": "text",
+          "settings": {
+            "title": "<strong>Discover a new dimension of auditory excellence</strong>",
+            "text": "<p>Our remarkable headphones are meticulously crafted from the finest materials to redefine your audio experience. Each component is thoughtfully selected, resulting in a product that exudes sophistication and promises longevity.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "template--19545783107868__d724a08a-cdff-4ec3-b3f4-a8ed420c1231-image-1",
+        "template--19545783107868__d724a08a-cdff-4ec3-b3f4-a8ed420c1231-text-1"
+      ],
+      "settings": {
+        "media_aspect": "aspect-w-1 aspect-h-1",
+        "cols_desktop": 4,
+        "rows_desktop": 1,
+        "mobile_slider": false,
+        "cols_mobile": "1",
+        "color_scheme": ""
+      }
+    },
+    "f8fd2e92-644c-4e0f-bb6f-ac58d6763d1e": {
+      "type": "video",
+      "settings": {
+        "desktop_height": "fullscreen",
+        "mobile_height": "fullscreen",
+        "spacing": "fill",
+        "autoplay": false,
+        "color_scheme": ""
+      }
+    },
+    "2e59f9d9-9072-4232-ac79-176fc00e7a23": {
+      "type": "multi-column",
+      "blocks": {
+        "template--19545783107868__2e59f9d9-9072-4232-ac79-176fc00e7a23-text-1": {
+          "type": "text",
+          "settings": {
+            "title": "<strong>Embrace a world free from distractions</strong>",
+            "text": "<p>As you indulge in wireless freedom, complemented by the prowess of active noise cancellation. Immerse yourself in the purity of sound, unmarred by external disturbances, and relish in the sensation of being enveloped by your chosen audio. Designed in the heart of Copenhagen.</p>"
+          }
+        },
+        "template--19545783107868__2e59f9d9-9072-4232-ac79-176fc00e7a23-image-1": {
+          "type": "image",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "template--19545783107868__2e59f9d9-9072-4232-ac79-176fc00e7a23-text-1",
+        "template--19545783107868__2e59f9d9-9072-4232-ac79-176fc00e7a23-image-1"
+      ],
+      "settings": {
+        "media_aspect": "aspect-w-1 aspect-h-1",
+        "cols_desktop": 4,
+        "rows_desktop": 1,
+        "mobile_slider": false,
+        "cols_mobile": "1",
+        "color_scheme": ""
+      }
+    }
+  },
+  "order": [
+    "191e6712-915c-4515-9c8a-207dc42db935",
+    "16fb6bfd-3c94-4029-83a0-9bf619ad7bb9",
+    "77753136-93f6-4dee-8139-a7355cfc0d54",
+    "314ddc4f-721b-4729-b5ad-f57a7f16fe48",
+    "18e031d6-8cb5-422c-bdf7-fa0315738ab3",
+    "d724a08a-cdff-4ec3-b3f4-a8ed420c1231",
+    "f8fd2e92-644c-4e0f-bb6f-ac58d6763d1e",
+    "2e59f9d9-9072-4232-ac79-176fc00e7a23"
+  ]
+}

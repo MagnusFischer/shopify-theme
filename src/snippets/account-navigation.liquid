@@ -1,0 +1,62 @@
+<div class="max-lg:section--bleed scrollbar-hide overflow-auto">
+  <ul class="flex flex-nowrap gap-3 lg:flex-col">
+    <li>
+      <a
+        class="flex items-center gap-2 whitespace-nowrap rounded bg-neutral-100 px-3 py-3 hover:bg-neutral-200"
+        href="#{{ 'account.navigation.overview_title' | t | strip | downcase | handleize }}"
+      >
+        <span class="block h-6 w-6">{% render 'icons', icon: 'inbox' %}</span>
+        {{ 'account.navigation.overview_title' | t }}
+      </a>
+    </li>
+    <li>
+      <a
+        class="flex items-center gap-2 whitespace-nowrap rounded bg-neutral-100 px-4 py-3 hover:bg-neutral-200"
+        href="#{{ 'account.navigation.orders_title' | t | strip | downcase | handleize }}"
+      >
+        <span class="block h-6 w-6">{% render 'icons', icon: 'mailbox' %}</span>
+        {{ 'account.navigation.orders_title' | t }}
+      </a>
+    </li>
+    <li>
+      <a
+        class="flex items-center gap-2 whitespace-nowrap rounded bg-neutral-100 px-4 py-3 hover:bg-neutral-200"
+        href="#{{ 'account.navigation.information_title' | t | strip | downcase | handleize }}"
+      >
+        <span class="block h-6 w-6">{% render 'icons', icon: 'address-card' %}</span>
+        {{ 'account.navigation.information_title' | t }}
+      </a>
+    </li>
+
+    {% if customer_support_link != blank %}
+      <li>
+        <a
+          class="flex items-center gap-2 whitespace-nowrap rounded bg-neutral-100 px-4 py-3 hover:bg-neutral-200"
+          href="{{ customer_support_link }}"
+        >
+          <span class="block h-6 w-6">{% render 'icons', icon: 'message-circle-question' %}</span>
+          {{ 'account.navigation.customer_support_title' | t }}
+        </a>
+      </li>
+    {% endif %}
+
+    <li>
+      <a
+        class="flex items-center gap-2 whitespace-nowrap rounded bg-neutral-100 px-4 py-3 hover:bg-neutral-200"
+        href="#{{ 'account.navigation.change_password_title' | t | strip | downcase | handleize }}"
+      >
+        <span class="block h-6 w-6">{% render 'icons', icon: 'lock' %}</span>
+        {{ 'account.navigation.change_password_title' | t }}
+      </a>
+    </li>
+    <li>
+      <a
+        class="flex items-center gap-2 whitespace-nowrap rounded bg-neutral-100 px-4 py-3 hover:bg-neutral-200"
+        href="{{ routes.account_logout_url }}"
+      >
+        <span class="block h-6 w-6">{% render 'icons', icon: 'door-open' %}</span>
+        {{ 'account.navigation.sign_out_title' | t }}
+      </a>
+    </li>
+  </ul>
+</div>

@@ -1,0 +1,46 @@
+{
+  "type": "footer",
+  "name": "Footer",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "6685cd43-7e1a-43c4-9462-e9e7486815ab": {
+          "type": "text",
+          "settings": {
+            "logo": "{{ shop.brand.logo }}",
+            "logo_width": 120,
+            "heading": "",
+            "subtext": "<p>Share contact information, store details, and brand content with your customers.</p>"
+          }
+        },
+        "f7aa5aba-76ea-49b1-b837-fabf560d9700": {
+          "type": "link_list",
+          "settings": {
+            "heading": "Information",
+            "menu": "information"
+          }
+        },
+        "23251214-e14a-45d0-b198-6818059f4107": {
+          "type": "link_list",
+          "settings": {
+            "heading": "Support",
+            "menu": "hj-lp-og-kontakt"
+          }
+        }
+      },
+      "block_order": [
+        "6685cd43-7e1a-43c4-9462-e9e7486815ab",
+        "f7aa5aba-76ea-49b1-b837-fabf560d9700",
+        "23251214-e14a-45d0-b198-6818059f4107"
+      ],
+      "settings": {
+        "show_social_media": true,
+        "show_payment_methods": true,
+        "show_delivery_methods": true,
+        "color_scheme": "background-1"
+      }
+    }
+  },
+  "order": ["footer"]
+}

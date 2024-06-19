@@ -1,0 +1,23 @@
+name: Linter
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  run_linter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v2
+
+      - name: Yarn install
+        run: yarn install
+
+      - name: Lint Javascript
+        run: yarn lint:js
+
+      - name: Lint TypeScript
+        run: yarn lint:tsc
+
+      - name: Lint CSS
+        run: yarn lint:css

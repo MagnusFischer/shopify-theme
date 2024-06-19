@@ -1,0 +1,29 @@
+@layer components {
+  .article {
+    &__info {
+      @apply mb-4 flex flex-wrap text-sm text-accent-1;
+
+      li:first-child {
+        @apply max-md:flex-[100%_0_0];
+      }
+
+      li:not(:first-child, :last-child)::after {
+        @apply mx-2 inline-block content-['|'];
+      }
+
+      @screen md {
+        li:not(:last-child)::after {
+          @apply mx-2 inline-block content-['|'];
+        }
+      }
+    }
+
+    &__tags {
+      @apply text-accent-1;
+
+      a:hover {
+        @apply underline;
+      }
+    }
+  }
+}

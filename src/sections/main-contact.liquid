@@ -1,0 +1,619 @@
+{%- capture height -%}
+  {%- if settings.block_border_radius > 0 -%}
+    lg:min-h-[calc(100vh-var(--navigation-height)-var(--announcement-bar-height)-1.5rem)] lg:m-3
+  {%- else -%}
+    lg:min-h-[calc(100vh-var(--navigation-height)-var(--announcement-bar-height))]
+  {%- endif -%}
+{%- endcapture -%}
+
+<section class="grid px-3 py-3 lg:grid-cols-2 lg:p-0 {{ height }} bg-primary-bg text-primary-text color-scheme__{{ section.settings.color_scheme }} ">
+  {%- capture sizes -%}
+    (min-width: 1024px) calc(100vw / 2),
+    100vw
+    {%- endcapture -%}
+  <div class="aspect h-full w-full max-lg:aspect-w-1 max-lg:aspect-h-1">
+    {% if section.settings.image != blank %}
+      {{
+        section.settings.image
+        | image_url: width: section.settings.image.width
+        | image_tag:
+          loading: 'lazy',
+          sizes: sizes,
+          widths: '300, 330, 410, 490, 570, 650, 730, 810, 890, 970, 1050, 1200, 1500, 2000',
+          class: 'object-cover rounded bg-secondary-bg'
+      }}
+    {% else %}
+      {{ 'hero-apparel-2' | placeholder_svg_tag: 'placeholder-svg placeholder rounded' }}
+    {% endif %}
+  </div>
+
+  <div class="mt-6 flex items-center justify-center">
+    <div class="w-full max-w-xl lg:px-6">
+      <h1>{{ section.settings.title }}</h1>
+      <div class="rte mb-6">{{ section.settings.text }}</div>
+      <ul class="flex flex-col gap-3">
+        {% for block in section.blocks %}
+          {% assign this = block.settings %}
+
+          {% case block.type %}
+            {% when 'option' %}
+              <li>
+                <a
+                  class="flex items-center justify-between gap-4 rounded bg-secondary-button-bg px-4 py-3 text-secondary-button-text transition-colors duration-200 ease-in-out hover:bg-secondary-button-bg-hover"
+                  href="{{ this.url }}"
+                >
+                  <span class="block h-6 w-6 flex-shrink-0">
+                    {% render 'customizer-icons', icon: this.icon %}
+                  </span>
+
+                  <div class="w-full">
+                    <p class="font-semibold">{{ this.title }}</p>
+                    <p class="text-sm">{{ this.text }}</p>
+                  </div>
+
+                  <span class="block h-6 w-6 flex-shrink-0">
+                    {% render 'icons', icon: 'chevron-right' %}
+                  </span>
+                </a>
+              </li>
+
+            {% when 'contact' %}
+              <li data-component="contact-popup">
+                <button
+                  class="flex w-full items-center justify-between gap-4 rounded bg-secondary-button-bg px-4 py-3 text-left text-secondary-button-text transition-colors duration-200 ease-in-out hover:bg-secondary-button-bg-hover"
+                  data-open
+                >
+                  <span class="block h-6 w-6 flex-shrink-0">
+                    {% render 'icons', icon: 'mail' %}
+                  </span>
+
+                  <div class="w-full">
+                    <p class="font-semibold">{{ this.title }}</p>
+                    <p class="text-sm">{{ this.text }}</p>
+                  </div>
+
+                  <span class="block h-6 w-6 flex-shrink-0">
+                    {% render 'icons', icon: 'chevron-right' %}
+                  </span>
+                </button>
+
+                <div class="modal w-full max-w-[500px] bg-transparent px-3" data-status hidden>
+                  <div
+                    class="relative flex h-full w-full flex-col overflow-hidden rounded bg-primary-bg text-primary-text"
+                  >
+                    <div class="flex items-center justify-between">
+                      <h2 class="h5 mb-0 pl-4 font-bold lg:pl-6">
+                        {{ 'sections.contact_form.success_heading_text' | t }}
+                      </h2>
+                      <button type="button" class="flex items-center p-4 text-sm lg:p-6" data-close>
+                        {{ 'general.navigation.close_button_label' | t }}
+                        <span class="block h-6 w-6">
+                          {% render 'icons', icon: 'xmark' %}
+                        </span>
+                      </button>
+                    </div>
+
+                    <div class="px-4 pb-4 lg:px-6">
+                      <p>{{ 'sections.contact_form.success_text' | t }}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="modal w-full max-w-[800px] bg-transparent px-3" data-modal hidden>
+                  <div
+                    class="relative flex h-full w-full flex-col overflow-hidden rounded bg-primary-bg text-primary-text"
+                  >
+                    <div class="flex items-center justify-between">
+                      <h2 class="h5 mb-0 pl-4 font-bold lg:pl-6">
+                        {{ 'sections.contact_form.heading_text' | t }}
+                      </h2>
+                      <button type="button" class="flex items-center p-4 text-sm lg:p-6" data-close>
+                        {{ 'general.navigation.close_button_label' | t }}
+                        <span class="block h-6 w-6">
+                          {% render 'icons', icon: 'xmark' %}
+                        </span>
+                      </button>
+                    </div>
+
+                    {%- form 'contact',
+                      id: 'ContactForm',
+                      class: 'grid px-4 lg:px-6 gap-4 pb-4 lg:pb-6'
+                    -%}
+                      <div class="grid gap-4 lg:grid-cols-2">
+                        <div class="form__input">
+                          <input
+                            id="ContactForm-name--{{ block.id }}"
+                            class="form__input--text h-full"
+                            type="text"
+                            name="contact[{{ 'sections.contact_form.first_name_label' | t }}]"
+                            value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
+                            autocomplete="name"
+                            placeholder=" "
+                            required
+                          >
+                          <div class="form__input--text--hover"></div>
+                          <label
+                            class="form__input--label"
+                            for="ContactForm-name--{{ block.id }}"
+                          >
+                            {{ 'sections.contact_form.first_name_label' | t }}
+                          </label>
+                        </div>
+
+                        <div class="form__input">
+                          <input
+                            id="ContactForm-email--{{ block.id }}"
+                            class="form__input--text h-full"
+                            type="email"
+                            name="contact[email]"
+                            spellcheck="false"
+                            autocapitalize="off"
+                            value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+                            autocomplete="on"
+                            placeholder=" "
+                            required
+                          >
+                          <div class="form__input--text--hover"></div>
+                          <label
+                            class="form__input--label"
+                            for="ContactForm-email--{{ block.id }}"
+                          >
+                            {{ 'sections.contact_form.email_label' | t }}
+                          </label>
+                        </div>
+                      </div>
+
+                      <div class="form__input">
+                        <input
+                          id="ContactForm-phone--{{ block.id }}"
+                          class="form__input--text h-full"
+                          type="tel"
+                          name="contact[tel]"
+                          value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
+                          autocomplete="tel"
+                          pattern="[0-9\-]*"
+                          placeholder=" "
+                        >
+                        <div class="form__input--text--hover"></div>
+                        <label
+                          class="form__input--label"
+                          for="ContactForm-phone--{{ block.id }}"
+                        >
+                          {{ 'sections.contact_form.phone_label' | t }} (
+                          {{- 'sections.contact_form.optional_text' | t -}}
+                          )
+                        </label>
+                      </div>
+
+                      <div class="form__input form__input--padding">
+                        <textarea
+                          rows="8"
+                          id="ContactForm-body--{{ block.id }}"
+                          class="form__input--textarea h-full resize-none"
+                          name="contact[message]"
+                          placeholder=" "
+                          required
+                          data-scrollable
+                        >
+                          {{- form.body -}}
+                        </textarea>
+
+                        <div class="form__input--text--hover"></div>
+                        <label
+                          class="form__input--textarea--label z-20"
+                          for="ContactForm-body--{{ block.id }}"
+                        >
+                          {{ 'sections.contact_form.message_label' | t }}
+                        </label>
+                      </div>
+
+                      <button type="submit" class="button button--primary w-full">
+                        <span>{{ 'sections.contact_form.submit_button_label' | t }}</span>
+                      </button>
+                    {%- endform -%}
+                  </div>
+                </div>
+              </li>
+          {% endcase %}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Contact Page",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Contact us"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Need help with your order or do you have any questions? We're ready to help.</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Option",
+      "type": "option",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "star",
+              "label": "Star"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "heart",
+              "label": "Heart"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "gift",
+              "label": "Gift"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "trophy",
+              "label": "Trophy"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "cart",
+              "label": "Cart"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "bag",
+              "label": "Bag"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "basket",
+              "label": "Basket"
+            },
+            {
+              "group": "Communication",
+              "value": "mail",
+              "label": "Mail"
+            },
+            {
+              "group": "Communication",
+              "value": "phone",
+              "label": "Phone"
+            },
+            {
+              "group": "Communication",
+              "value": "send",
+              "label": "Send"
+            },
+            {
+              "group": "Communication",
+              "value": "party",
+              "label": "Party"
+            },
+            {
+              "group": "Communication",
+              "value": "circle-exclamation",
+              "label": "Circle-exclamation"
+            },
+            {
+              "group": "Communication",
+              "value": "circle-question",
+              "label": "Circle-question"
+            },
+            {
+              "group": "Communication",
+              "value": "circle-info",
+              "label": "Circle-info"
+            },
+            {
+              "group": "Communication",
+              "value": "message-chat",
+              "label": "Message-chat"
+            },
+            {
+              "group": "Communication",
+              "value": "message-heart",
+              "label": "Message-heart"
+            },
+            {
+              "group": "Communication",
+              "value": "message-lines",
+              "label": "Message-lines"
+            },
+            {
+              "group": "Communication",
+              "value": "message-info",
+              "label": "Message-info"
+            },
+            {
+              "group": "Communication",
+              "value": "message-exclamation",
+              "label": "Message-exclamation"
+            },
+            {
+              "group": "Arrows",
+              "value": "rotate",
+              "label": "Rotate"
+            },
+            {
+              "group": "Arrows",
+              "value": "infinity",
+              "label": "Infinity"
+            },
+            {
+              "group": "Arrows",
+              "value": "loop",
+              "label": "Loop"
+            },
+            {
+              "group": "Arrows",
+              "value": "refresh",
+              "label": "Refresh"
+            },
+            {
+              "group": "Arrows",
+              "value": "repeat",
+              "label": "Repeat"
+            },
+            {
+              "group": "Arrows",
+              "value": "shuffle",
+              "label": "Shuffle"
+            },
+            {
+              "group": "Devices",
+              "value": "camera",
+              "label": "Camera"
+            },
+            {
+              "group": "Devices",
+              "value": "headphones",
+              "label": "Headphones"
+            },
+            {
+              "group": "Devices",
+              "value": "keyboard",
+              "label": "Keyboard"
+            },
+            {
+              "group": "Devices",
+              "value": "microphone",
+              "label": "Microphone"
+            },
+            {
+              "group": "Devices",
+              "value": "laptop",
+              "label": "Laptop"
+            },
+            {
+              "group": "Devices",
+              "value": "mobile",
+              "label": "Mobile"
+            },
+            {
+              "group": "Devices",
+              "value": "tablet",
+              "label": "Tablet"
+            },
+            {
+              "group": "Devices",
+              "value": "tv",
+              "label": "Tv"
+            },
+            {
+              "group": "Devices",
+              "value": "watch",
+              "label": "Watch"
+            },
+            {
+              "group": "Automotive",
+              "value": "truck",
+              "label": "Truck"
+            },
+            {
+              "group": "Automotive",
+              "value": "car",
+              "label": "Car"
+            },
+            {
+              "group": "Automotive",
+              "value": "motorcycle",
+              "label": "Motorcycle"
+            },
+            {
+              "group": "Automotive",
+              "value": "rocket",
+              "label": "Rocket"
+            },
+            {
+              "group": "Automotive",
+              "value": "engine",
+              "label": "Engine"
+            },
+            {
+              "group": "Automotive",
+              "value": "gauge",
+              "label": "Gauge"
+            },
+            {
+              "group": "Buildings",
+              "value": "house",
+              "label": "House"
+            },
+            {
+              "group": "Buildings",
+              "value": "hotel",
+              "label": "Hotel"
+            },
+            {
+              "group": "Buildings",
+              "value": "shop",
+              "label": "Shop"
+            },
+            {
+              "group": "Buildings",
+              "value": "city",
+              "label": "City"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud",
+              "label": "Cloud"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud-rain",
+              "label": "Cloud-rain"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud-sun",
+              "label": "Cloud-sun"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud-thunder",
+              "label": "Cloud-thunder"
+            },
+            {
+              "group": "Weather",
+              "value": "umbrella",
+              "label": "Umbrella"
+            },
+            {
+              "group": "Weather",
+              "value": "water",
+              "label": "Water"
+            },
+            {
+              "group": "Weather",
+              "value": "snow",
+              "label": "Snow"
+            },
+            {
+              "group": "Weather",
+              "value": "droplet",
+              "label": "Droplet"
+            },
+            {
+              "group": "Halloween",
+              "value": "bat",
+              "label": "Bat"
+            },
+            {
+              "group": "Halloween",
+              "value": "ghost",
+              "label": "Ghost"
+            },
+            {
+              "group": "Halloween",
+              "value": "spider",
+              "label": "Spider"
+            },
+            {
+              "group": "Halloween",
+              "value": "bones",
+              "label": "Bones"
+            },
+            {
+              "group": "Halloween",
+              "value": "jack-o-lantern",
+              "label": "Jack-o-lantern"
+            },
+            {
+              "group": "Holidays",
+              "value": "tree-decorated",
+              "label": "Tree-decorated"
+            },
+            {
+              "group": "Holidays",
+              "value": "cookie-man",
+              "label": "Cookie-man"
+            },
+            {
+              "group": "Holidays",
+              "value": "snowman",
+              "label": "Snowman"
+            },
+            {
+              "group": "Holidays",
+              "value": "stocking",
+              "label": "Stocking"
+            },
+            {
+              "group": "Holidays",
+              "value": "angel",
+              "label": "Angel"
+            },
+            {
+              "group": "Holidays",
+              "value": "snowflake",
+              "label": "Snowflake"
+            }
+          ],
+          "default": "none"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text"
+        },
+        {
+          "type": "url",
+          "id": "url",
+          "label": "Url"
+        }
+      ]
+    },
+    {
+      "name": "Contact form",
+      "type": "contact",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

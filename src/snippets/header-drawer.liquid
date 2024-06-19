@@ -1,0 +1,79 @@
+{%- capture logo_content -%}
+{%- if section.settings.logo -%}
+  {%- assign logo_alt = section.settings.logo.alt | default: shop.name | escape -%}
+  {%- capture sizes -%}{{ section.settings.logo_width }}px{%- endcapture -%}
+  {%- capture widths -%}{{ section.settings.logo_width }}{%- endcapture -%}
+  {{- section.settings.logo 
+    | image_url: width: section.settings.logo.width 
+    | image_tag: sizes: sizes, widths: widths, class: 'header__logo--image', alt: logo_alt
+  -}}
+{%- else -%}
+  <span>{{ shop.name }}</span>
+{%- endif -%}
+{%- endcapture -%}
+
+<div
+  class="drawer drawer--left flex w-full flex-col bg-accent-1-bg text-secondary-text"
+  data-load-target="navigation-drawer"
+  data-component="navigation-drawer"
+  data-drawer="navigation-drawer"
+  hidden
+>
+  <div class="flex justify-between">
+    <div class="m-6 h-6 w-6"></div>
+    <a class="header__navigation--logo flex h-full items-center" href="{{ routes.root_url }}">
+      {{ logo_content }}
+    </a>
+    <button class="flex items-center py-6 px-4 text-sm" data-close>
+      <span class="block h-6 w-6">
+        {% render 'icons', icon: 'xmark' %}
+      </span>
+    </button>
+  </div>
+
+  {% render 'mobile-search' %}
+
+  <div class="h-full overflow-hidden">
+    <div class="flex h-full flex-col gap-12 overflow-y-auto px-4 py-6" data-scrollable>
+      {% render 'mobile-navigation', links: section.settings.navigation_mobile %}
+
+      {% if section.settings.navigation_secondary != blank %}
+        <div class="pl-2">
+          {% if section.settings.navigation_secondary_title != blank %}
+            <h2 class="mb-2 text-xs">
+              {{ section.settings.navigation_secondary_title }}
+            </h2>
+          {% endif %}
+          <ul class="flex flex-col gap-1.5">
+            {% for linkItem in section.settings.navigation_secondary.links %}
+              <li>
+                <a
+                  class="block whitespace-nowrap"
+                  href="{{ linkItem.url }}"
+                >
+                  {{ linkItem.title }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  {%- liquid
+    for linkItem in section.settings.navigation_mobile.links
+      assign index1 = forloop.index
+
+      if linkItem.levels > 0
+        render 'mobile-submenu', links: linkItem, index: index1, section: section
+      endif
+
+      for linkChild in linkItem.links
+        if linkChild.levels > 0
+          render 'mobile-submenu', links: linkChild, index: index1, index2: forloop.index, section: section, parentLink: linkItem
+        endif
+      endfor
+    endfor
+  -%}
+</div>

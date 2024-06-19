@@ -1,0 +1,22 @@
+@layer components {
+  .video {
+    &.fullscreen {
+      video {
+        @apply h-full w-full object-cover;
+      }
+
+      svg {
+        @apply h-full w-full object-cover;
+      }
+    }
+
+    &--cover {
+      @apply relative h-full;
+
+      .placeholder,
+      video {
+        @apply absolute top-0 left-0 h-full w-full object-cover;
+      }
+    }
+  }
+}

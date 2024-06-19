@@ -1,0 +1,148 @@
+{% assign activeCollectionFilters = 0 %}
+
+{% for filter in results.filters %}
+  {% assign activeCollectionFilters = activeCollectionFilters | plus: filter.active_values.size %}
+{% endfor %}
+
+<form
+  class="sticky top-[var(--sticky-offset,0px)] z-20 flex flex-col gap-3 bg-primary-bg py-4"
+  data-component="filter"
+>
+  {%- if results.terms -%}
+    <input type="hidden" name="q" value="{{ results.terms | escape }}">
+  {%- endif -%}
+
+  <div class="flex items-start justify-between gap-3">
+    <ul class="flex flex-wrap items-center gap-3">
+      {% for filter in results.filters limit: 4 %}
+        <li
+          class="relative hidden lg:block"
+          data-filter-category="{{ filter.param_name }}-{{ forloop.index }}-desktop"
+          data-filter-menu
+        >
+          <button
+            class="filters__menu--toggle"
+            type="button"
+            data-toggle="false"
+          >
+            <span
+              class="accent flex h-4 items-center justify-center rounded-[2px] bg-accent-button-bg-hover px-1 text-[10px]"
+              data-count
+              {% if filter.active_values == null or filter.active_values.size == 0 %}
+                hidden
+              {% endif %}
+            >
+              {{ filter.active_values.size }}
+            </span>
+
+            <span>{{ filter.label }}</span>
+            <span class="filters__menu--toggle--icon block h-4 w-4">
+              {% render 'icons', icon: 'chevron-down' %}
+            </span>
+          </button>
+
+          <div
+            class="filters__menu absolute bottom-0 translate-y-full pt-2"
+            data-menu
+          >
+            <div class="min-w-[300px] rounded bg-primary-bg p-4 shadow">
+              {% render 'filter-option-list', filter: filter %}
+            </div>
+          </div>
+        </li>
+      {% endfor %}
+
+      <li class="block {% if results.filters.size <= 4 %}lg:hidden{% endif %}">
+        <button
+          class="filters__menu--toggle"
+          data-open="filter"
+          type="button"
+        >
+          <span
+            class="accent flex h-4 items-center justify-center rounded-[2px] bg-accent-button-bg-hover px-1 text-[10px]"
+            data-filter-total
+            {% if activeCollectionFilters == 0 %}
+              hidden
+            {% endif %}
+          >
+            {{ activeCollectionFilters }}
+          </span>
+          <span class="block lg:hidden">
+            {{ 'collection.filter.filter_button_label' | t }}
+          </span>
+          <span class="hidden lg:block">
+            {{- 'collection.filter.all_filters_button_label' | t -}}
+          </span>
+          <span class="filters__menu--toggle--icon block h-4 w-4">
+            {% render 'icons', icon: 'sliders' %}
+          </span>
+        </button>
+      </li>
+    </ul>
+
+    <ul class="flex items-center gap-3">
+      <li>
+        <span
+          class="whitespace-nowrap"
+        >
+          {% capture product_count %}
+            <span data-total-results>
+              {%- if results.products_count %}
+                {{ results.products_count }}
+              {% else %}
+                {{ results.results_count }}
+              {% endif -%}
+            </span>
+          {% endcapture %}
+          {{ 'collection.filter.product_count_label_html' | t: count: product_count }}
+        </span>
+      </li>
+
+      <li class="relative" data-filter-menu>
+        <button
+          class="filters__menu--toggle"
+          type="button"
+          data-toggle="false"
+        >
+          <span class="whitespace-nowrap">
+            {{ 'collection.filter.sort_by_button_label' | t }}
+          </span>
+          <span class="filters__menu--toggle--icon block h-4 w-4">
+            {% render 'icons', icon: 'chevron-down' %}
+          </span>
+        </button>
+
+        <div
+          class="filters__menu absolute bottom-0 right-0 translate-y-full pt-2"
+          data-menu
+        >
+          <div class="min-w-[300px] rounded bg-primary-bg p-4 shadow">
+            <ul class="flex flex-col gap-2">
+              {% assign sort_by = results.sort_by | default: results.default_sort_by %}
+              {% for option in results.sort_options %}
+                <li>
+                  <label class="filters__sort--item">
+                    <input
+                      type="radio"
+                      name="sort_by"
+                      value="{{ option.value }}"
+                      hidden
+                      {% if option.value == sort_by %}
+                        checked="checked"
+                      {% endif %}
+                    >
+                    <span>{{ option.name }}</span>
+                  </label>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  {% render 'filter-active-list', results: results %}
+</form>
+
+{% render 'filter-drawer', results: results %}

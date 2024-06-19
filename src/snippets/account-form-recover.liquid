@@ -1,0 +1,63 @@
+{% assign block = section.blocks | where: 'type', 'recover' | first %}
+
+{%- form 'recover_customer_password',
+  novalidate: 'novalidate',
+  class: 'account__forms--container',
+  id: 'recover'
+-%}
+  {% assign recover_success = form.posted_successfully? %}
+
+  <div class="mb-6" {{ block.shopify_attributes }}>
+    <h1>{{ block.settings.title }}</h1>
+
+    <div class="rte max-w-md">
+      {{ block.settings.content }}
+    </div>
+  </div>
+
+  {%- if form.errors -%}
+    <div>
+      {{ form.errors | default_errors }}
+    </div>
+  {%- endif -%}
+
+  <div class="form__input">
+    <input
+      id="recover-email"
+      class="form__input--text"
+      type="email"
+      name="email"
+      autocomplete="email"
+      autocorrect="off"
+      autocapitalize="off"
+      placeholder=" "
+    >
+    <div class="form__input--text--hover"></div>
+    <label
+      class="form__input--label"
+      for="recover-email"
+    >
+      {{ 'account.fields.email' | t }}
+    </label>
+  </div>
+
+  <div class="flex flex-col gap-3 lg:flex-row">
+    <button type="submit" class="button button--primary w-full">
+      <span>{{ 'account.form.reset_password_submit_label' | t }}</span>
+    </button>
+    <a
+      class="button button--secondary w-full text-center"
+      href="#login"
+    >
+      <span>{{ 'account.form.cancel_button_label' | t }}</span>
+    </a>
+  </div>
+{%- endform -%}
+
+{%- if recover_success == true -%}
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      document.dispatchEvent(new Event(customer:recover:success));
+    })
+  </script>
+{%- endif -%}

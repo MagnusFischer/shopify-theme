@@ -1,0 +1,460 @@
+<div class="section bg-primary-bg color-scheme__{{ section.settings.color_scheme }} ">
+  <section class="grid text-primary-text lg:grid-cols-[1fr_2fr]">
+    <div>
+      <div class="aspect-w-1 aspect-h-1">
+        {% if section.settings.image != blank %}
+          {%- capture sizes -%}
+        (min-width: 1024px) calc(100vw * 0.33),
+        100vw
+        {%- endcapture -%}
+          {{
+            section.settings.image
+            | image_url: width: section.settings.image.width
+            | image_tag:
+              loading: 'lazy',
+              sizes: sizes,
+              widths: '30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 410, 490, 570, 650, 730, 810, 890, 970, 1050',
+              class: 'object-cover rounded bg-secondary-bg'
+          }}
+        {% else %}
+          {{ 'hero-apparel-1' | placeholder_svg_tag: 'placeholder-svg rounded' }}
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="flex h-full w-full items-center justify-center py-4 lg:px-4">
+      <div class="grid h-fit gap-4 lg:grid-cols-2">
+        {% for block in section.blocks %}
+          {% assign this = block.settings %}
+          {% if this.title != blank and this.description != blank %}
+            <div class="py-4 px-6">
+              {% if this.custom_icon != blank %}
+                {% capture widths %}{{ this.icon_size }}{% endcapture %}
+                {% assign sizes = this.icon_size | append: 'px' %}
+                {% capture styles %}height:{{ this.icon_size }}px; margin-bottom:{{ this.icon_size | divided_by: 3 }}px;{% endcapture %}
+                {{-
+                  this.custom_icon
+                  | image_url: width: this.icon_size
+                  | image_tag: sizes: sizes, widths: widths, style: styles
+                -}}
+              {% else %}
+                {% unless this.icon == 'none' %}
+                  <span
+                    class="block"
+                    style="width:{{ this.icon_size }}px; height: {{ this.icon_size }}px; margin-bottom:{{ this.icon_size | divided_by: 3 }}px;"
+                  >
+                    {% render 'customizer-icons', icon: this.icon %}
+                  </span>
+                {% endunless %}
+              {% endif %}
+              <h3 class="mt-0">{{ this.title }}</h3>
+              <div class="rte">
+                {{ this.description }}
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+</div>
+{% schema %}
+{
+  "name": "Feature list",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "feature",
+      "type": "feature",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "star",
+              "label": "Star"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "heart",
+              "label": "Heart"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "gift",
+              "label": "Gift"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "trophy",
+              "label": "Trophy"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "cart",
+              "label": "Cart"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "bag",
+              "label": "Bag"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "basket",
+              "label": "Basket"
+            },
+            {
+              "group": "Communication",
+              "value": "mail",
+              "label": "Mail"
+            },
+            {
+              "group": "Communication",
+              "value": "phone",
+              "label": "Phone"
+            },
+            {
+              "group": "Communication",
+              "value": "send",
+              "label": "Send"
+            },
+            {
+              "group": "Communication",
+              "value": "party",
+              "label": "Party"
+            },
+            {
+              "group": "Communication",
+              "value": "circle-exclamation",
+              "label": "Circle-exclamation"
+            },
+            {
+              "group": "Communication",
+              "value": "circle-question",
+              "label": "Circle-question"
+            },
+            {
+              "group": "Communication",
+              "value": "circle-info",
+              "label": "Circle-info"
+            },
+            {
+              "group": "Communication",
+              "value": "message-chat",
+              "label": "Message-chat"
+            },
+            {
+              "group": "Communication",
+              "value": "message-heart",
+              "label": "Message-heart"
+            },
+            {
+              "group": "Communication",
+              "value": "message-lines",
+              "label": "Message-lines"
+            },
+            {
+              "group": "Communication",
+              "value": "message-info",
+              "label": "Message-info"
+            },
+            {
+              "group": "Communication",
+              "value": "message-exclamation",
+              "label": "Message-exclamation"
+            },
+            {
+              "group": "Arrows",
+              "value": "rotate",
+              "label": "Rotate"
+            },
+            {
+              "group": "Arrows",
+              "value": "infinity",
+              "label": "Infinity"
+            },
+            {
+              "group": "Arrows",
+              "value": "loop",
+              "label": "Loop"
+            },
+            {
+              "group": "Arrows",
+              "value": "refresh",
+              "label": "Refresh"
+            },
+            {
+              "group": "Arrows",
+              "value": "repeat",
+              "label": "Repeat"
+            },
+            {
+              "group": "Arrows",
+              "value": "shuffle",
+              "label": "Shuffle"
+            },
+            {
+              "group": "Devices",
+              "value": "camera",
+              "label": "Camera"
+            },
+            {
+              "group": "Devices",
+              "value": "headphones",
+              "label": "Headphones"
+            },
+            {
+              "group": "Devices",
+              "value": "keyboard",
+              "label": "Keyboard"
+            },
+            {
+              "group": "Devices",
+              "value": "microphone",
+              "label": "Microphone"
+            },
+            {
+              "group": "Devices",
+              "value": "laptop",
+              "label": "Laptop"
+            },
+            {
+              "group": "Devices",
+              "value": "mobile",
+              "label": "Mobile"
+            },
+            {
+              "group": "Devices",
+              "value": "tablet",
+              "label": "Tablet"
+            },
+            {
+              "group": "Devices",
+              "value": "tv",
+              "label": "Tv"
+            },
+            {
+              "group": "Devices",
+              "value": "watch",
+              "label": "Watch"
+            },
+            {
+              "group": "Automotive",
+              "value": "truck",
+              "label": "Truck"
+            },
+            {
+              "group": "Automotive",
+              "value": "car",
+              "label": "Car"
+            },
+            {
+              "group": "Automotive",
+              "value": "motorcycle",
+              "label": "Motorcycle"
+            },
+            {
+              "group": "Automotive",
+              "value": "rocket",
+              "label": "Rocket"
+            },
+            {
+              "group": "Automotive",
+              "value": "engine",
+              "label": "Engine"
+            },
+            {
+              "group": "Automotive",
+              "value": "gauge",
+              "label": "Gauge"
+            },
+            {
+              "group": "Buildings",
+              "value": "house",
+              "label": "House"
+            },
+            {
+              "group": "Buildings",
+              "value": "hotel",
+              "label": "Hotel"
+            },
+            {
+              "group": "Buildings",
+              "value": "shop",
+              "label": "Shop"
+            },
+            {
+              "group": "Buildings",
+              "value": "city",
+              "label": "City"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud",
+              "label": "Cloud"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud-rain",
+              "label": "Cloud-rain"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud-sun",
+              "label": "Cloud-sun"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud-thunder",
+              "label": "Cloud-thunder"
+            },
+            {
+              "group": "Weather",
+              "value": "umbrella",
+              "label": "Umbrella"
+            },
+            {
+              "group": "Weather",
+              "value": "water",
+              "label": "Water"
+            },
+            {
+              "group": "Weather",
+              "value": "snow",
+              "label": "Snow"
+            },
+            {
+              "group": "Weather",
+              "value": "droplet",
+              "label": "Droplet"
+            },
+            {
+              "group": "Halloween",
+              "value": "bat",
+              "label": "Bat"
+            },
+            {
+              "group": "Halloween",
+              "value": "ghost",
+              "label": "Ghost"
+            },
+            {
+              "group": "Halloween",
+              "value": "spider",
+              "label": "Spider"
+            },
+            {
+              "group": "Halloween",
+              "value": "bones",
+              "label": "Bones"
+            },
+            {
+              "group": "Halloween",
+              "value": "jack-o-lantern",
+              "label": "Jack-o-lantern"
+            },
+            {
+              "group": "Holidays",
+              "value": "tree-decorated",
+              "label": "Tree-decorated"
+            },
+            {
+              "group": "Holidays",
+              "value": "cookie-man",
+              "label": "Cookie-man"
+            },
+            {
+              "group": "Holidays",
+              "value": "snowman",
+              "label": "Snowman"
+            },
+            {
+              "group": "Holidays",
+              "value": "stocking",
+              "label": "Stocking"
+            },
+            {
+              "group": "Holidays",
+              "value": "angel",
+              "label": "Angel"
+            },
+            {
+              "group": "Holidays",
+              "value": "snowflake",
+              "label": "Snowflake"
+            }
+          ],
+          "default": "none"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "Custom icon"
+        },
+        {
+          "type": "range",
+          "id": "icon_size",
+          "min": 24,
+          "max": 120,
+          "step": 12,
+          "unit": "px",
+          "label": "Icon size",
+          "default": 24
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "title",
+          "default": "Feature"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Feature description",
+          "default": "<p>Write some cool features about the product here, so customers can get a feel for what they are buying.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Feature list",
+      "settings": {},
+      "blocks": [
+        {
+          "type": "feature"
+        },
+        {
+          "type": "feature"
+        },
+        {
+          "type": "feature"
+        },
+        {
+          "type": "feature"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

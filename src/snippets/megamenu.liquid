@@ -1,0 +1,89 @@
+{%- capture layout -%}
+  {%- case block.settings.layout -%}
+    {%- when 'tab' -%}
+      megamenu--tab
+    {%- when 'card' -%}
+      megamenu--card
+  {%- endcase -%}
+{%- endcapture -%}
+
+{%- capture grid_items -%}
+  {% for i in (1..4) %}
+    {%- liquid 
+      assign grid_custom_icon_setting = 'grid-' | append: i | append: '-custom-icon'
+      assign grid_icon_setting = 'grid-' | append: i | append: '-icon'
+      assign grid_background_color_setting = 'grid-' | append: i | append: '-background-color'
+      assign grid_icon_color_setting = 'grid-' | append: i | append: '-icon-color'
+      assign grid_heading_setting = 'grid-' | append: i | append: '-heading'
+      assign grid_link_setting = 'grid-' | append: i | append: '-url'
+  
+      assign grid_custom_icon = block.settings[grid_custom_icon_setting]
+      assign grid_icon = block.settings[grid_icon_setting]
+      assign grid_background_color = block.settings[grid_background_color_setting]
+      assign grid_icon_color = block.settings[grid_icon_color_setting]
+      assign grid_heading = block.settings[grid_heading_setting]
+      assign grid_link = block.settings[grid_link_setting]
+    -%}
+
+    {% if grid_link != blank %}
+      <a class="megamenu__grid--item" href="{{ grid_link }}">
+
+        {%- capture colors -%}
+          --background-color: {{ grid_background_color.hue }},{{ grid_background_color.saturation }}%,{{ grid_background_color.lightness }}%;
+          --background-color-hover: {{ grid_background_color.hue }},{{ grid_background_color.saturation }}%,{{ grid_background_color.lightness | times: 0.9 }}%;
+        {%- endcapture -%}
+
+        {% if grid_custom_icon != blank %}
+          <div class="megamenu__grid--icon" style="{{ colors }}">
+            {{-
+              grid_custom_icon
+              | image_url: width: '48'
+              | image_tag: sizes: '48px', widths: '48', class: 'object-contain'
+            -}}
+          </div>
+        {% else %}
+          {% if grid_icon != 'none' %}
+            <div class="megamenu__grid--icon" style="{{ colors }}">
+              <span class="block h-12 w-12" style="color: {{ grid_icon_color }} ;">
+                {% render 'customizer-icons', icon: grid_icon %}
+              </span>
+            </div>
+          {% endif %}
+        {% endif %}
+
+        {% if grid_heading != blank %}
+          <p class="mt-2">{{ grid_heading }}</p>
+        {% endif %}
+      </a>
+    {% endif %}
+  {% endfor %}
+{%- endcapture -%}
+
+<div class="megamenu {{ layout }}" data-component="mega-menu">
+  <div class="block-container">
+    <div class="megamenu__container">
+      <ul class="flex flex-wrap gap-24">
+        {% for links in link.links %}
+          <li>
+            <a href="{{ links.url }}" class="h5 block font-bold">{{ links.title }}</a>
+            <ul>
+              {% for link_child in links.links %}
+                <li>
+                  <a href="{{ link_child.url }}" class="block hover:underline">
+                    {{ link_child.title }}
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          </li>
+        {% endfor %}
+      </ul>
+
+      {% if grid_items != blank %}
+        <div class="grid grid-cols-2 gap-9">
+          {{ grid_items }}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>

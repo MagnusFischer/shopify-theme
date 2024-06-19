@@ -1,0 +1,142 @@
+{%- capture social_icons -%}
+  {%- if settings.social_facebook_link != blank -%}
+    <li>
+      <a
+        class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-button-bg"
+        href="{{ settings.social_facebook_link }}"
+        aria-label="{{ 'accessibility.social_media.facebook' | t }}"
+        target="_blank"
+      >
+        <span class="block h-4 w-4 text-primary-button-text">
+          {% render 'icons', icon: 'facebook' %}
+        </span>
+      </a>
+    </li>
+  {%- endif -%}
+
+  {%- if settings.social_instagram_link != blank -%}
+    <li>
+      <a
+        class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-button-bg"
+        href="{{ settings.social_instagram_link }}"
+        aria-label="{{ 'accessibility.social_media.instagram' | t }}"
+        target="_blank"
+      >
+        <span class="block h-4 w-4 text-primary-button-text">
+          {% render 'icons', icon: 'instagram' %}
+        </span>
+      </a>
+    </li>
+  {%- endif -%}
+
+  {%- if settings.social_snapchat_link != blank -%}
+    <li>
+      <a
+        class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-button-bg"
+        href="{{ settings.social_snapchat_link }}"
+        aria-label="{{ 'accessibility.social_media.snapchat' | t }}"
+        target="_blank"
+      >
+        <span class="block h-4 w-4 text-primary-button-text">
+          {% render 'icons', icon: 'snapchat' %}
+        </span>
+      </a>
+    </li>
+  {%- endif -%}
+
+  {%- if settings.social_tiktok_link != blank -%}
+    <li>
+      <a
+        class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-button-bg"
+        href="{{ settings.social_tiktok_link }}"
+        aria-label="{{ 'accessibility.social_media.tiktok' | t }}"
+        target="_blank"
+      >
+        <span class="block h-4 w-4 text-primary-button-text">
+          {% render 'icons', icon: 'tiktok' %}
+        </span>
+      </a>
+    </li>
+  {%- endif -%}
+
+  {%- if settings.social_youtube_link != blank -%}
+    <li>
+      <a
+        class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-button-bg"
+        href="{{ settings.social_youtube_link }}"
+        aria-label="{{ 'accessibility.social_media.youtube' | t }}"
+        target="_blank"
+      >
+        <span class="block h-4 w-4 text-primary-button-text">
+          {% render 'icons', icon: 'youtube' %}
+        </span>
+      </a>
+    </li>
+  {%- endif -%}
+
+  {%- if settings.social_twitter_link != blank -%}
+    <li>
+      <a
+        class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-button-bg"
+        href="{{ settings.social_twitter_link }}"
+        aria-label="{{ 'accessibility.social_media.twitter' | t }}"
+        target="_blank"
+      >
+        <span class="block h-4 w-4 text-primary-button-text">
+          {% render 'icons', icon: 'twitter' %}
+        </span>
+      </a>
+    </li>
+  {%- endif -%}
+
+  {%- if settings.social_pinterest_link != blank -%}
+    <li>
+      <a
+        class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-button-bg"
+        href="{{ settings.social_pinterest_link }}"
+        aria-label="{{ 'accessibility.social_media.pinterest' | t }}"
+        target="_blank"
+      >
+        <span class="block h-4 w-4 text-primary-button-text">
+          {% render 'icons', icon: 'pinterest' %}
+        </span>
+      </a>
+    </li>
+  {%- endif -%}
+
+  {%- if settings.social_tumblr_link != blank -%}
+    <li>
+      <a
+        class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-button-bg"
+        href="{{ settings.social_tumblr_link }}"
+        aria-label="{{ 'accessibility.social_media.tumblr' | t }}"
+        target="_blank"
+      >
+        <span class="block h-4 w-4 text-primary-button-text">
+          {% render 'icons', icon: 'tumblr' %}
+        </span>
+      </a>
+    </li>
+  {%- endif -%}
+
+  {%- if settings.social_vimeo_link != blank -%}
+    <li>
+      <a
+        class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-button-bg"
+        href="{{ settings.social_vimeo_link }}"
+        aria-label="{{ 'accessibility.social_media.vimeo' | t }}"
+        target="_blank"
+      >
+        <span class="block h-4 w-4 text-primary-button-text">
+          {% render 'icons', icon: 'vimeo' %}
+        </span>
+      </a>
+    </li>
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- if social_icons != blank -%}
+  <ul class="flex flex-wrap gap-2">
+    {{ social_icons }}
+  </ul>
+{%- endif -%}

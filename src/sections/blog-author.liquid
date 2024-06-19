@@ -1,0 +1,170 @@
+{% if section.settings.author != blank %}
+  <div class="section bg-primary-bg text-primary-text color-scheme__{{ section.settings.color_scheme }} ">
+    <div class="mx-auto max-w-4xl rounded bg-secondary-bg py-12 px-6">
+      <div class="flex flex-col gap-6 lg:flex-row">
+        <div class="grid">
+          {% if section.settings.image != blank %}
+            <div class="w-48">
+              <div class="aspect aspect-w-1 aspect-h-1">
+                {{
+                  section.settings.image
+                  | image_url: width: section.settings.image.width
+                  | image_tag:
+                    loading: 'lazy',
+                    sizes: '100vw',
+                    widths: '30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 410, 490, 570, 650, 730, 810, 890, 970, 1050',
+                    class: 'rounded object-cover bg-secondary-bg'
+                }}
+              </div>
+            </div>
+          {% endif %}
+
+          {%- capture social_media -%}
+            {% for block in section.blocks %}
+              {% if block.settings.social_media_url != blank %}
+                {% assign accessibility_link = 'accessibility.social.' | append: block.type %}
+                <li>
+                  <a
+                    class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-button-bg"
+                    href="{{ block.settings.social_media_url }}"
+                    aria-label="{{ accessibility_link | t }}"
+                    target="_blank"
+                  >
+                    <span class="block h-4 w-4 text-primary-button-text">
+                      {% render 'icons', icon: block.type %}
+                    </span>
+                  </a>
+                </li>
+              {% endif %}
+            {% endfor %}
+          {%- endcapture -%}
+
+          {% if social_media != blank %}
+            <ul class="mt-4 flex flex-wrap gap-2">
+              {{ social_media }}
+            </ul>
+          {% endif %}
+        </div>
+        <div>
+          <p>{{ 'blog.article.author_title' | t }}</p>
+          <h2 class="mt-0">{{ section.settings.author }}</h2>
+
+          <div class="rte">
+            {{ section.settings.author_about }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Blog author",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Author"
+    },
+    {
+      "type": "text",
+      "id": "author",
+      "label": "Name",
+      "default": "Magnus F."
+    },
+    {
+      "type": "richtext",
+      "id": "author_about",
+      "label": "About",
+      "default": "<p>Test</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "facebook",
+      "name": "Facebook",
+      "settings": [
+        {
+          "type": "url",
+          "id": "social_media_url",
+          "label": "URL"
+        }
+      ]
+    },
+    {
+      "type": "instagram",
+      "name": "Instagram",
+      "settings": [
+        {
+          "type": "url",
+          "id": "social_media_url",
+          "label": "URL"
+        }
+      ]
+    },
+    {
+      "type": "snapchat",
+      "name": "Snapchat",
+      "settings": [
+        {
+          "type": "url",
+          "id": "social_media_url",
+          "label": "URL"
+        }
+      ]
+    },
+    {
+      "type": "tiktok",
+      "name": "Tiktok",
+      "settings": [
+        {
+          "type": "url",
+          "id": "social_media_url",
+          "label": "URL"
+        }
+      ]
+    },
+    {
+      "type": "linkedin",
+      "name": "Linkedin",
+      "settings": [
+        {
+          "type": "url",
+          "id": "social_media_url",
+          "label": "URL"
+        }
+      ]
+    },
+    {
+      "type": "twitter",
+      "name": "Twitter",
+      "settings": [
+        {
+          "type": "url",
+          "id": "social_media_url",
+          "label": "URL"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Blog author"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["article"]
+  }
+}
+{% endschema %}

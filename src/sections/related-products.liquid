@@ -1,0 +1,187 @@
+{%- liquid
+  assign productGridClasses = ''
+  assign productItemClasses = ''
+
+  if section.settings.desktop_carousel == false
+    assign productGridClasses = productGridClasses | append: ' lg:!grid lg:!gap-4'
+
+    case section.settings.desktop_columns
+      when 1
+        assign productGridClasses = productGridClasses | append: ' lg:!grid-cols-1'
+      when 2
+        assign productGridClasses = productGridClasses | append: ' lg:!grid-cols-2'
+      when 3
+        assign productGridClasses = productGridClasses | append: ' lg:!grid-cols-3'
+      when 4
+        assign productGridClasses = productGridClasses | append: ' lg:!grid-cols-4'
+    endcase
+  else
+    assign productGridClasses = productGridClasses | append: ' lg:!flex lg:!flex-nowrap'
+    assign productItemClasses = productItemClasses | append: ' swiper-slide lg:!flex-[calc(25%-0.75rem)_0_0]'
+  endif
+
+  if section.settings.mobile_carousel == false
+    assign productGridClasses = productGridClasses | append: ' !box-border !grid max-lg:!gap-2'
+    case section.settings.mobile_columns
+      when 'columns_1'
+        assign productGridClasses = productGridClasses | append: ' !grid-cols-1'
+      when 'columns_2'
+        assign productGridClasses = productGridClasses | append: ' !grid-cols-2'
+    endcase
+  else
+    assign mobileScroll = '!overflow-x-auto scrollbar-hide'
+    assign productGridClasses = productGridClasses | append: ' flex flex-nowrap !box-border max-lg:gap-4 lg:overflow-visible'
+    assign productItemClasses = productItemClasses | append: ' max-lg:flex-[90%_0_0]'
+  endif
+-%}
+<div class="section bg-primary-bg color-scheme__{{ section.settings.color_scheme }} ">
+  <section
+    data-component="related-products"
+    data-base-url="{{ routes.product_recommendations_url }}"
+    data-section-id="{{ section.id }}"
+    data-product-id="{{ product.id }}"
+    data-limit="{{ section.settings.product_count }}"
+  >
+    {% if section.settings.title != blank %}
+      <header class="flex flex-col lg:flex-row lg:justify-between">
+        <h2>{{ section.settings.title }}</h2>
+      </header>
+    {% endif %}
+
+    <div
+      class="section--bleed {{ mobileScroll }} swiper {% if section.settings.desktop_carousel %}carousel--collection{% endif %}"
+      {% if section.settings.desktop_carousel %}
+        data-swiper
+      {% endif %}
+    >
+      <div class="swiper-wrapper {{ productGridClasses }} ">
+        {%- if recommendations.performed and recommendations.products_count > 0 -%}
+          {%- for product in recommendations.products -%}
+            <div
+              class="featured-collection__product {% if productItemClasses != blank %}{{ productItemClasses }}{% endif %} {% if section.settings.mobile_carousel %}!block{% endif %}"
+            >
+              {% render 'product-item', product_item: product %}
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          {%- for i in (1..section.settings.product_count) -%}
+            <div
+              {% if productItemClasses != blank %}
+                class="{{ productItemClasses }}"
+              {% endif %}
+            >
+              {%- render 'product-item-loading' -%}
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+
+      {% if section.settings.desktop_carousel %}
+        <button
+          class="carousel--prev max-lg:!hidden"
+          disabled
+          aria-label="{{ 'accessibility.carousel.previous_button_label' | t }}"
+        >
+          <span class="h-6 w-6">
+            {% render 'icons', icon: 'chevron-left' %}
+          </span>
+        </button>
+        <button
+          class="carousel--next max-lg:!hidden"
+          aria-label="{{ 'accessibility.carousel.next_button_label' | t }}"
+        >
+          <span class="h-6 w-6">
+            {% render 'icons', icon: 'chevron-right' %}
+          </span>
+        </button>
+      {% endif %}
+    </div>
+  </section>
+</div>
+{% schema %}
+{
+  "name": "Related products",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Heading",
+      "default": "Related products"
+    },
+    {
+      "type": "header",
+      "content": "Products"
+    },
+    {
+      "type": "range",
+      "id": "product_count",
+      "min": 2,
+      "max": 20,
+      "step": 2,
+      "label": "Maximum products to show",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "desktop_carousel",
+      "label": "Enable carousel on deskop",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "desktop_columns",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "label": "Number of columns on desktop",
+      "default": 2,
+      "info": "Only applicable if carousel is turned off for desktop"
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_carousel",
+      "label": "Enable carousel on mobile",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "mobile_columns",
+      "label": "Number of columns on mobile",
+      "options": [
+        {
+          "value": "columns_1",
+          "label": "1 column"
+        },
+        {
+          "value": "columns_2",
+          "label": "2 columns"
+        }
+      ],
+      "default": "columns_2",
+      "info": "Only applicable if carousel is turned off for mobile"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "presets": [
+    {
+      "name": "Related products"
+    }
+  ]
+}
+{% endschema %}

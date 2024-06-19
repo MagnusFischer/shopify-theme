@@ -1,0 +1,65 @@
+<div class="section bg-primary-bg color-scheme__{{ section.settings.color_scheme }} ">
+  <div class="grid gap-12 lg:grid-cols-[250px_1fr]">
+    <div class="max-lg:section--bleed max-lg:overflow-hidden">
+      <div class="grid grid-cols-[3rem_1fr] gap-3">
+        <div class="grid h-12 w-12 items-center justify-center rounded bg-black text-white">
+          <p class="text-xl font-bold">
+            {{- customer.first_name | slice: 0 | upcase -}}
+            {{- customer.last_name | slice: 0 | upcase -}}
+          </p>
+        </div>
+        <div class="flex flex-col justify-center">
+          <span class="text-xs text-neutral-400">
+            {{ section.settings.greeting }}
+          </span>
+          <p>{{ customer.name }}</p>
+        </div>
+      </div>
+
+      {% if section.settings.message != blank %}
+        <div class="mt-4">{{ section.settings.message }}</div>
+      {% endif %}
+
+      <div class="sticky top-[calc(var(--navigation-height)+1rem)] mt-4 lg:mt-12">
+        {% render 'account-navigation', customer_support_link: section.settings.customer_support %}
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-12">
+      {% render 'account-overview' %}
+      {% render 'account-orders' %}
+      {% render 'account-address-overview' %}
+      {% render 'account-change-password' %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Account",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Welcome message"
+    },
+    {
+      "type": "text",
+      "id": "greeting",
+      "label": "Greeting",
+      "default": "Hey!"
+    },
+    {
+      "type": "richtext",
+      "id": "message",
+      "label": "Message",
+      "default": "<p>Welcome to your account page.</p>"
+    },
+    {
+      "type": "url",
+      "id": "customer_support",
+      "label": "Customer Support",
+      "info": "Menu item won't show if left empty."
+    }
+  ]
+}
+{% endschema %}

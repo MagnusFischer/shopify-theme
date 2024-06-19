@@ -1,0 +1,91 @@
+<div class="scrollbar mt-6 h-full overflow-y-auto px-4 lg:px-6" data-cart-empty>
+  <div class="flex flex-col gap-6">
+    <h2 class="text-3xl font-bold">
+      {{ section.settings.title }}
+    </h2>
+
+    {% if section.settings.links != blank %}
+      <div>
+        <h3 class="mb-1 text-xs text-accent-1">
+          {{ section.settings.links_title }}
+        </h3>
+        <ul>
+          {% for link in section.settings.links.links %}
+            <li>
+              <a
+                href="{{ link.url }}"
+                class="hover__underline relative flex items-center justify-between border-b border-accent-1-bg py-3"
+              >
+                {{- link.title -}}
+                <span class="relative flex h-8 w-8">
+                  <span
+                    class="absolute inset-0 m-auto inline-flex h-4/6 w-4/6 animate-horizon-ping rounded-full bg-secondary-button-bg opacity-75"
+                  ></span>
+                  <span class="relative inline-flex h-8 w-8 rounded-full bg-secondary-button-bg">
+                    <span class="absolute inset-0 m-auto h-4 w-4 text-secondary-button-text">
+                      {% render 'icons', icon: 'chevron-right' %}
+                    </span>
+                  </span>
+                </span>
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    {% if section.settings.show_products %}
+      {% if section.settings.products != blank %}
+        {% assign products = section.settings.products %}
+      {% else %}
+        {% assign products = collections.all.products %}
+      {% endif %}
+      <div>
+        <h3 class="mb-1 text-xs text-accent-1">
+          {{ section.settings.products_title }}
+        </h3>
+        <ul>
+          {% for product in products limit: 5 %}
+            <li>
+              <a
+                class="hover__underline flex items-center gap-3 border-b border-accent-1-bg py-4"
+                href="{{ product.url }}"
+              >
+                <div class="w-20 flex-shrink-0">
+                  <div class="aspect {{ settings.product_media_aspect }} overflow-hidden rounded-sm">
+                    {{
+                      product.featured_image
+                      | image_url: width: 80
+                      | image_tag: loading: 'lazy', class: 'rounded-sm object-cover'
+                    }}
+                  </div>
+                </div>
+                <div class="flex flex-col">
+                  <p class="font-medium line-clamp-1">{{ product.title }}</p>
+                  <p class="text-sm text-accent-1">
+                    {{ 'cart.empty.see_product_label' | t }}
+                  </p>
+                </div>
+                <div class="ml-auto flex flex-shrink-0 flex-col text-right">
+                  <del
+                    class="text-xs text-accent-1"
+                    {% if product.price >= product.compare_at_price
+                      or product.compare_at_price == blank
+                    %}
+                      hidden
+                    {% endif %}
+                  >
+                    {{ product.compare_at_price | money }}
+                  </del>
+                  <span data-price class="font-bold">
+                    {{- product.price | money -}}
+                  </span>
+                </div>
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  </div>
+</div>

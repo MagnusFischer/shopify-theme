@@ -1,0 +1,85 @@
+@layer base {
+  .h--2 {
+    @apply font-serif text-5xl;
+    @screen lg {
+      @apply text-9xl;
+    }
+  }
+
+  .h--1 {
+    @apply font-serif text-5xl;
+    @screen lg {
+      @apply text-8xl;
+    }
+  }
+
+  .h--0 {
+    @apply font-serif text-5xl;
+    @screen lg {
+      @apply text-7xl;
+    }
+  }
+
+  h1,
+  .h1 {
+    @apply font-serif text-5xl;
+
+    @screen lg {
+      @apply text-6xl;
+    }
+  }
+
+  h2,
+  .h2 {
+    @apply font-serif text-5xl;
+  }
+
+  h3,
+  .h3 {
+    @apply font-serif text-4xl;
+  }
+
+  h4,
+  .h4 {
+    @apply font-serif text-3xl;
+  }
+
+  h5,
+  .h5 {
+    @apply font-serif text-2xl;
+  }
+
+  h6,
+  .h6 {
+    @apply font-serif text-xl;
+  }
+
+  .h0,
+  h1,
+  .h1,
+  h2,
+  .h2,
+  h3,
+  .h3,
+  h4,
+  .h4,
+  h5,
+  .h5,
+  h6,
+  .h6 {
+    &:first-child {
+      @apply mt-0;
+    }
+    @apply mt-12;
+    @apply mb-[1.375rem];
+  }
+
+  p,
+  a,
+  span,
+  textarea,
+  input[type='text'],
+  input[type='search'] {
+    @apply text-base;
+  }
+}

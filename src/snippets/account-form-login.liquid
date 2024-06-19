@@ -1,0 +1,81 @@
+{% assign block = section.blocks | where: 'type', 'login' | first %}
+
+{%- form 'customer_login',
+  novalidate: 'novalidate',
+  class: 'account__forms--container',
+  id: 'login'
+-%}
+  <div class="mb-6" {{ block.shopify_attributes }}>
+    <h1>{{ block.settings.title }}</h1>
+
+    <div class="rte max-w-md">
+      {{ block.settings.content }}
+    </div>
+  </div>
+
+  {%- if form.errors -%}
+    <div>
+      {{ form.errors | default_errors }}
+    </div>
+  {%- endif -%}
+
+  <div class="form__input">
+    <input
+      id="login-email"
+      class="form__input--text"
+      type="email"
+      name="customer[email]"
+      autocomplete="email"
+      autocorrect="off"
+      autocapitalize="off"
+      {% if form.errors contains 'form' %}
+        aria-invalid="true"
+      {% endif %}
+      placeholder=" "
+    >
+    <div class="form__input--text--hover"></div>
+    <label
+      class="form__input--label"
+      for="login-email"
+    >
+      {{ 'account.fields.email' | t }}
+    </label>
+  </div>
+
+  {%- if form.password_needed -%}
+    <div class="form__input">
+      <input
+        id="login-password"
+        class="form__input--text"
+        type="password"
+        name="customer[password]"
+        autocomplete="current-password"
+        {% if form.errors contains 'form' %}
+          aria-invalid="true"
+        {% endif %}
+        placeholder=" "
+      >
+      <div class="form__input--text--hover"></div>
+      <label
+        class="form__input--label"
+        for="login-password"
+      >
+        {{ 'account.fields.password' | t }}
+      </label>
+    </div>
+  {%- endif -%}
+
+  <div class="flex flex-col gap-3 lg:flex-row">
+    <button type="submit" class="button button--primary w-full">
+      <span>{{ 'account.form.login_button_label' | t }}</span>
+    </button>
+    <a class="button button--secondary w-full text-center" href="#register">
+      <span>{{ 'account.form.create_account_button_label' | t }}</span>
+    </a>
+  </div>
+
+  <p>
+    {{ 'account.form.forgot_password_text' | t }}
+    <a class="underline" href="#recover">{{ 'account.form.reset_password_button_label' | t }}</a>
+  </p>
+{%- endform -%}

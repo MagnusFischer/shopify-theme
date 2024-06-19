@@ -1,0 +1,6 @@
+@layer components {
+  .footer {
+    --container-gutter: 1.5rem;
+    @apply p-3;
+  }
+}

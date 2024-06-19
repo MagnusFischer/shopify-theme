@@ -1,0 +1,24 @@
+@layer components {
+  .breadcrumbs {
+    &__list {
+      @apply scrollbar-hide flex items-center overflow-x-auto whitespace-nowrap text-sm;
+    }
+
+    &__item p,
+    &__item a {
+      @apply whitespace-nowrap text-sm;
+    }
+
+    &__item:hover {
+      @apply underline;
+    }
+
+    &__item:not(:last-child) {
+      @apply text-accent-1;
+    }
+
+    &__item:not(:last-child)::after {
+      @apply mx-1 inline-block content-['/'];
+    }
+  }
+}

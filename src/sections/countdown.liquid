@@ -1,0 +1,419 @@
+{%- liquid
+  capture classes
+    if section.settings.height != 'aspect'
+      assign dekstopClass = 'lg:h-[var(--fullscreen-height)] lg:fullscreen '
+      echo dekstopClass
+    endif
+
+    if section.settings.mobile_height != 'aspect'
+      assign mobileClass = 'max-lg:h-[var(--fullscreen-height)] max-lg:fullscreen '
+      echo mobileClass
+    endif
+  endcapture
+
+  assign hide_on_complete = section.settings.timer_expired
+  assign expiration_date = section.settings.expiration_date | date: '%s' | default: 'now' | date: '%s'
+  assign current_date = 'now' | date: '%s'
+  assign time_difference = expiration_date | minus: current_date
+  assign days = time_difference | divided_by: 86400 | at_least: 0
+  assign remaining_seconds = time_difference | modulo: 86400
+  assign hours = remaining_seconds | divided_by: 3600 | at_least: 0
+  assign remaining_seconds = remaining_seconds | modulo: 3600
+  assign minutes = remaining_seconds | divided_by: 60 | at_least: 0
+  assign seconds = remaining_seconds | modulo: 60 | at_least: 0
+
+  if days < 10
+    assign days = days | prepend: 0
+  endif
+
+  if hours < 10
+    assign hours = hours | prepend: 0
+  endif
+
+  if minutes < 10
+    assign minutes = minutes | prepend: 0
+  endif
+
+  if seconds < 10
+    assign seconds = seconds | prepend: 0
+  endif
+-%}
+
+{%- capture styles -%}
+  {% if section.settings.spacing == 'fill' %}
+      #shopify-section-{{ section.id }} {
+        --container-offset-height: 0px;
+      }
+  {% endif %}
+
+  {% if hide_on_complete == 'hide' and time_difference <= 0 %}
+    #shopify-section-{{ section.id }} {
+      display: none;
+    }
+  {% endif %}
+{%- endcapture -%}
+
+{%- capture media_height -%}
+  {%- case section.settings.image_size -%}
+    {%- when 'small' -%}
+      --media-height: clamp(20rem, 85vw, 32rem);
+    {%- when 'medium' -%}
+      --media-height: clamp(25rem, 100vw, 36rem);
+    {%- when 'large' -%}
+      --media-height: clamp(30rem, 125vw, 42rem);
+  {%- endcase -%}
+{%- endcapture -%}
+
+{% if styles != blank %}
+  <style>
+    {{ styles }}
+  </style>
+{% endif %}
+
+<div class="bg-primary-bg text-primary-text color-scheme__{{ section.settings.color_scheme }} {% if section.settings.spacing == 'contained' %} section{% endif %} ">
+  <div
+    class="countdown__wrapper {% if section.settings.spacing == 'contained' %}rounded{% endif %} {{ classes }}"
+    style="--overlay-color: {{ section.settings.overlay_color.rgb }} / {{ section.settings.overlay_opacity | divided_by: 100.0 }}; {{ media_height }}"
+  >
+    {%- if section.settings.image != blank -%}
+      {%- capture sizes -%}{% if section.settings.spacing == 'fill' %}100vw{% else %}min({{ settings.page_width }}px, 100vw){% endif %}{%- endcapture -%}
+      {%- if section.settings.mobile_image == blank -%}
+        {{-
+          section.settings.image
+          | image_url: width: section.settings.image.width
+          | image_tag:
+            loading: 'lazy',
+            sizes: sizes,
+            widths: '150, 180, 210, 240, 270, 300, 330, 410, 490, 570, 650, 730, 810, 890, 970, 1050, 1290, 1530, 1770, 2090, 2410, 2730',
+            class: 'bg-secondary-bg'
+        -}}
+      {%- else -%}
+        {{-
+          section.settings.image
+          | image_url: width: section.settings.image.width
+          | image_tag:
+            loading: 'lazy',
+            sizes: sizes,
+            widths: '150, 180, 210, 240, 270, 300, 330, 410, 490, 570, 650, 730, 810, 890, 970, 1050, 1290, 1530, 1770, 2090, 2410, 2730',
+            class: 'hidden lg:block bg-secondary-bg'
+        -}}
+        {{-
+          section.settings.mobile_image
+          | image_url: width: section.settings.mobile_image.width
+          | image_tag:
+            loading: 'lazy',
+            sizes: sizes,
+            widths: '150, 180, 210, 240, 270, 300, 330, 410, 490, 570, 650, 730, 810, 890, 970, 1050, 1290, 1530, 1770, 2090, 2410, 2730',
+            class: 'lg:hidden bg-secondary-bg'
+        -}}
+      {%- endif -%}
+    {%- else -%}
+      {{-
+        'hero-apparel-1'
+        | placeholder_svg_tag: 'placeholder'
+        | replace: '<svg', '<svg preserveAspectRatio="xMinYMin slice"'
+      -}}
+    {%- endif -%}
+
+    <div class="countdown__contents grid gap-12 lg:grid-cols-2 lg:gap-4">
+      <div class="m-auto w-full lg:max-w-lg">
+        {% if section.settings.subheading != blank %}
+          <p>{{ section.settings.subheading }}</p>
+        {% endif %}
+
+        <h2 class="mt-0">{{ section.settings.heading }}</h2>
+
+        {% if section.settings.content != blank %}
+          <div>{{ section.settings.content }}</div>
+        {% endif %}
+
+        {% if section.settings.button_url != blank and section.settings.button_text != blank %}
+          <a
+            href="{{ section.settings.button_url }}"
+            class="button button--primary mt-4 inline-block"
+          >
+            <span>{{ section.settings.button_text }}</span>
+          </a>
+        {% endif %}
+      </div>
+
+      <div
+        data-component="countdown"
+        data-date="{{ 'now' | date: '%Y-%m-%dT%H:%M:%S.%3N%z' }}"
+        class="m-auto w-full lg:max-w-xl"
+      >
+        <time data-end datetime="{{ expiration_date | date: '%Y-%m-%dT%H:%M:%S.%3N%z' }}">
+          <div class="countdown">
+            <div class="countdown__item">
+              <div
+                class="countdown__item--digits"
+                data-type="days"
+              >
+                {% assign days_array = days | split: '' %}
+                {% for day in days_array %}
+                  <div
+                    class="countdown__item--digit"
+                    data-digit
+                  >
+                    <span class="countdown__item--digit--text">{{ day }}</span>
+                  </div>
+                {% endfor %}
+              </div>
+              <span>{{ 'sections.countdown.days_label' | t }}</span>
+            </div>
+
+            <span>:</span>
+
+            <div class="countdown__item">
+              <div
+                class="countdown__item--digits"
+                data-type="hours"
+              >
+                <div
+                  class="countdown__item--digit"
+                  data-digit
+                >
+                  <span class="countdown__item--digit--text">{{ hours | slice: 0, 1 }}</span>
+                </div>
+                <div
+                  class="countdown__item--digit"
+                  data-digit
+                >
+                  <span class="countdown__item--digit--text">{{ hours | slice: 1, 2 }}</span>
+                </div>
+              </div>
+              <span>{{ 'sections.countdown.hours_label' | t }}</span>
+            </div>
+            <span>:</span>
+            <div class="countdown__item">
+              <div
+                class="countdown__item--digits"
+                data-type="minutes"
+              >
+                <div
+                  class="countdown__item--digit"
+                  data-digit
+                >
+                  <span class="countdown__item--digit--text">{{ minutes | slice: 0, 1 }}</span>
+                </div>
+                <div
+                  class="countdown__item--digit"
+                  data-digit
+                >
+                  <span class="countdown__item--digit--text">{{ minutes | slice: 1, 2 }}</span>
+                </div>
+              </div>
+              <span>{{ 'sections.countdown.minutes_label' | t }}</span>
+            </div>
+            <span>:</span>
+            <div class="countdown__item">
+              <div
+                class="countdown__item--digits"
+                data-type="seconds"
+              >
+                <div
+                  class="countdown__item--digit"
+                  data-digit
+                >
+                  <span class="countdown__item--digit--text">{{ seconds | slice: 0, 1 }}</span>
+                </div>
+                <div
+                  class="countdown__item--digit"
+                  data-digit
+                >
+                  <span class="countdown__item--digit--text">{{ seconds | slice: 1, 2 }}</span>
+                </div>
+              </div>
+              <span>{{ 'sections.countdown.seconds_label' | t }}</span>
+            </div>
+          </div>
+        </time>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Countdown",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile image"
+    },
+    {
+      "type": "select",
+      "id": "image_size",
+      "label": "Image size",
+      "options": [
+        {
+          "value": "original",
+          "label": "Original image ratio"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        }
+      ],
+      "default": "original"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Overlay opacity",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Subheading"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Special offer"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content",
+      "default": "<p>Share something about your limited offer or temporary promotion.</p>"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button url"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text"
+    },
+    {
+      "type": "header",
+      "content": "Positioning"
+    },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "Height",
+      "options": [
+        {
+          "value": "aspect",
+          "label": "Hug contents"
+        },
+        {
+          "value": "fullscreen",
+          "label": "Full screen"
+        }
+      ],
+      "default": "fullscreen"
+    },
+    {
+      "type": "select",
+      "id": "mobile_height",
+      "label": "Mobile height",
+      "options": [
+        {
+          "value": "aspect",
+          "label": "Hug contents"
+        },
+        {
+          "value": "fullscreen",
+          "label": "Full screen"
+        }
+      ],
+      "default": "fullscreen"
+    },
+    {
+      "type": "select",
+      "id": "spacing",
+      "label": "Spacing",
+      "options": [
+        {
+          "value": "fill",
+          "label": "Full-width"
+        },
+        {
+          "value": "contained",
+          "label": "Contained"
+        }
+      ],
+      "default": "contained"
+    },
+    {
+      "type": "header",
+      "content": "Timer",
+      "info": "Expiration date is calculated from the [store primary timezone](/admin/settings/general)"
+    },
+    {
+      "type": "text",
+      "id": "expiration_date",
+      "label": "Expiration date",
+      "info": "Use the format YYYY-MM-DD HH:MM (hours and minutes are optional). Do not use a date farther than 99 days.",
+      "placeholder": "Eg. 2024-01-20 10:00"
+    },
+    {
+      "type": "select",
+      "id": "timer_expired",
+      "label": "Timer expired",
+      "options": [
+        {
+          "value": "hide",
+          "label": "Hide section"
+        },
+        {
+          "value": "show",
+          "label": "Leave timer at zero"
+        }
+      ],
+      "default": "show"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Countdown"
+    }
+  ]
+}
+{% endschema %}

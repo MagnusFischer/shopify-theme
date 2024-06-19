@@ -1,0 +1,67 @@
+{% unless template == 'index' or template == 'cart' or template == '404' %}
+  {% assign t = template | split: '.' | first %}
+  <nav class="breadcrumbs" role="navigation" aria-label="breadcrumbs">
+    <ol class="breadcrumbs__list">
+      <li class="breadcrumbs__item">
+        <a href="{{ routes.root_url }}">
+          {{ 'general.breadcrumbs.home_label' | t }}
+        </a>
+      </li>
+
+      {% case t %}
+        {% when 'product' %}
+          {%- if collection.url -%}
+            <li class="breadcrumbs__item">
+              <a href="{{ routes.collections_url }}">
+                {{- 'general.breadcrumbs.collections_label' | t -}}
+              </a>
+            </li>
+
+            <li class="breadcrumbs__item">
+              {{ collection.title | link_to: collection.url }}
+            </li>
+          {%- endif -%}
+          <li class="breadcrumbs__item">
+            <a href="{{ product.url }}">{{ product.title }}</a>
+          </li>
+
+        {% when 'list-collections' %}
+          <li class="breadcrumbs__item">
+            <a href="{{ routes.collections_url }}">
+              {{- 'collection.general.all_collections' | t -}}
+            </a>
+          </li>
+
+        {% when 'collection' and collection.handle %}
+          <li class="breadcrumbs__item">
+            <a href="{{ routes.collections_url }}">
+              {{- 'general.breadcrumbs.collections_label' | t -}}
+            </a>
+          </li>
+
+          <li class="breadcrumbs__item">
+            <a href="{{ collection.url }}">{{ collection.title }}</a>
+          </li>
+
+        {% when 'page' %}
+          <li class="breadcrumbs__item">
+            <a href="{{ page.url }}">{{ page.title }}</a>
+          </li>
+
+        {% when 'article' %}
+          <li class="breadcrumbs__item">
+            <a href="{{ blog.url }}">{{ blog.title }}</a>
+          </li>
+
+          <li class="breadcrumbs__item">
+            <a href="{{ article.url }}">{{ article.title }}</a>
+          </li>
+
+        {% when 'blog' %}
+          <li class="breadcrumbs__item">
+            <a href="{{ blog.url }}">{{ blog.title }}</a>
+          </li>
+      {% endcase %}
+    </ol>
+  </nav>
+{% endunless %}

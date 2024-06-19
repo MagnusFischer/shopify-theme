@@ -1,0 +1,20 @@
+@import url('overlay.css');
+
+@layer components {
+  .drawer {
+    @apply fixed top-0 bottom-0 z-50 transform-gpu transition duration-300 motion-reduce:opacity-0;
+    @apply w-80 max-w-full bg-white;
+
+    &--left {
+      @apply left-0 -translate-x-full motion-reduce:translate-x-0;
+    }
+
+    &--right {
+      @apply right-0 translate-x-full motion-reduce:translate-x-0;
+    }
+
+    &--active {
+      @apply translate-x-0 opacity-100;
+    }
+  }
+}

@@ -1,0 +1,33 @@
+@layer components {
+  .product-item {
+    --primary-button-text: 255 255 255;
+    --primary-button-bg: 0 0 0;
+
+    img {
+      @apply transition-all duration-200 ease-in-out;
+    }
+
+    &__image--secondary {
+      @apply hidden object-cover opacity-0 transition-opacity duration-200 ease-in-out;
+
+      @media screen and (pointer: fine) {
+        @apply block;
+      }
+    }
+
+    &:hover {
+      img {
+        @apply motion-safe:scale-[1.02];
+      }
+
+      .product-item__image--secondary {
+        @apply motion-safe:opacity-100;
+      }
+    }
+
+    &__label {
+      @apply rounded-md px-3 py-1 text-sm;
+      @apply bg-primary-button-bg text-primary-button-text;
+    }
+  }
+}

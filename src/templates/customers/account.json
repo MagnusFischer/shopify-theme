@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-customers-account",
+      "settings": {
+        "customer_support": "shopify://pages/contact"
+      }
+    }
+  },
+  "order": ["main"]
+}

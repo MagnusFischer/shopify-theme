@@ -1,0 +1,7 @@
+<div class="px-3 lg:px-6" data-order-notes>
+  {%- capture content -%}
+    <textarea data-component="cart-note" name="note" class="w-full resize-none h-24 p-4">{{ cart.note }}</textarea>
+  {%- endcapture -%}
+  {% assign title = 'cart.order_note.title' | t %}
+  {% render 'accordion', title: title, content: content %}
+</div>

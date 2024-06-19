@@ -1,0 +1,138 @@
+{% case filter.type %}
+  {% when 'boolean', 'list' %}
+    <ul
+      class="flex flex-col gap-2"
+      data-filter-list
+    >
+      {% for filter_value in filter.values %}
+        <li
+          {% if filter_value.count == 0 %}
+            class="pointer-events-none opacity-50"
+          {% endif %}
+        >
+          <label
+            class="form__input--checkbox flex items-start justify-between"
+          >
+            {{ filter_value.label }}
+            <div class="flex items-center gap-2">
+              <span class="text-xs">{{ filter_value.count }}</span>
+              <input
+                type="checkbox"
+                name="{{ filter_value.param_name }}"
+                value="{{ filter_value.value }}"
+                {% if filter_value.active %}
+                  checked="checked"
+                {% endif %}
+              >
+            </div>
+          </label>
+        </li>
+      {% endfor %}
+    </ul>
+  {% when 'price_range' %}
+    <div data-filter-list>
+      <div class="range-slider" data-component="range-slider">
+        <div class="range-slider__range--container">
+          <input
+            data-from-range
+            type="range"
+            name="{{ filter.min_value.param_name }}"
+            {% if filter.min_value.value %}
+              value="{{ filter.min_value.value | divided_by: 100 }}"
+            {% else %}
+              value="0"
+            {% endif %}
+            min="0"
+            max="{{ filter.range_max | divided_by: 100 }}"
+          >
+
+          {%- capture styleBackground -%}
+                {%- liquid 
+                  assign range_distance = filter.range_max | divided_by: 100 | minus: 0
+
+                  if filter.min_value.value
+                    assign from_position = filter.min_value.value | divided_by: 100 | minus: 0
+                  else
+                    assign from_position = 0
+                  endif
+
+                  if filter.max_value.value
+                    assign to_position = filter.max_value.value | divided_by: 100
+                  else
+                    assign to_position = filter.range_max | divided_by: 100
+                  endif
+                -%}
+
+                background: linear-gradient(
+                  to right,
+                  rgb(var(--secondary-bg)) 0%,
+                  rgb(var(--secondary-bg)) {{ from_position | times: 1.0 | divided_by: range_distance | times: 100 }}%,
+                  rgb(var(--accent-button-text-hover)) {{ from_position | times: 1.0 | divided_by: range_distance | times: 100 }}%,
+                  rgb(var(--accent-button-text-hover)) {{ to_position | times: 1.0 | divided_by: range_distance | times: 100 }}%,
+                  rgb(var(--secondary-bg)) {{ to_position | times: 1.0 | divided_by: range_distance | times: 100 }}%,
+                  rgb(var(--secondary-bg)) 100%);
+              {%- endcapture -%}
+
+          <input
+            data-to-range
+            type="range"
+            name="{{ filter.max_value.param_name }}"
+            {% if filter.max_value.value %}
+              value="{{ filter.max_value.value | divided_by: 100 }}"
+            {% else %}
+              value="{{ filter.range_max | divided_by: 100 }}"
+            {% endif %}
+            min="0"
+            max="{{ filter.range_max | divided_by: 100 }}"
+            style="{{ styleBackground }}"
+          >
+        </div>
+
+        <div class="range-slider__input--container">
+          <div class="form__input">
+            <input
+              id="MinPrice"
+              data-from-input
+              class="form__input--text"
+              type="text"
+              name="{{ filter.min_value.param_name }}"
+              {% if filter.min_value.value %}
+                value="{{ filter.min_value.value | divided_by: 100 }}"
+              {% else %}
+                value="0"
+              {% endif %}
+            >
+            <div class="form__input--text--hover"></div>
+            <label
+              class="form__input--label"
+              for="MinPrice"
+            >
+              {{ 'collection.filter.price_min' | t }}
+            </label>
+          </div>
+
+          <div class="form__input">
+            <input
+              id="MaxPrice"
+              data-to-input
+              class="form__input--text"
+              type="text"
+              name="{{ filter.max_value.param_name }}"
+              {% if filter.max_value.value %}
+                value="{{ filter.max_value.value | divided_by: 100 }}"
+              {% else %}
+                value="{{ filter.range_max | divided_by: 100 }}"
+              {% endif %}
+            >
+            <div class="form__input--text--hover"></div>
+            <label
+              class="form__input--label"
+              for="MaxPrice"
+            >
+              {{ 'collection.filter.price_max' | t }}
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endcase %}

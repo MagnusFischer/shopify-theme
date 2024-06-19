@@ -1,0 +1,25 @@
+@layer components {
+  .account {
+    &__forms {
+      > .account__forms--container {
+        @apply hidden;
+      }
+
+      > :last-child {
+        @apply flex;
+      }
+
+      > .account__forms--container:target ~ .account__forms--container:last-child {
+        @apply hidden;
+      }
+
+      > .account__forms--container:target {
+        @apply flex;
+      }
+
+      &--container {
+        @apply scroll-mt-[100vh] flex-col gap-3;
+      }
+    }
+  }
+}

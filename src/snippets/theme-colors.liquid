@@ -1,0 +1,42 @@
+{%- style -%}
+  {%- for scheme in settings.color_schemes -%}
+    {%- if forloop.index == 1 -%}
+      :root,
+    {%- endif -%}
+
+    .color-scheme__{{- scheme.id -}} {
+      --primary-text: {{ scheme.settings.primary_text.red }} {{ scheme.settings.primary_text.green }} {{ scheme.settings.primary_text.blue }};
+      --secondary-text: {{ scheme.settings.secondary_text.red }} {{ scheme.settings.secondary_text.green }} {{ scheme.settings.secondary_text.blue }};
+      --accent-1: {{ scheme.settings.accent_1_text.red }} {{ scheme.settings.accent_1_text.green }} {{ scheme.settings.accent_1_text.blue }};
+      --accent-2: {{ scheme.settings.accent_2_text.red }} {{ scheme.settings.accent_2_text.green }} {{ scheme.settings.accent_2_text.blue }};
+      --primary-bg: {{ scheme.settings.primary_background.red }} {{ scheme.settings.primary_background.green }} {{ scheme.settings.primary_background.blue }};
+      --secondary-bg: {{ scheme.settings.secondary_background.red }} {{ scheme.settings.secondary_background.green }} {{ scheme.settings.secondary_background.blue }};
+      --accent-1-bg: {{ scheme.settings.accent_1_background.red }} {{ scheme.settings.accent_1_background.green }} {{ scheme.settings.accent_1_background.blue }};
+      --accent-2-bg: {{ scheme.settings.accent_2_background.red }} {{ scheme.settings.accent_2_background.green }} {{ scheme.settings.accent_2_background.blue }};
+      --primary-button-bg: {{ scheme.settings.primary_button_background.red }} {{ scheme.settings.primary_button_background.green }} {{ scheme.settings.primary_button_background.blue }};
+      --primary-button-bg-hover: {{ scheme.settings.primary_button_background_hover.red }} {{ scheme.settings.primary_button_background_hover.green }} {{ scheme.settings.primary_button_background_hover.blue }};
+      --primary-button-text: {{ scheme.settings.primary_button_text.red }} {{ scheme.settings.primary_button_text.green }} {{ scheme.settings.primary_button_text.blue }};
+      --primary-button-text-hover: {{ scheme.settings.primary_button_text_hover.red }} {{ scheme.settings.primary_button_text_hover.green }} {{ scheme.settings.primary_button_text_hover.blue }};
+      --secondary-button-bg: {{ scheme.settings.secondary_button_background.red }} {{ scheme.settings.secondary_button_background.green }} {{ scheme.settings.secondary_button_background.blue }};
+      --secondary-button-bg-hover: {{ scheme.settings.secondary_button_background_hover.red }} {{ scheme.settings.secondary_button_background_hover.green }} {{ scheme.settings.secondary_button_background_hover.blue }};
+      --secondary-button-text: {{ scheme.settings.secondary_button_text.red }} {{ scheme.settings.secondary_button_text.green }} {{ scheme.settings.secondary_button_text.blue }};
+      --secondary-button-text-hover: {{ scheme.settings.secondary_button_text_hover.red }} {{ scheme.settings.secondary_button_text_hover.green }} {{ scheme.settings.secondary_button_text_hover.blue }};
+      --accent-button-bg: {{ scheme.settings.accent_button_background.red }} {{ scheme.settings.accent_button_background.green }} {{ scheme.settings.accent_button_background.blue }};
+      --accent-button-bg-hover: {{ scheme.settings.accent_button_background_hover.red }} {{ scheme.settings.accent_button_background_hover.green }} {{ scheme.settings.accent_button_background_hover.blue }};
+      --accent-button-text: {{ scheme.settings.accent_button_text.red }} {{ scheme.settings.accent_button_text.green }} {{ scheme.settings.accent_button_text.blue }};
+      --accent-button-text-hover: {{ scheme.settings.accent_button_text_hover.red }} {{ scheme.settings.accent_button_text_hover.green }} {{ scheme.settings.accent_button_text_hover.blue }};
+      --success: {{ scheme.settings.success_color.red }} {{ scheme.settings.success_color.green }} {{ scheme.settings.success_color.blue }};
+      --error: {{ scheme.settings.error_color.red }} {{ scheme.settings.error_color.green }} {{ scheme.settings.error_color.blue }};
+      --caution: {{ scheme.settings.caution_color.red }} {{ scheme.settings.caution_color.green }} {{ scheme.settings.caution_color.blue }};
+    }
+  {%- endfor -%}
+
+  {%- for label in shop.metaobjects['horizon-label'].values -%}
+    {%- if label.text_color.value != blank or label.background_color.value != blank -%}
+      .label__scheme-{{ label.name.value | handle }} {
+        {%- if label.text_color.value != blank -%}--primary-button-text: {{ label.text_color.value.red }} {{ label.text_color.value.green }} {{ label.text_color.value.blue }};{%- endif -%}
+        {%- if label.background_color.value != blank -%}--primary-button-bg: {{ label.background_color.value.red }} {{ label.background_color.value.green }} {{ label.background_color.value.blue }};{%- endif -%}
+      }
+    {%- endif -%}
+  {%- endfor -%}
+{%- endstyle -%}

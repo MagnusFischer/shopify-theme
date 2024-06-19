@@ -1,0 +1,13 @@
+@layer components {
+  .article {
+    &__content {
+      h2 {
+        @apply scroll-m-[calc(var(--navigation-height)+1.5rem)];
+      }
+
+      img {
+        @apply h-auto max-w-full;
+      }
+    }
+  }
+}

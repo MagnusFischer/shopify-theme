@@ -1,0 +1,77 @@
+@layer components {
+  .image {
+    @apply relative grid gap-[var(--container-gutter)] lg:gap-[calc(var(--container-gutter)*2)];
+
+    grid-template:
+      0 minmax(0, 1fr) 0 / minmax(0, 1fr) minmax(0, min(var(--container-max-width), 100%))
+      minmax(0, 1fr);
+
+    &.fullscreen {
+      img {
+        @apply h-full w-full object-cover;
+      }
+
+      svg {
+        @apply h-full w-full object-cover;
+      }
+    }
+
+    &--content {
+      @apply z-20;
+
+      grid-area: 2 / 2 / auto / span 1;
+
+      &.position {
+        &-start {
+          &-start {
+            @apply self-start justify-self-start text-start;
+          }
+
+          &-center {
+            @apply self-start justify-self-center text-center;
+          }
+
+          &-end {
+            @apply self-start justify-self-end text-end;
+          }
+        }
+
+        &-center {
+          &-start {
+            @apply self-center justify-self-start text-start;
+          }
+
+          &-center {
+            @apply self-center justify-self-center text-center;
+          }
+
+          &-end {
+            @apply self-center justify-self-end text-end;
+          }
+        }
+
+        &-end {
+          &-start {
+            @apply self-end justify-self-start text-start;
+          }
+
+          &-center {
+            @apply self-end justify-self-center text-center;
+          }
+
+          &-end {
+            @apply self-end justify-self-end text-end;
+          }
+        }
+      }
+
+      &::before {
+        @apply pointer-events-none absolute inset-0 -z-10 bg-[rgba(var(--overlay-color))] content-[''];
+      }
+    }
+
+    &--element {
+      grid-area: 1 / 1 / span 3 / span 3;
+    }
+  }
+}

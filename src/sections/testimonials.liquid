@@ -1,0 +1,149 @@
+<div class="section bg-primary-bg text-primary-text color-scheme__{{ section.settings.color_scheme }} ">
+  <section class="text-primary-text">
+    {% if section.settings.title != blank %}
+      <header>
+        <h2>{{ section.settings.title }}</h2>
+      </header>
+    {% endif %}
+
+    <div
+      class="carousel swiper section--bleed scrollbar-hide !overflow-x-auto"
+      data-component="testimonials"
+    >
+      <div class="swiper-wrapper !box-border flex flex-nowrap max-lg:gap-4">
+        {% for block in section.blocks %}
+          {% assign this = block.settings %}
+          <div class="swiper-slide !flex !h-auto flex-[90%_0_0] flex-col rounded bg-secondary-bg px-8 py-6 md:flex-[40%_0_0] xl:flex-[30%_0_0]">
+            <h3 class="h4 font-bold">{{ this.title }}</h3>
+            <div class="mb-4">{{ this.content }}</div>
+            <div class="mt-auto flex items-center justify-between">
+              <p class="text-sm text-accent-2">{{ this.author }}</p>
+              {%- if this.show_rating -%}
+                <ul class="flex text-success">
+                  {%- for i in (1..5) -%}
+                    {%- if i <= this.rating -%}
+                      <li class="block h-6 w-6">
+                        {%- render 'icons', icon: 'star' -%}
+                      </li>
+                    {%- else -%}
+                      <li class="block h-6 w-6 opacity-25">
+                        {%- render 'icons', icon: 'star' -%}
+                      </li>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+</div>
+{% schema %}
+{
+  "name": "Testimonials",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Heading",
+      "default": "What our customers have to say"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Avatar",
+          "info": "120px x 120px .jpg recommended"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_rating",
+          "label": "Show rating",
+          "default": true
+        },
+        {
+          "type": "range",
+          "min": 0,
+          "max": 5,
+          "id": "rating",
+          "label": "Rating",
+          "default": 4
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Author"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Testimonial"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "default": "<p>Share what your customers are saying about your products, customer service or shipping rates.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "author": "Magnus F.",
+            "title": "Testimonial 1",
+            "content": "<p>Share what your customers are saying about your products, customer service or shipping rates.</p>"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "rating": 4,
+            "author": "Mads H.",
+            "title": "Testimonial 2",
+            "content": "<p>Share what your customers are saying about your products, customer service or shipping rates.</p>"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "rating": 4,
+            "author": "Lukas M.",
+            "title": "Testimonial 3",
+            "content": "<p>Share what your customers are saying about your products, customer service or shipping rates.</p>"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "author": "Simon P.",
+            "title": "Testimonial 4",
+            "content": "<p>Share what your customers are saying about your products, customer service or shipping rates.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

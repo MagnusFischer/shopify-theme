@@ -1,0 +1,13 @@
+@import url('overlay.css');
+
+@layer components {
+  .modal {
+    @apply fixed top-0 left-0 right-0 z-50 m-auto w-fit;
+    @apply opacity-0 transition-opacity duration-300;
+    @apply top-1/2 -translate-y-1/2;
+
+    &--active {
+      @apply opacity-100;
+    }
+  }
+}

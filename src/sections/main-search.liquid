@@ -1,0 +1,58 @@
+<div class="section bg-primary-bg color-scheme__{{ section.settings.color_scheme }} ">
+  {%- if search.performed and search.results_count > 0 -%}
+    <h1 class="h3 mb-3 font-bold">
+      {{- 'search.page.results_count_label' | t: count: search.results_count, term: search.terms -}}
+    </h1>
+
+    <section
+      class="color-scheme__{{ section.settings.color_scheme }} "
+      id="{{ section.id }}"
+      data-component="collection"
+    >
+      {% if settings.enable_filters %}
+        {% render 'collection-filters', results: search %}
+      {% endif %}
+
+      {% paginate search.results by section.settings.products_per_page %}
+        <div
+          class="grid grid-cols-2 gap-2 lg:grid-cols-4 lg:gap-4 xl:gap-6"
+          data-product-grid
+          data-products
+          data-section-id="{{ section.id }}"
+        >
+          {%- assign product_results = search.results | where: 'object_type', 'product' -%}
+          {% for product in product_results %}
+            {% render 'product-item', product_item: product %}
+          {% endfor %}
+        </div>
+
+        {%- if paginate.pages > 1 -%}
+          {% render 'pagination', paginate: paginate %}
+        {%- endif -%}
+      {% endpaginate %}
+    </section>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Search",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 8,
+      "max": 40,
+      "step": 4,
+      "label": "Products per page",
+      "default": 16
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    }
+  ]
+}
+{% endschema %}

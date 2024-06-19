@@ -1,0 +1,122 @@
+{% if request.page_type != 'cart' and settings.cart_type != 'page' %}
+  <div
+    class="cart-drawer drawer drawer--right w-[450px] bg-transparent lg:p-4 lg:pl-0 color-scheme__{{ section.settings.color_scheme }} "
+    {% if request.design_mode %}
+      data-design-mode
+    {% endif %}
+    data-empty="{{ cart.empty? }}"
+    data-section="{{ section.id }}"
+    data-component="cart-drawer"
+  >
+    <div class="relative flex h-full w-full flex-col overflow-hidden bg-primary-bg text-primary-text lg:rounded">
+      <div class="flex items-center justify-between">
+        <h2 class="h5 mb-0 pl-4 font-bold lg:pl-6">
+          {{ 'cart.header.title' | t }} (<span data-cart-count>{{ cart.item_count }}</span>)
+        </h2>
+        <button class="flex items-center p-4 text-sm lg:p-6" data-toggle="cart-drawer">
+          {{ 'general.navigation.close_button_label' | t }}
+          <span class="block h-6 w-6">
+            {% render 'icons', icon: 'xmark' %}
+          </span>
+        </button>
+      </div>
+
+      {%- liquid
+        for block in section.blocks
+          case block.type
+            when 'shipping-bar'
+              render 'cart-shipping-bar'
+            when 'line-items'
+              render 'cart-items'
+            when 'order-note'
+              render 'order-notes'
+            when 'footer'
+              render 'cart-footer'
+          endcase
+        endfor
+
+        render 'cart-empty'
+      -%}
+    </div>
+
+    <script type="application/json" data-cart-json>
+      {{ cart | json }}
+    </script>
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Cart Drawer",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Empty cart state"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Your cart is empty"
+    },
+    {
+      "type": "text",
+      "id": "links_title",
+      "label": "Links Title",
+      "default": "Explore what others are buying"
+    },
+    {
+      "type": "link_list",
+      "id": "links",
+      "label": "Links",
+      "info": "Won't show if left empty."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_products",
+      "label": "Show products",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "products_title",
+      "label": "Featured Products Title",
+      "default": "Top-selling products right now"
+    },
+    {
+      "type": "product_list",
+      "id": "products",
+      "label": "Featured products",
+      "info": "Will use collection \"all\" if left empty as a fallback"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "shipping-bar",
+      "name": "Shipping bar",
+      "limit": 1
+    },
+    {
+      "type": "footer",
+      "name": "Footer",
+      "limit": 1
+    },
+    {
+      "type": "line-items",
+      "name": "Line items",
+      "limit": 1
+    },
+    {
+      "type": "order-note",
+      "name": "Order notes",
+      "limit": 1
+    }
+  ]
+}
+{% endschema %}

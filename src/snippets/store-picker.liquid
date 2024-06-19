@@ -1,0 +1,52 @@
+{% assign metaobjectStores = shop.metaobjects['horizon-store'].values | uniq %}
+
+{% if metaobjectStores.size > 0 %}
+  <section
+    class="modal w-full max-w-[500px] bg-transparent px-3"
+    hidden
+    data-component="store-picker"
+    data-load-target="store-picker"
+  >
+    <div
+      class="relative flex h-full w-full flex-col overflow-hidden rounded bg-primary-bg text-primary-text"
+    >
+      <div class="flex items-center justify-between">
+        <h2 class="h5 mb-0 pl-4 font-bold lg:pl-6">
+          {{ 'sections.store_picker.heading_text' | t }}
+        </h2>
+        <button type="button" class="flex items-center p-4 text-sm lg:p-6" data-close>
+          {{ 'general.navigation.close_button_label' | t }}
+          <span class="block h-6 w-6">
+            {% render 'icons', icon: 'xmark' %}
+          </span>
+        </button>
+      </div>
+
+      <div class="flex max-h-80 w-full overflow-hidden">
+        <ul
+          class="scrollbar flex w-full flex-col gap-3 overflow-auto px-3 py-6 lg:px-6"
+          data-scrollable
+        >
+          {% for store in metaobjectStores %}
+            <li>
+              <a
+                href="{{ store.url }}"
+                class="flex items-center gap-3 rounded border border-accent-2-bg py-2 px-3 transition-colors duration-300 hover:border-primary-text"
+              >
+                <img
+                  src="//cdn.shopify.com/static/images/flags/{{ store.country_code | downcase }}.svg?width=24"
+                  srcset="//cdn.shopify.com/static/images/flags/{{ store.country_code | downcase }}.svg?width=24"
+                  loading="lazy"
+                  width="24"
+                  height="18"
+                >
+
+                <p>{{ store.name }} ({{ store.currency }})</p>
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </section>
+{% endif %}

@@ -1,0 +1,61 @@
+<section class="section color-scheme__{{ section.settings.color_scheme }} ">
+  {% if settings.enable_breadcrumbs %}
+    <div class="mb-4">
+      {% render 'breadcrumbs' %}
+    </div>
+  {% endif %}
+
+  <h1>{{- 'collection.general.all_collections' | t -}}</h1>
+
+  {% paginate collections by 48 %}
+    <div class="grid grid-cols-2 gap-4 gap-y-6 md:grid-cols-3 xl:grid-cols-4">
+      {% for collection in collections %}
+        <a class="relative h-fit overflow-hidden rounded" href="{{ collection.url }}">
+          <div class="collection-list__card">
+            {%- if collection.featured_image != blank -%}
+              {%- capture sizes -%}(min-width: 1280px) {{ 100 | divided_by: 4 }}vw, (min-width: 768px) {{ 100 | divided_by: 3 }}vw, 50vw{%- endcapture -%}
+              {{-
+                collection.featured_image
+                | image_url: width: collection.featured_image.width
+                | image_tag:
+                  loading: 'lazy',
+                  sizes: sizes,
+                  widths: '150, 180, 210, 240, 270, 300, 330, 410, 490, 570, 650, 730, 810, 890, 970, 1050, 1290, 1530, 1770, 2090, 2410, 2730',
+                  class: 'rounded'
+              -}}
+            {%- endif -%}
+          </div>
+
+          <div class="absolute left-0 bottom-0 flex w-full items-center justify-between px-4 py-6">
+            <p class="h4 mb-0 text-primary-text">{{- collection.title -}}</p>
+
+            <span class="relative flex h-12 w-12">
+              <span
+                class="absolute inset-0 m-auto inline-flex h-4/6 w-4/6 animate-horizon-ping rounded-full bg-secondary-button-bg opacity-75"
+              ></span>
+              <span class="relative inline-flex h-12 w-12 rounded-full bg-secondary-button-bg">
+                <span class="absolute inset-0 m-auto h-6 w-6 text-secondary-button-text">
+                  {% render 'icons', icon: 'chevron-right' %}
+                </span>
+              </span>
+            </span>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  {% endpaginate %}
+</section>
+
+{% schema %}
+{
+  "name": "Collection list",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    }
+  ]
+}
+{% endschema %}

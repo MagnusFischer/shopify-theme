@@ -1,0 +1,188 @@
+<section
+  class="section color-scheme__{{ section.settings.color_scheme }} overflow-visible"
+  id="{{ section.id }}"
+  data-component="store-locator"
+>
+  {% paginate shop.metaobjects['horizon-retailer'].values by 1000 %}
+    {%- liquid
+      assign localeStores = shop.metaobjects['horizon-retailer'].values | where: 'country_code', localization.country.iso_code
+
+      if localeStores == blank
+        assign stores = shop.metaobjects['horizon-retailer'].values
+      else
+        assign stores = localeStores
+      endif
+    -%}
+
+    <header class="mb-12">
+      {% if section.settings.heading != blank %}
+        <h2>{{ section.settings.heading }}</h2>
+      {% endif %}
+
+      <div class="flex flex-col justify-center gap-4 lg:flex-row lg:justify-between">
+        <div class="flex flex-col gap-4 lg:flex-row">
+          <div class="relative">
+            <span class="pointer-events-none absolute top-0 bottom-0 left-0 z-10 m-auto mx-4 block h-6 w-6 text-accent-1">
+              {% render 'icons', icon: 'globe' %}
+            </span>
+            <select
+              class="w-full cursor-pointer rounded border-none bg-accent-1-bg bg-none py-5 px-12 lg:min-w-[250px]"
+              data-country
+            >
+              <option value="global">{{ 'sections.store_finder.all_countries_label' | t }}</option>
+
+              <optgroup label="{{ 'sections.store_finder.country_selector_group_label' | t }}">
+                {% if localeStores != blank %}
+                  <option value="{{ localization.country.iso_code }}" selected>
+                    {{- localization.country -}}
+                  </option>
+                {% endif %}
+              </optgroup>
+            </select>
+
+            <span class="pointer-events-none absolute top-0 bottom-0 right-0 z-10 m-auto mx-4 block h-6 w-6 text-accent-1">
+              {% render 'icons', icon: 'select' %}
+            </span>
+          </div>
+
+          <div class="form__input lg:min-w-[250px]">
+            <span class="pointer-events-none absolute top-0 bottom-0 left-0 z-10 m-auto mx-4 block h-6 w-6 text-accent-1">
+              {% render 'icons', icon: 'search' %}
+            </span>
+            <input
+              class="form__input--text bg-accent-button-bg pl-12"
+              type="text"
+              id="{{ section.id }}-text"
+              data-city
+              placeholder=" "
+            >
+            <div class="form__input--text--hover"></div>
+            <label for="{{ section.id }}-text" class="form__input--label left-12">
+              {{- 'sections.store_finder.search' | t -}}
+            </label>
+          </div>
+        </div>
+
+        <div class="flex items-end gap-2">
+          <button
+            class="store-finder__filter"
+            data-filter="offline"
+          >
+            <span class="text-sm font-normal">
+              {{- 'sections.store_finder.offline_stores_label' | t -}}
+            </span>
+          </button>
+          <button
+            class="store-finder__filter"
+            data-filter="online"
+          >
+            <span class="text-sm font-normal">
+              {{- 'sections.store_finder.online_stores_label' | t -}}
+            </span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="grid" data-store-view>
+      <div>
+        {% if localeStores != blank %}
+          <div class="sticky top-[var(--sticky-offset,0)] flex items-center gap-2 bg-primary-bg py-4">
+            {{ localization.country | image_url: width: 32 | image_tag }}
+            <p>
+              {{ localization.country }}
+              <span class="text-sm text-accent-1">
+                {% if stores.size > 1 %}
+                  {{- 'sections.store_finder.stores_count_label' | t: count: stores.size -}}
+                {% else %}
+                  {{- 'sections.store_finder.store_count_label' | t: count: stores.size -}}
+                {% endif %}
+              </span>
+            </p>
+          </div>
+        {% endif %}
+
+        <ul class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {% for store in stores %}
+            <li class="rounded border border-accent-2-bg p-6">
+              <h3 class="h5 min-h-[3.12rem] font-bold line-clamp-2">{{ store.company }}</h3>
+              <div class="flex justify-between">
+                <a
+                  href="https://maps.google.com?daddr={{ store.address }} {{ store.zipcode }} {{ store.city }}"
+                  target="_blank"
+                >
+                  {{ store.address }}
+                  <br>
+                  {{ store.zipcode | append: ' ' | append: store.city }}
+                </a>
+
+                <div class="grid grid-rows-2 items-center justify-center gap-2">
+                  <div class="h-6 w-6">
+                    {% if store.address != blank
+                      and store.zipcode != blank
+                      and store.city != blank
+                    %}
+                      <a
+                        href="https://maps.google.com?daddr={{ store.address }} {{ store.zipcode }} {{ store.city }}"
+                        target="_blank"
+                        class="block text-accent-2"
+                      >
+                        {% render 'icons', icon: 'location-pin' %}
+                      </a>
+                    {% endif %}
+                  </div>
+                  <div class="h-6 w-6">
+                    {% if store.website != blank %}
+                      <a
+                        href="{{ store.website }}"
+                        target="_blank"
+                        class="block text-accent-2"
+                      >
+                        {% render 'icons', icon: 'arrow-up-right-from-square' %}
+                      </a>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <script type="application/json" data-stores>
+      {
+        "stores": [
+          {%- for store in shop.metaobjects['horizon-retailer'].values -%}
+            {{- store | json -}}
+            {%- unless forloop.last -%},{%- endunless -%}
+          {%- endfor -%}
+        ]
+      }
+    </script>
+  {% endpaginate %}
+</section>
+
+{% schema %}
+{
+  "name": "Store finder",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Store finder"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,31 @@
+{% if settings.free_shipping_threshold != 0 %}
+  {% assign remainder = settings.free_shipping_threshold
+    | minus: cart.total_price
+    | at_least: 0
+    | money
+  %}
+
+  {% assign progress = cart.total_price
+    | times: 1.0
+    | divided_by: settings.free_shipping_threshold
+    | times: 100
+    | at_most: 100
+  %}
+
+  <div class="px-4 lg:px-6" data-component="cart-shipping-bar">
+    <p class="pb-2 !text-sm" data-text>
+      {% if progress == 100 %}
+        {{ 'cart.shipping.threshold_reached_label' | t }}
+      {% else %}
+        {{ 'cart.shipping.threshold_remaining_label' | t: amount: remainder }}
+      {% endif %}
+    </p>
+    <div class="relative h-[5px] w-full overflow-hidden rounded-full bg-neutral-200">
+      <div
+        data-progress
+        class="absolute top-0 left-0 h-full rounded-l-full bg-black transition-[width] duration-300 ease-in-out{% if progress == 100 %} rounded-r-full{% endif %}"
+        style="width: {{ progress }}%;"
+      ></div>
+    </div>
+  </div>
+{% endif %}

@@ -1,0 +1,60 @@
+<div class="section bg-primary-bg color-scheme__{{ section.settings.color_scheme }} ">
+  {% if settings.enable_breadcrumbs %}
+    <section class="mb-4 lg:block">
+      {% render 'breadcrumbs' %}
+    </section>
+  {% endif %}
+
+  <h1
+    {% if section.settings.page_columns == 'columns-1' %}
+      class="mx-auto max-w-2xl px-6"
+    {% endif %}
+  >
+    {{ page.title }}
+  </h1>
+
+  {% if page.content != blank %}
+    <div class="mx-auto py-12 text-primary-text {% if section.settings.page_columns == "columns-1" %} max-w-2xl px-6{% endif %}">
+      <div class="rte {% if section.settings.page_columns != "columns-1" %}{{ section.settings.page_columns }} gap-24{% endif %} ">
+        {{ page.content }}
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% schema %}
+{
+  "name": "Page",
+  "settings": [
+    {
+      "type": "select",
+      "id": "page_columns",
+      "label": "Max columns",
+      "options": [
+        {
+          "value": "columns-1",
+          "label": "1"
+        },
+        {
+          "value": "md:columns-2",
+          "label": "2"
+        },
+        {
+          "value": "md:columns-2 lg:columns-3",
+          "label": "3"
+        },
+        {
+          "value": "md:columns-2 lg:columns-3 xl:columns-4",
+          "label": "4"
+        }
+      ],
+      "default": "columns-1"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    }
+  ]
+}
+{% endschema %}

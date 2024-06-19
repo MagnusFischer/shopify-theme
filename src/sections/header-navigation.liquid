@@ -1,0 +1,1754 @@
+<style>
+  #shopify-section-{{ section.id }} {
+    --header-grid-template: "main-nav logo secondary-nav" / minmax(0, 1fr) auto minmax(0, 1fr);
+    position: {% if section.settings.sticky %}sticky{% else %}relative{% endif %};
+    top: 0;
+    z-index: 40;
+
+    {%- if section.settings.logo != blank -%}
+      --header-logo-width: {{ section.settings.logo_width }}px;
+      --header-logo-height: {{ section.settings.logo_width | divided_by: section.settings.logo.aspect_ratio | round }}px;
+    {%- endif -%}
+  }
+
+  {%- if section.settings.layout contains 'logo_left' -%}
+    @media screen and (min-width: 1024px) {
+      #shopify-section-{{ section.id }} {
+        --header-grid-template: "logo main-nav secondary-nav" / {% if section.settings.layout == 'logo_left_navigation_inline' %}auto minmax(0, 1fr) minmax(0, max-content){% else %}minmax(0, 1fr) fit-content(70%) minmax(0, 1fr){% endif %};
+      }
+    }
+  {%- endif -%}
+
+  {%- if section.settings.layout == 'logo_center_navigation_newline' -%}
+    @media screen and (min-width: 1024px) {
+      #shopify-section-{{ section.id }} {
+        --header-grid-template: "main-nav logo secondary-nav" / minmax(0, 1fr) fit-content(70%) minmax(0, 1fr);
+
+        .header__navigation--desktop-menu {
+          grid-row-start: 2;
+          grid-column: 1 / span 3;
+        }
+      }
+    }
+  {%- endif -%}
+</style>
+
+<header
+  class="header__navigation color-scheme__{{ section.settings.color_scheme }} "
+  data-component="navigation"
+>
+  {%- capture logo_content -%}
+    {%- if section.settings.logo -%}
+      {%- assign logo_alt = section.settings.logo.alt | default: shop.name | escape -%}
+      {%- capture sizes -%}{{ section.settings.logo_width }}px{%- endcapture -%}
+      {%- capture widths -%}{{ section.settings.logo_width }}{%- endcapture -%}
+      {{- section.settings.logo 
+        | image_url: width: section.settings.logo.width 
+        | image_tag: sizes: sizes, widths: widths, class: 'header__logo--image', alt: logo_alt
+      -}}
+    {%- else -%}
+      <span>{{ shop.name }}</span>
+    {%- endif -%}
+  {%- endcapture -%}
+
+  <a class="header__navigation--logo flex h-full items-center" href="{{ routes.root_url }}">
+    {{ logo_content }}
+  </a>
+
+  <nav class="header__navigation--desktop-menu">
+    <ul class="flex h-full">
+      <li
+        class="flex h-full cursor-pointer items-center py-5 px-2 lg:hidden lg:p-5 lg:px-2"
+        data-load="navigation-drawer"
+      >
+        <span class="block h-6 w-6">
+          {% render 'icons', icon: 'menu' %}
+        </span>
+      </li>
+
+      {% if settings.enable_search %}
+        <li
+          class="flex h-full cursor-pointer items-center py-5 px-2 lg:hidden lg:p-5 lg:px-2"
+          data-load="predictive-search"
+        >
+          <span class="block h-6 w-6">
+            {% render 'icons', icon: 'search' %}
+          </span>
+        </li>
+      {% endif %}
+
+      {% for linkItem in section.settings.navigation_desktop.links %}
+        {%- liquid
+          assign mega_menu_block = ''
+          assign link_title_downcase = linkItem.title | strip | downcase
+          for block in section.blocks
+            assign menu_item_downcase = block.settings.menu_item | strip | downcase
+            if menu_item_downcase == link_title_downcase
+              assign mega_menu_block = block
+            endif
+          endfor
+        -%}
+
+        <li class="group hidden lg:block{% if mega_menu_block.settings.layout == 'card' %} relative{% endif %}{% if mega_menu_block != '' %} megamenu__parent{% endif %}">
+          <a
+            class="header__navigation--item flex h-full items-center whitespace-nowrap py-4 px-6 font-bold"
+            href="{{ linkItem.url }}"
+          >
+            {{ linkItem.title }}
+          </a>
+          {%- liquid
+            if mega_menu_block != ''
+              render 'megamenu', link: linkItem, block: mega_menu_block
+            endif
+          -%}
+        </li>
+      {% endfor %}
+      <div class="megamenu__overlay"></div>
+    </ul>
+  </nav>
+
+  <div class="header__navigation--secondary-menu ml-auto flex items-center gap-2">
+    {% if settings.enable_search %}
+      <div class="relative hidden w-64 lg:block">
+        <span class="pointer-events-none absolute top-0 bottom-0 left-0 m-auto mx-4 block h-6 w-6 text-accent-1">
+          {% render 'icons', icon: 'search' %}
+        </span>
+        <input
+          class="w-full rounded border-none bg-accent-1-bg py-3 pl-12 pr-3 text-secondary-text placeholder:text-accent-1"
+          type="text"
+          placeholder="{{ 'search.predictive.input_placeholder_label' | t }}"
+          data-load="predictive-search"
+        >
+      </div>
+    {% endif %}
+
+    <ul class="flex h-full items-center lg:gap-2" data-secondary-navigation>
+      {% if shop.customer_accounts_enabled %}
+        <li>
+          <a
+            class="flex h-full cursor-pointer items-center py-5 px-2 lg:p-5 lg:px-2"
+            href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
+            aria-label="{{ 'accessibility.customer.profile_icon_label' | t }}"
+          >
+            <span class="block h-6 w-6">
+              {% render 'icons', icon: 'profile' %}
+            </span>
+          </a>
+        </li>
+      {% endif %}
+
+      <li
+        class="flex h-full cursor-pointer items-center py-5 px-2 lg:p-5 lg:px-2{% if settings.cart_type == 'page' %} relative{% endif %}"
+        {% if settings.cart_type == 'drawer' %}
+          data-toggle="cart-drawer"
+        {% endif %}
+      >
+        <span class="block h-6 w-6">
+          {% render 'icons', icon: settings.cart_icon %}
+        </span>
+        <p class="text-sm font-bold" data-cart-count>
+          {{ cart.item_count }}
+        </p>
+
+        {% if settings.cart_type == 'page' %}
+          <a class="absolute top-0 left-0 h-full w-full" href="{{ routes.cart_url }}"></a>
+        {% endif %}
+      </li>
+    </ul>
+  </div>
+
+  {% render 'header-drawer', section: section %}
+</header>
+
+{% if template == 'product' %}
+  {% render 'product-sticky-atc' %}
+{% endif %}
+
+<script>
+  document.documentElement.style.setProperty(
+    '--navigation-height',
+    Math.round(document.getElementById('shopify-section-{{ section.id }}').clientHeight) + 'px'
+  );
+  {% if section.settings.sticky %}
+    document.documentElement.style.setProperty(
+      '--sticky-offset',
+      Math.round(document.getElementById('shopify-section-{{ section.id }}').clientHeight) + 'px'
+    );
+  {% endif %}
+  document.documentElement.style.setProperty(
+    '--secondary-nav-width',
+    document.querySelector('[data-secondary-navigation]').clientWidth + 'px'
+  );
+</script>
+
+{% schema %}
+{
+  "name": "Navigation",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Image",
+      "info": "280 x 80px .png recommended"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 60,
+      "max": 300,
+      "step": 10,
+      "label": "Width",
+      "unit": "px",
+      "default": 120
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky",
+      "label": "Enable sticky header",
+      "default": true
+    },
+    {
+      "type": "link_list",
+      "id": "navigation_desktop",
+      "label": "Desktop navigation",
+      "default": "main-menu"
+    },
+    {
+      "type": "text",
+      "id": "navigation_mobile_title",
+      "label": "Mobile navigation title",
+      "default": "Menu"
+    },
+    {
+      "type": "link_list",
+      "id": "navigation_mobile",
+      "label": "Mobile navigation",
+      "default": "main-menu"
+    },
+    {
+      "type": "text",
+      "id": "navigation_secondary_title",
+      "label": "Secondary navigation title",
+      "default": "Info"
+    },
+    {
+      "type": "link_list",
+      "id": "navigation_secondary",
+      "label": "Secondary navigation",
+      "info": "Only shown in mobile navigation drawer. Disabled if left blank."
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Desktop",
+      "options": [
+        {
+          "value": "logo_left_navigation_inline",
+          "label": "Logo left, navigation inline"
+        },
+        {
+          "value": "logo_left_navigation_center",
+          "label": "Logo left, navigation center"
+        },
+        {
+          "value": "logo_center_navigation_inline",
+          "label": "Logo center, navigation inline"
+        },
+        {
+          "value": "logo_center_navigation_newline",
+          "label": "Logo center, navigation newline"
+        }
+      ],
+      "default": "logo_left_navigation_inline"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-2",
+      "label": "Color Scheme"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "mega-menu",
+      "name": "Mega menu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "menu_item",
+          "label": "Menu item",
+          "info": "Enter menu item to apply a mega menu dropdown."
+        },
+        {
+          "type": "select",
+          "id": "layout",
+          "label": "Layout",
+          "options": [
+            {
+              "value": "card",
+              "label": "Card"
+            },
+            {
+              "value": "tab",
+              "label": "Tab"
+            }
+          ],
+          "default": "card"
+        },
+        {
+          "type": "header",
+          "content": "Grid 1"
+        },
+        {
+          "type": "image_picker",
+          "id": "grid-1-custom-icon",
+          "label": "Custom icon"
+        },
+        {
+          "type": "select",
+          "id": "grid-1-icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "star",
+              "label": "Star"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "heart",
+              "label": "Heart"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "gift",
+              "label": "Gift"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "trophy",
+              "label": "Trophy"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "cart",
+              "label": "Cart"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "bag",
+              "label": "Bag"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "basket",
+              "label": "Basket"
+            },
+            {
+              "group": "Communication",
+              "value": "mail",
+              "label": "Mail"
+            },
+            {
+              "group": "Communication",
+              "value": "phone",
+              "label": "Phone"
+            },
+            {
+              "group": "Communication",
+              "value": "send",
+              "label": "Send"
+            },
+            {
+              "group": "Communication",
+              "value": "party",
+              "label": "Party"
+            },
+            {
+              "group": "Communication",
+              "value": "circle-exclamation",
+              "label": "Circle-exclamation"
+            },
+            {
+              "group": "Communication",
+              "value": "circle-question",
+              "label": "Circle-question"
+            },
+            {
+              "group": "Communication",
+              "value": "circle-info",
+              "label": "Circle-info"
+            },
+            {
+              "group": "Communication",
+              "value": "message-chat",
+              "label": "Message-chat"
+            },
+            {
+              "group": "Communication",
+              "value": "message-heart",
+              "label": "Message-heart"
+            },
+            {
+              "group": "Communication",
+              "value": "message-lines",
+              "label": "Message-lines"
+            },
+            {
+              "group": "Communication",
+              "value": "message-info",
+              "label": "Message-info"
+            },
+            {
+              "group": "Communication",
+              "value": "message-exclamation",
+              "label": "Message-exclamation"
+            },
+            {
+              "group": "Arrows",
+              "value": "rotate",
+              "label": "Rotate"
+            },
+            {
+              "group": "Arrows",
+              "value": "infinity",
+              "label": "Infinity"
+            },
+            {
+              "group": "Arrows",
+              "value": "loop",
+              "label": "Loop"
+            },
+            {
+              "group": "Arrows",
+              "value": "refresh",
+              "label": "Refresh"
+            },
+            {
+              "group": "Arrows",
+              "value": "repeat",
+              "label": "Repeat"
+            },
+            {
+              "group": "Arrows",
+              "value": "shuffle",
+              "label": "Shuffle"
+            },
+            {
+              "group": "Devices",
+              "value": "camera",
+              "label": "Camera"
+            },
+            {
+              "group": "Devices",
+              "value": "headphones",
+              "label": "Headphones"
+            },
+            {
+              "group": "Devices",
+              "value": "keyboard",
+              "label": "Keyboard"
+            },
+            {
+              "group": "Devices",
+              "value": "microphone",
+              "label": "Microphone"
+            },
+            {
+              "group": "Devices",
+              "value": "laptop",
+              "label": "Laptop"
+            },
+            {
+              "group": "Devices",
+              "value": "mobile",
+              "label": "Mobile"
+            },
+            {
+              "group": "Devices",
+              "value": "tablet",
+              "label": "Tablet"
+            },
+            {
+              "group": "Devices",
+              "value": "tv",
+              "label": "Tv"
+            },
+            {
+              "group": "Devices",
+              "value": "watch",
+              "label": "Watch"
+            },
+            {
+              "group": "Automotive",
+              "value": "truck",
+              "label": "Truck"
+            },
+            {
+              "group": "Automotive",
+              "value": "car",
+              "label": "Car"
+            },
+            {
+              "group": "Automotive",
+              "value": "motorcycle",
+              "label": "Motorcycle"
+            },
+            {
+              "group": "Automotive",
+              "value": "rocket",
+              "label": "Rocket"
+            },
+            {
+              "group": "Automotive",
+              "value": "engine",
+              "label": "Engine"
+            },
+            {
+              "group": "Automotive",
+              "value": "gauge",
+              "label": "Gauge"
+            },
+            {
+              "group": "Buildings",
+              "value": "house",
+              "label": "House"
+            },
+            {
+              "group": "Buildings",
+              "value": "hotel",
+              "label": "Hotel"
+            },
+            {
+              "group": "Buildings",
+              "value": "shop",
+              "label": "Shop"
+            },
+            {
+              "group": "Buildings",
+              "value": "city",
+              "label": "City"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud",
+              "label": "Cloud"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud-rain",
+              "label": "Cloud-rain"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud-sun",
+              "label": "Cloud-sun"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud-thunder",
+              "label": "Cloud-thunder"
+            },
+            {
+              "group": "Weather",
+              "value": "umbrella",
+              "label": "Umbrella"
+            },
+            {
+              "group": "Weather",
+              "value": "water",
+              "label": "Water"
+            },
+            {
+              "group": "Weather",
+              "value": "snow",
+              "label": "Snow"
+            },
+            {
+              "group": "Weather",
+              "value": "droplet",
+              "label": "Droplet"
+            },
+            {
+              "group": "Halloween",
+              "value": "bat",
+              "label": "Bat"
+            },
+            {
+              "group": "Halloween",
+              "value": "ghost",
+              "label": "Ghost"
+            },
+            {
+              "group": "Halloween",
+              "value": "spider",
+              "label": "Spider"
+            },
+            {
+              "group": "Halloween",
+              "value": "bones",
+              "label": "Bones"
+            },
+            {
+              "group": "Halloween",
+              "value": "jack-o-lantern",
+              "label": "Jack-o-lantern"
+            },
+            {
+              "group": "Holidays",
+              "value": "tree-decorated",
+              "label": "Tree-decorated"
+            },
+            {
+              "group": "Holidays",
+              "value": "cookie-man",
+              "label": "Cookie-man"
+            },
+            {
+              "group": "Holidays",
+              "value": "snowman",
+              "label": "Snowman"
+            },
+            {
+              "group": "Holidays",
+              "value": "stocking",
+              "label": "Stocking"
+            },
+            {
+              "group": "Holidays",
+              "value": "angel",
+              "label": "Angel"
+            },
+            {
+              "group": "Holidays",
+              "value": "snowflake",
+              "label": "Snowflake"
+            }
+          ],
+          "default": "none"
+        },
+        {
+          "type": "color",
+          "id": "grid-1-background-color",
+          "label": "Background color",
+          "default": "#E4E4E7",
+          "info": "Only applicable if using an icon"
+        },
+        {
+          "type": "color",
+          "id": "grid-1-icon-color",
+          "label": "Icon color",
+          "default": "#525252",
+          "info": "Only applicable if using an icon"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "grid-1-heading",
+          "label": "Heading"
+        },
+        {
+          "type": "url",
+          "id": "grid-1-url",
+          "label": "Link"
+        },
+        {
+          "type": "header",
+          "content": "Grid 2"
+        },
+        {
+          "type": "image_picker",
+          "id": "grid-2-custom-icon",
+          "label": "Custom icon"
+        },
+        {
+          "type": "select",
+          "id": "grid-2-icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "star",
+              "label": "Star"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "heart",
+              "label": "Heart"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "gift",
+              "label": "Gift"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "trophy",
+              "label": "Trophy"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "cart",
+              "label": "Cart"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "bag",
+              "label": "Bag"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "basket",
+              "label": "Basket"
+            },
+            {
+              "group": "Communication",
+              "value": "mail",
+              "label": "Mail"
+            },
+            {
+              "group": "Communication",
+              "value": "phone",
+              "label": "Phone"
+            },
+            {
+              "group": "Communication",
+              "value": "send",
+              "label": "Send"
+            },
+            {
+              "group": "Communication",
+              "value": "party",
+              "label": "Party"
+            },
+            {
+              "group": "Communication",
+              "value": "circle-exclamation",
+              "label": "Circle-exclamation"
+            },
+            {
+              "group": "Communication",
+              "value": "circle-question",
+              "label": "Circle-question"
+            },
+            {
+              "group": "Communication",
+              "value": "circle-info",
+              "label": "Circle-info"
+            },
+            {
+              "group": "Communication",
+              "value": "message-chat",
+              "label": "Message-chat"
+            },
+            {
+              "group": "Communication",
+              "value": "message-heart",
+              "label": "Message-heart"
+            },
+            {
+              "group": "Communication",
+              "value": "message-lines",
+              "label": "Message-lines"
+            },
+            {
+              "group": "Communication",
+              "value": "message-info",
+              "label": "Message-info"
+            },
+            {
+              "group": "Communication",
+              "value": "message-exclamation",
+              "label": "Message-exclamation"
+            },
+            {
+              "group": "Arrows",
+              "value": "rotate",
+              "label": "Rotate"
+            },
+            {
+              "group": "Arrows",
+              "value": "infinity",
+              "label": "Infinity"
+            },
+            {
+              "group": "Arrows",
+              "value": "loop",
+              "label": "Loop"
+            },
+            {
+              "group": "Arrows",
+              "value": "refresh",
+              "label": "Refresh"
+            },
+            {
+              "group": "Arrows",
+              "value": "repeat",
+              "label": "Repeat"
+            },
+            {
+              "group": "Arrows",
+              "value": "shuffle",
+              "label": "Shuffle"
+            },
+            {
+              "group": "Devices",
+              "value": "camera",
+              "label": "Camera"
+            },
+            {
+              "group": "Devices",
+              "value": "headphones",
+              "label": "Headphones"
+            },
+            {
+              "group": "Devices",
+              "value": "keyboard",
+              "label": "Keyboard"
+            },
+            {
+              "group": "Devices",
+              "value": "microphone",
+              "label": "Microphone"
+            },
+            {
+              "group": "Devices",
+              "value": "laptop",
+              "label": "Laptop"
+            },
+            {
+              "group": "Devices",
+              "value": "mobile",
+              "label": "Mobile"
+            },
+            {
+              "group": "Devices",
+              "value": "tablet",
+              "label": "Tablet"
+            },
+            {
+              "group": "Devices",
+              "value": "tv",
+              "label": "Tv"
+            },
+            {
+              "group": "Devices",
+              "value": "watch",
+              "label": "Watch"
+            },
+            {
+              "group": "Automotive",
+              "value": "truck",
+              "label": "Truck"
+            },
+            {
+              "group": "Automotive",
+              "value": "car",
+              "label": "Car"
+            },
+            {
+              "group": "Automotive",
+              "value": "motorcycle",
+              "label": "Motorcycle"
+            },
+            {
+              "group": "Automotive",
+              "value": "rocket",
+              "label": "Rocket"
+            },
+            {
+              "group": "Automotive",
+              "value": "engine",
+              "label": "Engine"
+            },
+            {
+              "group": "Automotive",
+              "value": "gauge",
+              "label": "Gauge"
+            },
+            {
+              "group": "Buildings",
+              "value": "house",
+              "label": "House"
+            },
+            {
+              "group": "Buildings",
+              "value": "hotel",
+              "label": "Hotel"
+            },
+            {
+              "group": "Buildings",
+              "value": "shop",
+              "label": "Shop"
+            },
+            {
+              "group": "Buildings",
+              "value": "city",
+              "label": "City"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud",
+              "label": "Cloud"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud-rain",
+              "label": "Cloud-rain"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud-sun",
+              "label": "Cloud-sun"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud-thunder",
+              "label": "Cloud-thunder"
+            },
+            {
+              "group": "Weather",
+              "value": "umbrella",
+              "label": "Umbrella"
+            },
+            {
+              "group": "Weather",
+              "value": "water",
+              "label": "Water"
+            },
+            {
+              "group": "Weather",
+              "value": "snow",
+              "label": "Snow"
+            },
+            {
+              "group": "Weather",
+              "value": "droplet",
+              "label": "Droplet"
+            },
+            {
+              "group": "Halloween",
+              "value": "bat",
+              "label": "Bat"
+            },
+            {
+              "group": "Halloween",
+              "value": "ghost",
+              "label": "Ghost"
+            },
+            {
+              "group": "Halloween",
+              "value": "spider",
+              "label": "Spider"
+            },
+            {
+              "group": "Halloween",
+              "value": "bones",
+              "label": "Bones"
+            },
+            {
+              "group": "Halloween",
+              "value": "jack-o-lantern",
+              "label": "Jack-o-lantern"
+            },
+            {
+              "group": "Holidays",
+              "value": "tree-decorated",
+              "label": "Tree-decorated"
+            },
+            {
+              "group": "Holidays",
+              "value": "cookie-man",
+              "label": "Cookie-man"
+            },
+            {
+              "group": "Holidays",
+              "value": "snowman",
+              "label": "Snowman"
+            },
+            {
+              "group": "Holidays",
+              "value": "stocking",
+              "label": "Stocking"
+            },
+            {
+              "group": "Holidays",
+              "value": "angel",
+              "label": "Angel"
+            },
+            {
+              "group": "Holidays",
+              "value": "snowflake",
+              "label": "Snowflake"
+            }
+          ],
+          "default": "none"
+        },
+        {
+          "type": "color",
+          "id": "grid-2-background-color",
+          "label": "Background color",
+          "default": "#E4E4E7",
+          "info": "Only applicable if using an icon"
+        },
+        {
+          "type": "color",
+          "id": "grid-2-icon-color",
+          "label": "Icon color",
+          "default": "#525252",
+          "info": "Only applicable if using an icon"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "grid-2-heading",
+          "label": "Heading"
+        },
+        {
+          "type": "url",
+          "id": "grid-2-url",
+          "label": "Link"
+        },
+        {
+          "type": "header",
+          "content": "Grid 3"
+        },
+        {
+          "type": "image_picker",
+          "id": "grid-3-custom-icon",
+          "label": "Custom icon"
+        },
+        {
+          "type": "select",
+          "id": "grid-3-icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "star",
+              "label": "Star"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "heart",
+              "label": "Heart"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "gift",
+              "label": "Gift"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "trophy",
+              "label": "Trophy"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "cart",
+              "label": "Cart"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "bag",
+              "label": "Bag"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "basket",
+              "label": "Basket"
+            },
+            {
+              "group": "Communication",
+              "value": "mail",
+              "label": "Mail"
+            },
+            {
+              "group": "Communication",
+              "value": "phone",
+              "label": "Phone"
+            },
+            {
+              "group": "Communication",
+              "value": "send",
+              "label": "Send"
+            },
+            {
+              "group": "Communication",
+              "value": "party",
+              "label": "Party"
+            },
+            {
+              "group": "Communication",
+              "value": "circle-exclamation",
+              "label": "Circle-exclamation"
+            },
+            {
+              "group": "Communication",
+              "value": "circle-question",
+              "label": "Circle-question"
+            },
+            {
+              "group": "Communication",
+              "value": "circle-info",
+              "label": "Circle-info"
+            },
+            {
+              "group": "Communication",
+              "value": "message-chat",
+              "label": "Message-chat"
+            },
+            {
+              "group": "Communication",
+              "value": "message-heart",
+              "label": "Message-heart"
+            },
+            {
+              "group": "Communication",
+              "value": "message-lines",
+              "label": "Message-lines"
+            },
+            {
+              "group": "Communication",
+              "value": "message-info",
+              "label": "Message-info"
+            },
+            {
+              "group": "Communication",
+              "value": "message-exclamation",
+              "label": "Message-exclamation"
+            },
+            {
+              "group": "Arrows",
+              "value": "rotate",
+              "label": "Rotate"
+            },
+            {
+              "group": "Arrows",
+              "value": "infinity",
+              "label": "Infinity"
+            },
+            {
+              "group": "Arrows",
+              "value": "loop",
+              "label": "Loop"
+            },
+            {
+              "group": "Arrows",
+              "value": "refresh",
+              "label": "Refresh"
+            },
+            {
+              "group": "Arrows",
+              "value": "repeat",
+              "label": "Repeat"
+            },
+            {
+              "group": "Arrows",
+              "value": "shuffle",
+              "label": "Shuffle"
+            },
+            {
+              "group": "Devices",
+              "value": "camera",
+              "label": "Camera"
+            },
+            {
+              "group": "Devices",
+              "value": "headphones",
+              "label": "Headphones"
+            },
+            {
+              "group": "Devices",
+              "value": "keyboard",
+              "label": "Keyboard"
+            },
+            {
+              "group": "Devices",
+              "value": "microphone",
+              "label": "Microphone"
+            },
+            {
+              "group": "Devices",
+              "value": "laptop",
+              "label": "Laptop"
+            },
+            {
+              "group": "Devices",
+              "value": "mobile",
+              "label": "Mobile"
+            },
+            {
+              "group": "Devices",
+              "value": "tablet",
+              "label": "Tablet"
+            },
+            {
+              "group": "Devices",
+              "value": "tv",
+              "label": "Tv"
+            },
+            {
+              "group": "Devices",
+              "value": "watch",
+              "label": "Watch"
+            },
+            {
+              "group": "Automotive",
+              "value": "truck",
+              "label": "Truck"
+            },
+            {
+              "group": "Automotive",
+              "value": "car",
+              "label": "Car"
+            },
+            {
+              "group": "Automotive",
+              "value": "motorcycle",
+              "label": "Motorcycle"
+            },
+            {
+              "group": "Automotive",
+              "value": "rocket",
+              "label": "Rocket"
+            },
+            {
+              "group": "Automotive",
+              "value": "engine",
+              "label": "Engine"
+            },
+            {
+              "group": "Automotive",
+              "value": "gauge",
+              "label": "Gauge"
+            },
+            {
+              "group": "Buildings",
+              "value": "house",
+              "label": "House"
+            },
+            {
+              "group": "Buildings",
+              "value": "hotel",
+              "label": "Hotel"
+            },
+            {
+              "group": "Buildings",
+              "value": "shop",
+              "label": "Shop"
+            },
+            {
+              "group": "Buildings",
+              "value": "city",
+              "label": "City"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud",
+              "label": "Cloud"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud-rain",
+              "label": "Cloud-rain"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud-sun",
+              "label": "Cloud-sun"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud-thunder",
+              "label": "Cloud-thunder"
+            },
+            {
+              "group": "Weather",
+              "value": "umbrella",
+              "label": "Umbrella"
+            },
+            {
+              "group": "Weather",
+              "value": "water",
+              "label": "Water"
+            },
+            {
+              "group": "Weather",
+              "value": "snow",
+              "label": "Snow"
+            },
+            {
+              "group": "Weather",
+              "value": "droplet",
+              "label": "Droplet"
+            },
+            {
+              "group": "Halloween",
+              "value": "bat",
+              "label": "Bat"
+            },
+            {
+              "group": "Halloween",
+              "value": "ghost",
+              "label": "Ghost"
+            },
+            {
+              "group": "Halloween",
+              "value": "spider",
+              "label": "Spider"
+            },
+            {
+              "group": "Halloween",
+              "value": "bones",
+              "label": "Bones"
+            },
+            {
+              "group": "Halloween",
+              "value": "jack-o-lantern",
+              "label": "Jack-o-lantern"
+            },
+            {
+              "group": "Holidays",
+              "value": "tree-decorated",
+              "label": "Tree-decorated"
+            },
+            {
+              "group": "Holidays",
+              "value": "cookie-man",
+              "label": "Cookie-man"
+            },
+            {
+              "group": "Holidays",
+              "value": "snowman",
+              "label": "Snowman"
+            },
+            {
+              "group": "Holidays",
+              "value": "stocking",
+              "label": "Stocking"
+            },
+            {
+              "group": "Holidays",
+              "value": "angel",
+              "label": "Angel"
+            },
+            {
+              "group": "Holidays",
+              "value": "snowflake",
+              "label": "Snowflake"
+            }
+          ],
+          "default": "none"
+        },
+        {
+          "type": "color",
+          "id": "grid-3-background-color",
+          "label": "Background color",
+          "default": "#E4E4E7",
+          "info": "Only applicable if using an icon"
+        },
+        {
+          "type": "color",
+          "id": "grid-3-icon-color",
+          "label": "Icon color",
+          "default": "#525252",
+          "info": "Only applicable if using an icon"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "grid-3-heading",
+          "label": "Heading"
+        },
+        {
+          "type": "url",
+          "id": "grid-3-url",
+          "label": "Link"
+        },
+        {
+          "type": "header",
+          "content": "Grid 4"
+        },
+        {
+          "type": "image_picker",
+          "id": "grid-4-custom-icon",
+          "label": "Custom icon"
+        },
+        {
+          "type": "select",
+          "id": "grid-4-icon",
+          "label": "Icon",
+          "options": [
+            {
+              "value": "none",
+              "label": "None"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "star",
+              "label": "Star"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "heart",
+              "label": "Heart"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "gift",
+              "label": "Gift"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "trophy",
+              "label": "Trophy"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "cart",
+              "label": "Cart"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "bag",
+              "label": "Bag"
+            },
+            {
+              "group": "Ecommerce",
+              "value": "basket",
+              "label": "Basket"
+            },
+            {
+              "group": "Communication",
+              "value": "mail",
+              "label": "Mail"
+            },
+            {
+              "group": "Communication",
+              "value": "phone",
+              "label": "Phone"
+            },
+            {
+              "group": "Communication",
+              "value": "send",
+              "label": "Send"
+            },
+            {
+              "group": "Communication",
+              "value": "party",
+              "label": "Party"
+            },
+            {
+              "group": "Communication",
+              "value": "circle-exclamation",
+              "label": "Circle-exclamation"
+            },
+            {
+              "group": "Communication",
+              "value": "circle-question",
+              "label": "Circle-question"
+            },
+            {
+              "group": "Communication",
+              "value": "circle-info",
+              "label": "Circle-info"
+            },
+            {
+              "group": "Communication",
+              "value": "message-chat",
+              "label": "Message-chat"
+            },
+            {
+              "group": "Communication",
+              "value": "message-heart",
+              "label": "Message-heart"
+            },
+            {
+              "group": "Communication",
+              "value": "message-lines",
+              "label": "Message-lines"
+            },
+            {
+              "group": "Communication",
+              "value": "message-info",
+              "label": "Message-info"
+            },
+            {
+              "group": "Communication",
+              "value": "message-exclamation",
+              "label": "Message-exclamation"
+            },
+            {
+              "group": "Arrows",
+              "value": "rotate",
+              "label": "Rotate"
+            },
+            {
+              "group": "Arrows",
+              "value": "infinity",
+              "label": "Infinity"
+            },
+            {
+              "group": "Arrows",
+              "value": "loop",
+              "label": "Loop"
+            },
+            {
+              "group": "Arrows",
+              "value": "refresh",
+              "label": "Refresh"
+            },
+            {
+              "group": "Arrows",
+              "value": "repeat",
+              "label": "Repeat"
+            },
+            {
+              "group": "Arrows",
+              "value": "shuffle",
+              "label": "Shuffle"
+            },
+            {
+              "group": "Devices",
+              "value": "camera",
+              "label": "Camera"
+            },
+            {
+              "group": "Devices",
+              "value": "headphones",
+              "label": "Headphones"
+            },
+            {
+              "group": "Devices",
+              "value": "keyboard",
+              "label": "Keyboard"
+            },
+            {
+              "group": "Devices",
+              "value": "microphone",
+              "label": "Microphone"
+            },
+            {
+              "group": "Devices",
+              "value": "laptop",
+              "label": "Laptop"
+            },
+            {
+              "group": "Devices",
+              "value": "mobile",
+              "label": "Mobile"
+            },
+            {
+              "group": "Devices",
+              "value": "tablet",
+              "label": "Tablet"
+            },
+            {
+              "group": "Devices",
+              "value": "tv",
+              "label": "Tv"
+            },
+            {
+              "group": "Devices",
+              "value": "watch",
+              "label": "Watch"
+            },
+            {
+              "group": "Automotive",
+              "value": "truck",
+              "label": "Truck"
+            },
+            {
+              "group": "Automotive",
+              "value": "car",
+              "label": "Car"
+            },
+            {
+              "group": "Automotive",
+              "value": "motorcycle",
+              "label": "Motorcycle"
+            },
+            {
+              "group": "Automotive",
+              "value": "rocket",
+              "label": "Rocket"
+            },
+            {
+              "group": "Automotive",
+              "value": "engine",
+              "label": "Engine"
+            },
+            {
+              "group": "Automotive",
+              "value": "gauge",
+              "label": "Gauge"
+            },
+            {
+              "group": "Buildings",
+              "value": "house",
+              "label": "House"
+            },
+            {
+              "group": "Buildings",
+              "value": "hotel",
+              "label": "Hotel"
+            },
+            {
+              "group": "Buildings",
+              "value": "shop",
+              "label": "Shop"
+            },
+            {
+              "group": "Buildings",
+              "value": "city",
+              "label": "City"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud",
+              "label": "Cloud"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud-rain",
+              "label": "Cloud-rain"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud-sun",
+              "label": "Cloud-sun"
+            },
+            {
+              "group": "Weather",
+              "value": "cloud-thunder",
+              "label": "Cloud-thunder"
+            },
+            {
+              "group": "Weather",
+              "value": "umbrella",
+              "label": "Umbrella"
+            },
+            {
+              "group": "Weather",
+              "value": "water",
+              "label": "Water"
+            },
+            {
+              "group": "Weather",
+              "value": "snow",
+              "label": "Snow"
+            },
+            {
+              "group": "Weather",
+              "value": "droplet",
+              "label": "Droplet"
+            },
+            {
+              "group": "Halloween",
+              "value": "bat",
+              "label": "Bat"
+            },
+            {
+              "group": "Halloween",
+              "value": "ghost",
+              "label": "Ghost"
+            },
+            {
+              "group": "Halloween",
+              "value": "spider",
+              "label": "Spider"
+            },
+            {
+              "group": "Halloween",
+              "value": "bones",
+              "label": "Bones"
+            },
+            {
+              "group": "Halloween",
+              "value": "jack-o-lantern",
+              "label": "Jack-o-lantern"
+            },
+            {
+              "group": "Holidays",
+              "value": "tree-decorated",
+              "label": "Tree-decorated"
+            },
+            {
+              "group": "Holidays",
+              "value": "cookie-man",
+              "label": "Cookie-man"
+            },
+            {
+              "group": "Holidays",
+              "value": "snowman",
+              "label": "Snowman"
+            },
+            {
+              "group": "Holidays",
+              "value": "stocking",
+              "label": "Stocking"
+            },
+            {
+              "group": "Holidays",
+              "value": "angel",
+              "label": "Angel"
+            },
+            {
+              "group": "Holidays",
+              "value": "snowflake",
+              "label": "Snowflake"
+            }
+          ],
+          "default": "none"
+        },
+        {
+          "type": "color",
+          "id": "grid-4-background-color",
+          "label": "Background color",
+          "default": "#E4E4E7",
+          "info": "Only applicable if using an icon"
+        },
+        {
+          "type": "color",
+          "id": "grid-4-icon-color",
+          "label": "Icon color",
+          "default": "#525252",
+          "info": "Only applicable if using an icon"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "grid-4-heading",
+          "label": "Heading"
+        },
+        {
+          "type": "url",
+          "id": "grid-4-url",
+          "label": "Link"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

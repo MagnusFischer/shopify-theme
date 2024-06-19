@@ -1,0 +1,55 @@
+@layer components {
+  .carousel {
+    &:not(.swiper-initialized) .swiper-wrapper {
+      @apply lg:gap-4;
+    }
+
+    &--text-with-icons {
+      &:not(.swiper-initialized) .swiper-wrapper {
+        @apply max-lg:gap-6;
+      }
+
+      .swiper-pagination {
+        @apply flex items-center justify-center gap-3 pt-6 lg:hidden;
+
+        .swiper-pagination-bullet {
+          @apply h-3 w-3 rounded-full bg-primary-text opacity-10 transition-opacity duration-300 ease-in-out;
+
+          &.swiper-pagination-bullet-active {
+            @apply opacity-100;
+          }
+        }
+      }
+    }
+
+    &--collection {
+      @apply relative;
+
+      &:not(.swiper-initialized) .swiper-wrapper {
+        @apply lg:gap-4;
+      }
+
+      .carousel {
+        &--next,
+        &--prev {
+          @apply absolute top-0 bottom-0 z-10 m-auto h-12 w-12 rounded-full shadow-md;
+          @apply bg-secondary-button-bg text-secondary-button-text;
+          @apply flex items-center justify-center;
+          @apply transition-transform duration-200 hover:scale-110;
+
+          &[disabled] {
+            @apply hidden;
+          }
+        }
+
+        &--next {
+          @apply right-4;
+        }
+
+        &--prev {
+          @apply left-4;
+        }
+      }
+    }
+  }
+}

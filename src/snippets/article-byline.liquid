@@ -1,0 +1,14 @@
+{% assign wordCount = article.content | append: article.title | append: article.excerpt | size %}
+{% assign readTime = wordCount | divided_by: 200 | ceil %}
+
+<ul class="article__info">
+  {% if show_author %}
+    <li>{{ article.author }}</li>
+  {% endif %}
+
+  {% if show_date %}
+    <li>{{ article.published_at | date: format: 'date' }}</li>
+  {% endif %}
+
+  <li>{{ 'blog.article.read_time_label' | t: minutes: readTime }}</li>
+</ul>

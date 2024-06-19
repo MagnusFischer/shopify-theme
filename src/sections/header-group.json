@@ -1,0 +1,55 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "header-announcement": {
+      "type": "header-announcement",
+      "blocks": {
+        "b5ef7f1b-a80f-46fe-92cd-0c15c39e37de": {
+          "type": "Announcement",
+          "settings": {
+            "title": "Free shipping"
+          }
+        },
+        "b66d7d41-4a3d-4e1a-9f9b-405c8c672b5b": {
+          "type": "Announcement",
+          "settings": {
+            "title": "★★★★★ 4,9 Trustpilot"
+          }
+        },
+        "af501a83-e70a-4479-a649-26658006e177": {
+          "type": "Announcement",
+          "settings": {
+            "title": "1-2 days shipping"
+          }
+        }
+      },
+      "block_order": [
+        "b5ef7f1b-a80f-46fe-92cd-0c15c39e37de",
+        "b66d7d41-4a3d-4e1a-9f9b-405c8c672b5b",
+        "af501a83-e70a-4479-a649-26658006e177"
+      ],
+      "settings": {
+        "animation": "slide",
+        "timing": 500,
+        "color_scheme": "background-1"
+      }
+    },
+    "header-navigation": {
+      "type": "header-navigation",
+      "settings": {
+        "logo": "{{ shop.brand.logo }}",
+        "logo_width": 120,
+        "sticky": true,
+        "navigation_desktop": "main-menu",
+        "navigation_mobile_title": "Menu",
+        "navigation_mobile": "main-menu",
+        "navigation_secondary_title": "Info",
+        "navigation_secondary": "information",
+        "layout": "logo_center_navigation_inline",
+        "color_scheme": "background-2"
+      }
+    }
+  },
+  "order": ["header-announcement", "header-navigation"]
+}

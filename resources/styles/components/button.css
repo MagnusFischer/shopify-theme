@@ -1,0 +1,88 @@
+@layer components {
+  .button {
+    @apply relative block w-fit overflow-hidden rounded bg-black px-6 py-3 font-semibold;
+
+    &:disabled {
+      @apply cursor-not-allowed opacity-50;
+    }
+
+    span {
+      @apply relative z-[2] text-white transition-colors duration-200 ease-in-out;
+    }
+
+    &::before {
+      @apply absolute -left-[5%] top-0 bottom-0 z-[1] block h-full w-[150%] bg-neutral-700 transition-all duration-300 ease-in-out will-change-transform content-[''];
+
+      transform-origin: bottom left;
+      transform: rotate3d(0, 0, 1, 6deg) translate3d(-1.2em, 110%, 0);
+    }
+
+    &:not(:disabled):hover {
+      &::before {
+        transform: rotate3d(0, 0, 1, 0) translateZ(0);
+      }
+    }
+
+    &--primary {
+      @apply bg-primary-button-bg;
+
+      span {
+        @apply text-primary-button-text;
+      }
+
+      &::before {
+        @apply bg-primary-button-bg-hover;
+      }
+
+      &:not(:disabled):hover {
+        span {
+          @apply text-primary-button-text-hover;
+        }
+      }
+    }
+
+    &--secondary {
+      @apply bg-secondary-button-bg;
+
+      span {
+        @apply text-secondary-button-text;
+      }
+
+      &::before {
+        @apply bg-secondary-button-bg-hover;
+      }
+
+      &:not(:disabled):hover {
+        span {
+          @apply text-secondary-button-text-hover;
+        }
+      }
+    }
+
+    &--accent {
+      @apply bg-accent-button-bg;
+
+      span {
+        @apply text-accent-button-text;
+      }
+
+      &::before {
+        @apply bg-accent-button-bg-hover;
+      }
+
+      &:not(:disabled):hover {
+        span {
+          @apply text-accent-button-text-hover;
+
+          &.accent {
+            @apply bg-accent-button-bg;
+          }
+        }
+      }
+    }
+
+    &--small {
+      @apply px-2 py-1.5;
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{% if settings.enable_search %}
+  <div class="px-4">
+    <div class="relative w-full">
+      <span class="pointer-events-none absolute top-0 bottom-0 left-0 m-auto mx-3 block h-6 w-6 text-accent-1">
+        {% render 'icons', icon: 'search' %}
+      </span>
+      <input
+        class="w-full rounded border-none bg-secondary-bg py-3 pl-12 pr-3 text-secondary-text placeholder:text-accent-1"
+        type="text"
+        placeholder="{{ 'search.predictive.input_placeholder_label' | t }}"
+        data-load="predictive-search"
+      >
+    </div>
+  </div>
+{% endif %}

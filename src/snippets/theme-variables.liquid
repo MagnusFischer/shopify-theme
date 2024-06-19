@@ -1,0 +1,77 @@
+<script>
+  window.theme = {
+    cart: {{ cart | json }},
+    cart_type: {{ settings.cart_type | json }},
+    moneyFormat: {{ shop.money_format | json }},
+    strings: {
+      product: {
+        form: {
+          addToCart: {{ 'product.form.add_to_cart_button_label' | t | json }},
+          soldOut: {{ 'product.form.sold_out_button_label' | t | json }},
+          unavailable: {{ 'product.form.unavailable_button_label' | t | json }},
+          all_variants_in_cart: {{ 'product.form.variant_limit_button_label' | t | json }},
+          selectOption: {{ 'product.form.select_variant_button_label' | t | json }},
+        }
+      },
+      collection: {
+        pagination: {
+          loading: {{ 'collection.pagination.loading_label' | t | json }}
+        }
+      },
+      cart: {
+        shipping: {
+          threshold_remaining: {{ 'cart.shipping.threshold_remaining_label' | t | json }},
+          threshold_reached: {{ 'cart.shipping.threshold_reached_label' | t | json }}
+        },
+        errors: {
+          exceeded_inventory_limit: {{ 'cart.error.exceeded_inventory_limit' | t | json }}
+        }
+      },
+      accessibility: {
+        slideshow: {
+          load_slide: {{ 'accessibility.slideshow.load_slide_label' | t | json }},
+          of: {{ 'accessibility.slideshow.slide_of_label' | t | json }}
+        }
+      },
+      storeFinder: {
+        storesCount: {{ 'sections.store_finder.stores_count_label' | t | json }},
+        storeCount: {{ 'sections.store_finder.store_count_label' | t | json }},
+        noStoresFound: {{ 'sections.store_finder.no_stores_found_label' | t | json }}
+      },
+      backInStock: {
+        getNotifiedButtonLabel: {{ 'product.back_in_stock.get_notified_button_label' | t | json }}
+      }
+    },
+    free_shipping_threshold: {{ settings.free_shipping_threshold }},
+    klaviyo: {
+      publicApiKey: {{ settings.klaviyo_public_api_key | json }}
+    },
+
+    {%- capture chevron_right -%}{%- render 'icons', icon: 'chevron-right' -%}{%- endcapture -%}
+    {%- capture location_pin -%}{%- render 'icons', icon: 'location-pin' -%}{%- endcapture -%}
+    {%- capture arrow_from_square -%}{%- render 'icons', icon: 'arrow-up-right-from-square' -%}{%- endcapture -%}
+    icons: {
+      chevronRight: {{ chevron_right | strip | json }},
+      locationPin: {{ location_pin | strip | json }},
+      arrowFromSquare: {{ arrow_from_square | strip | json }}
+    }
+  };
+</script>
+
+<style>
+  :root {
+    --rounded-xs: {{ settings.block_border_radius | at_most: 4 | divided_by: 16.0 }}rem;
+    --rounded-sm: {{ settings.block_border_radius | divided_by: 16.0 | divided_by: 2.0 }}rem;
+    --rounded: {{ settings.block_border_radius | divided_by: 16.0 }}rem;
+    --rounded-lg: {{ settings.block_border_radius | divided_by: 16.0 | times: 2.0 }}rem;
+    --announcement-bar-height: 0px;
+    --container-max-width: {{ settings.page_width }}px;
+    --fullscreen-height: 100vh;
+    --navigation-height: 0px;
+    --announcement-bar-height: 0px;
+  }
+
+  .shopify-section:first-child {
+    --fullscreen-height: calc(100vh - var(--navigation-height) - var(--announcement-bar-height));
+  }
+</style>

@@ -1,0 +1,9 @@
+<div class="product__info--offer">
+  {% if block.settings.icon != 'none' %}
+    <span class="block h-6 w-6">
+      {% render 'customizer-icons', icon: block.settings.icon %}
+    </span>
+  {% endif %}
+
+  <p>{{ block.settings.title }}</p>
+</div>

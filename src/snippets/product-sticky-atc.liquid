@@ -1,0 +1,49 @@
+<div
+  class="product__sticky"
+  data-component="product-sticky-atc"
+>
+  <div class="block-container">
+    <div class="flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        {% if product.featured_image != blank %}
+          {{
+            product.featured_image
+            | image_url: width: 32
+            | image_tag:
+              loading: 'lazy',
+              sizes: '32px',
+              widths: '32',
+              class: 'rounded-xs bg-secondary-bg'
+          }}
+        {% else %}
+          {{ 'image' | placeholder_svg_tag: 'placeholder-svg placeholder rounded bg-secondary-bg' }}
+        {% endif %}
+        <p class="grid flex-col overflow-hidden">
+          <span class="block overflow-hidden text-ellipsis whitespace-nowrap lg:max-w-none">
+            {{- product.title -}}
+          </span>
+
+          <span class="text-sm">{{ product.price | money }}</span>
+        </p>
+      </div>
+
+      {%- if product.available -%}
+        <button
+          class="button button--primary flex shrink-0 gap-2 whitespace-nowrap py-2 px-4"
+          data-add-to-cart-button
+        >
+          <span class="block h-6 w-6 shrink-0">{% render 'icons', icon: 'cart' %}</span>
+          <span>{{ 'product.form.add_to_cart_button_label' | t }}</span>
+        </button>
+      {%- else -%}
+        <button
+          class="button button--primary shrink-0 whitespace-nowrap"
+          disabled
+          data-add-to-cart-button
+        >
+          <span>{{- 'product.form.sold_out_button_label' | t -}}</span>
+        </button>
+      {%- endif -%}
+    </div>
+  </div>
+</div>

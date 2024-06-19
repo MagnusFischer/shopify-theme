@@ -1,0 +1,50 @@
+<div class="section overflow-visible bg-primary-bg color-scheme__{{ section.settings.color_scheme }} ">
+  <section
+    id="{{ section.id }}"
+    data-component="collection"
+  >
+    {% if settings.enable_filters %}
+      {% render 'collection-filters', results: collection %}
+    {% endif %}
+
+    {% paginate collection.products by section.settings.products_per_page %}
+      <div data-product-grid data-section-id="{{ section.id }}">
+        <div
+          class="grid grid-cols-2 gap-4 gap-y-6 lg:grid-cols-4"
+          data-products
+        >
+          {% for product in collection.products %}
+            {% render 'product-item', product_item: product %}
+          {% endfor %}
+        </div>
+
+        {%- if paginate.pages > 1 -%}
+          {% render 'pagination', paginate: paginate %}
+        {%- endif -%}
+      </div>
+    {% endpaginate %}
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "Product grid",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 8,
+      "max": 40,
+      "step": 4,
+      "label": "Products per page",
+      "default": 16
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    }
+  ]
+}
+{% endschema %}

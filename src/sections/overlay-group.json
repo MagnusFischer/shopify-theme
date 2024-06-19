@@ -1,0 +1,49 @@
+{
+  "type": "custom.overlay",
+  "name": "Overlay group",
+  "sections": {
+    "cart-drawer": {
+      "type": "cart-drawer",
+      "blocks": {
+        "43303f19-197f-4e04-97f7-38ea1be67930": {
+          "type": "shipping-bar",
+          "settings": {}
+        },
+        "274dd151-9276-43c2-bd71-be28135651f3": {
+          "type": "line-items",
+          "settings": {}
+        },
+        "e523b421-444a-4005-8f77-e59799ea471d": {
+          "type": "order-note",
+          "settings": {}
+        },
+        "09514e93-c4b3-44bf-811b-2c7435b08899": {
+          "type": "footer",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "43303f19-197f-4e04-97f7-38ea1be67930",
+        "274dd151-9276-43c2-bd71-be28135651f3",
+        "e523b421-444a-4005-8f77-e59799ea471d",
+        "09514e93-c4b3-44bf-811b-2c7435b08899"
+      ],
+      "settings": {
+        "title": "Your cart is empty",
+        "links_title": "Explore what others are buying",
+        "links": "cart-drawer",
+        "show_products": true,
+        "products_title": "Top-selling products right now",
+        "products": ["summer-cap-beige", "cap-green", "cap-sort"],
+        "color_scheme": ""
+      }
+    },
+    "predictive-search": {
+      "type": "predictive-search",
+      "settings": {
+        "color_scheme": "background-2"
+      }
+    }
+  },
+  "order": ["cart-drawer", "predictive-search"]
+}

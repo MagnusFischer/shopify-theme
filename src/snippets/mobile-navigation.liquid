@@ -1,0 +1,104 @@
+<div class="flex flex-col gap-6">
+  <ul class="flex flex-col rounded bg-secondary-bg">
+    {% for link in links.links %}
+      <li
+        class="header__drawer__list--item"
+        {% if link.levels > 0 %}
+          data-open-menu="{% if index %}{{ index }}-{% endif %}{{ forloop.index }}"
+        {% endif %}
+      >
+        {% if link.levels > 0 %}
+          <button
+            class="flex w-full items-center justify-between whitespace-nowrap p-3"
+          >
+            <p>{{ link.title }}</p>
+            <span class="block h-6 w-6">
+              {% render 'icons', icon: 'chevron-right' %}
+            </span>
+          </button>
+        {% else %}
+          <a
+            class="block whitespace-nowrap p-3"
+            href="{{ link.url }}"
+          >
+            {{ link.title }}
+          </a>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+
+  {%- liquid
+    assign mega_menu_block = ''
+    assign link_title_downcase = links.title | strip | downcase
+    if parentLink
+      assign link_title_downcase = parentLink.title | strip | downcase
+    endif
+    for block in section.blocks
+      assign menu_item_downcase = block.settings.menu_item | strip | downcase
+      if menu_item_downcase == link_title_downcase
+        assign mega_menu_block = block
+      endif
+    endfor
+  -%}
+
+  {% if mega_menu_block != '' %}
+    {%- capture grid_items -%}
+    {% for i in (1..4) %}
+      {%- liquid 
+        assign grid_custom_icon_setting = 'grid-' | append: i | append: '-custom-icon'
+        assign grid_icon_setting = 'grid-' | append: i | append: '-icon'
+        assign grid_background_color_setting = 'grid-' | append: i | append: '-background-color'
+        assign grid_icon_color_setting = 'grid-' | append: i | append: '-icon-color'
+        assign grid_heading_setting = 'grid-' | append: i | append: '-heading'
+        assign grid_link_setting = 'grid-' | append: i | append: '-url'
+    
+        assign grid_custom_icon = mega_menu_block.settings[grid_custom_icon_setting]
+        assign grid_icon = mega_menu_block.settings[grid_icon_setting]
+        assign grid_background_color = mega_menu_block.settings[grid_background_color_setting]
+        assign grid_icon_color = mega_menu_block.settings[grid_icon_color_setting]
+        assign grid_heading = mega_menu_block.settings[grid_heading_setting]
+        assign grid_link = mega_menu_block.settings[grid_link_setting]
+      -%}
+  
+      {% if grid_link != blank %}
+        <a class="megamenu__grid--item w-full" href="{{ grid_link }}">
+  
+          {%- capture colors -%}
+            --background-color: {{ grid_background_color.hue }},{{ grid_background_color.saturation }}%,{{ grid_background_color.lightness }}%;
+            --background-color-hover: {{ grid_background_color.hue }},{{ grid_background_color.saturation }}%,{{ grid_background_color.lightness | times: 0.9 }}%;
+          {%- endcapture -%}
+  
+          {% if grid_custom_icon != blank %}
+            <div class="megamenu__grid--icon w-full p-4" style="{{ colors }}">
+              {{-
+                grid_custom_icon
+                | image_url: width: '48'
+                | image_tag: sizes: '48px', widths: '48', class: 'object-contain'
+              -}}
+            </div>
+          {% else %}
+            {% if grid_icon != 'none' %}
+              <div class="megamenu__grid--icon w-full p-4" style="{{ colors }}">
+                <span class="block h-12 w-12" style="color: {{ grid_icon_color }} ;">
+                  {% render 'customizer-icons', icon: grid_icon %}
+                </span>
+              </div>
+            {% endif %}
+          {% endif %}
+  
+          {% if grid_heading != blank %}
+            <p class="mt-2">{{ grid_heading }}</p>
+          {% endif %}
+        </a>
+      {% endif %}
+    {% endfor %}
+  {%- endcapture -%}
+
+    {% if grid_items != blank %}
+      <div class="grid grid-cols-2 gap-4">
+        {{ grid_items }}
+      </div>
+    {% endif %}
+  {% endif %}
+</div>

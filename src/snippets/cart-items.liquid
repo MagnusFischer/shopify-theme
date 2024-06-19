@@ -1,0 +1,131 @@
+<ul class="scrollbar h-full overflow-auto px-4 lg:px-6" data-line-items>
+  {% for line_item in cart.items %}
+    <li
+      class="cart-drawer__line-item flex flex-wrap border-b border-neutral-200 py-5 last:border-b-0 last:pb-0"
+      data-key="{{ line_item.key }}"
+    >
+      <div class="mr-3 w-20 flex-shrink-0">
+        {% if line_item.product.url != blank %}
+          <a href="{{ line_item.product.url }}">
+            <div class="aspect {{ settings.product_media_aspect }} overflow-hidden rounded-sm">
+              {{
+                line_item.image
+                | image_url: width: 80
+                | image_tag: loading: 'lazy', class: 'rounded-sm object-cover'
+              }}
+            </div>
+          </a>
+        {% else %}
+          <div class="aspect {{ settings.product_media_aspect }} overflow-hidden rounded-sm">
+            {{
+              line_item.image
+              | image_url: width: 80
+              | image_tag: loading: 'lazy', class: 'rounded-sm object-cover'
+            }}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="flex w-full flex-1 flex-col justify-between">
+        <div class="flex items-start justify-between">
+          <div>
+            {% if line_item.product.url != blank %}
+              <a class="line-clamp-1 hover:underline" href="{{ line_item.product.url }}">
+                {{ line_item.product.title | default: line_item.title }}
+              </a>
+            {% else %}
+              <p class="line-clamp-1">
+                {{ line_item.product.title | default: line_item.title }}
+              </p>
+            {% endif %}
+
+            {%- unless line_item.product.has_only_default_variant or line_item.gift_card -%}
+              {% if line_item.variant.url != blank %}
+                <a
+                  class="text-sm text-neutral-500 line-clamp-1 hover:underline"
+                  href="{{ line_item.variant.url }}"
+                >
+                  {{- line_item.variant.title -}}
+                </a>
+              {% else %}
+                <p class="text-sm text-neutral-500 line-clamp-1">{{ line_item.variant.title }}</p>
+              {% endif %}
+            {%- endunless -%}
+          </div>
+
+          <button
+            class="translate-x-1 text-neutral-500"
+            data-line-key="{{ line_item.key }}"
+            data-component="cart-remove"
+          >
+            <span class="block h-5 w-5">
+              {% render 'icons', icon: 'xmark' %}
+            </span>
+          </button>
+        </div>
+
+        <div class="flex items-end justify-between pt-2">
+          <div class="flex gap-0.5" data-component="cart-quantity">
+            <button
+              class="product__quantity--button"
+              type="button"
+              data-decrement
+            >
+              <span class="block h-5 w-5">
+                {% render 'icons', icon: 'minus' %}
+              </span>
+            </button>
+            <input
+              class="product__quantity"
+              type="number"
+              name="quantity"
+              min="{{ line_item.variant.quantity_rule.quantity_rule.min }}"
+              {% if line_item.variant.quantity_rule.quantity_rule.max != null %}
+                max="{{ line_item.variant.quantity_rule.quantity_rule.max }}"
+              {% endif %}
+              step="{{ line_item.variant.quantity_rule.increment }}"
+              value="{{ line_item.quantity }}"
+              data-line-key="{{ line_item.key }}"
+            >
+            <button
+              class="product__quantity--button"
+              type="button"
+              data-increment
+              {% if line_item.quantity == line_item.variant.inventory_quantity %}
+                disabled
+              {% endif %}
+            >
+              <span class="block h-5 w-5">
+                {% render 'icons', icon: 'plus' %}
+              </span>
+            </button>
+          </div>
+
+          <div class="flex flex-col text-right">
+            {% if line_item.original_line_price > line_item.final_line_price %}
+              <del
+                class="text-xs text-neutral-500"
+              >
+                {{ line_item.original_line_price | money }}
+              </del>
+            {% elsif line_item.variant.price < line_item.variant.compare_at_price %}
+              <del
+                class="text-xs text-neutral-500"
+              >
+                {{ line_item.variant.compare_at_price | times: line_item.quantity | money }}
+              </del>
+            {% endif %}
+
+            <span data-price class="font-bold">
+              {{- line_item.final_line_price | money -}}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cart-drawer__line-item--error">
+        <div></div>
+      </div>
+    </li>
+  {% endfor %}
+</ul>

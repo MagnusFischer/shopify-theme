@@ -1,0 +1,39 @@
+{%- liquid
+  assign headingElements = article.content | split: '<h2'
+  assign headingCount = headingElements.size | minus: 1
+-%}
+
+{% if section.settings.enable_toc %}
+  {%- capture grid -%}
+    grid grid-cols-1 md:grid-cols-[250px_1fr] lg:grid-cols-[250px_1fr_250px] gap-6 
+  {%- endcapture -%}
+{% endif %}
+
+{% if article.content != blank %}
+  <div
+    class="relative mx-auto px-3 pb-6 pt-12 lg:px-12 lg:pb-12 lg:pt-24 {{ grid }}"
+  >
+    {% if section.settings.enable_toc %}
+      {% if headingCount > 0 %}
+        <div class="top-[calc(var(--sticky-offset,0px)+1.5rem)] h-fit md:sticky">
+          <div class="rounded bg-secondary-bg py-2 px-3">
+            <p class="h5 mb-0 font-bold">{{ 'blog.article.table_of_contents_header_text' | t }}</p>
+          </div>
+          <ul class="article__toc" data-component="article-toc">
+            {% for i in (1..headingCount) %}
+              <li>
+                <p></p>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% else %}
+        <div></div>
+      {% endif %}
+    {% endif %}
+    <div class="article__content rte mx-auto md:max-w-[600px] lg:min-w-[600px]" data-toc-content>
+      {{ article.content }}
+    </div>
+    <div class="w-full"></div>
+  </div>
+{% endif %}

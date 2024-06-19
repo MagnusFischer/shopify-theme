@@ -1,0 +1,290 @@
+<div class="section bg-primary-bg color-scheme__{{ section.settings.color_scheme }} ">
+  <header class="flex flex-col gap-6 lg:flex-row lg:items-center">
+    <a class="flex items-center gap-2" href="{{ routes.account_url }}">
+      <span class="flex h-9 w-9 items-center justify-center rounded-sm bg-neutral-100">
+        <span class="block h-6 w-6">{% render 'icons', icon: 'chevron-left' %}</span>
+      </span>
+      <p>{{ 'general.navigation.go_back_button_label' | t }}</p>
+    </a>
+    <h1 class="text-2xl font-bold">{{ 'order.fields.title' | t: number: order.name }}</h1>
+  </header>
+
+  <div class="mt-12 grid gap-12 lg:grid-cols-[1fr_4fr_2fr]">
+    <div>
+      {%- liquid
+        capture fullfillment_status
+          for line_item in order.line_items
+            if line_item.fulfillment
+              assign created_at = line_item.fulfillment.created_at | time_tag: format: 'date'
+              echo created_at
+              echo ' - '
+              echo line_item.fulfillment.created_at | date: '%H:%M'
+              break
+            endif
+          endfor
+        endcapture
+      -%}
+
+      <ol class="relative mt-2 border-neutral-200">
+        <li class="relative h-24 border-l-[4px] border-black pl-4">
+          <div
+            class="absolute left-0 top-0 h-3 w-3 -translate-x-[calc(100%-4px)] rounded-full bg-black"
+          ></div>
+          <div class="-translate-y-2">
+            <h3 class="font-bold">{{ 'order.steps.recieved_title' | t }}</h3>
+            <p>
+              {{ order.created_at | time_tag: format: 'date' }}
+              - {{ order.created_at | date: '%H:%M' }}
+            </p>
+          </div>
+        </li>
+
+        <li class="relative h-24 border-l-[4px] pl-4 {% if fullfillment_status != blank %}border-black{% else %}border-neutral-200{% endif %}">
+          <div
+            class="absolute left-0 top-0 h-3 w-3 -translate-x-[calc(100%-4px)] rounded-full {% if fullfillment_status != blank %}bg-black{% else %}bg-white{% endif %}"
+            {% if fullfillment_status == blank %}
+              style="box-shadow: 0 0 0 3px black;"
+            {% endif %}
+          ></div>
+          <div class="-translate-y-2">
+            <h3 class="font-bold">{{ 'order.steps.processing_title' | t }}</h3>
+          </div>
+        </li>
+
+        <li class="relative border-l-[4px] border-transparent pl-4">
+          <div
+            class="absolute left-0 top-0 h-3 w-3 -translate-x-[calc(100%-4px)] rounded-full {% if fullfillment_status != blank %}bg-black{% else %}bg-neutral-200{% endif %}"
+          ></div>
+          <div class="-translate-y-2">
+            <h3 class="font-bold">{{ 'order.steps.shipping_title' | t }}</h3>
+            <p>
+              {{ fullfillment_status }}
+            </p>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <table class="h-fit border-separate border-spacing-0 text-left">
+      <thead>
+        <tr>
+          <th class="rounded-tl rounded-bl bg-neutral-100 py-3 px-4 text-left">
+            {{ 'account.order_section.product_title' | t }}
+          </th>
+          <th class="bg-neutral-100 py-3 pr-4 text-center">{{ 'order.fields.quantity' | t }}</th>
+          <th class="rounded-tr rounded-br bg-neutral-100 py-3 pr-4 text-right">
+            {{ 'order.fields.total' | t }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for line_item in order.line_items %}
+          {% if forloop.first %}
+            <tr>
+              <td colspan="5" class="py-3"></td>
+            </tr>
+          {% endif %}
+          <tr
+            {% if line_item.url != blank %}
+              class="hover:cursor-pointer hover:bg-neutral-100"
+              onclick="window.location.href = '{{ line_item.url }}'"
+            {% endif %}
+          >
+            <td class="relative rounded-tl border-t border-l border-neutral-200 py-4 px-4 {% unless line_item.fulfillment %} rounded-bl border-b{% endunless %}">
+              <div class="flex gap-4">
+                <div class="w-24">
+                  <div
+                    class="aspect {{ settings.product_media_aspect }} overflow-hidden rounded-sm shadow-sm"
+                  >
+                    {% if line_item.image != blank %}
+                      {{
+                        line_item.image
+                        | image_url: width: line_item.image.width
+                        | image_tag:
+                          loading: 'lazy',
+                          sizes: '96px',
+                          widths: '96',
+                          class: 'rounded-sm object-cover'
+                      }}
+                    {% else %}
+                      {{ 'image' | placeholder_svg_tag: 'bg-neutral-100' }}
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="flex flex-col">
+                  <p>
+                    {% if line_item.product.title != blank %}
+                      {{ line_item.product.title }}
+                    {% else %}
+                      {{ line_item.title }}
+                    {% endif %}
+                  </p>
+                  {% unless line_item.product.has_only_default_variant %}
+                    <p class="text-sm text-neutral-400">
+                      {{ line_item.variant.title }}
+                    </p>
+                  {% endunless %}
+                  {%- if line_item.line_level_discount_allocations != blank -%}
+                    <ul class="my-2 flex flex-wrap gap-1" role="list">
+                      {%- for discount_allocation in line_item.line_level_discount_allocations -%}
+                        <li class="w-fit rounded-sm border border-neutral-400 bg-neutral-100 p-1 text-xs">
+                          {{- discount_allocation.discount_application.title }} (-
+                          {{- discount_allocation.amount | money -}}
+                          )
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  {%- endif -%}
+                  {% if line_item.original_price != line_item.final_price %}
+                    <p class="mt-auto">
+                      <del class="block translate-y-1 text-xs text-neutral-400">
+                        {{- line_item.original_line_price | money -}}
+                      </del>
+                      <span class="font-bold">{{ line_item.final_price | money }}</span>
+                      <span class="text-sm text-neutral-400">/ {{ 'order.fields.unit' | t }}</span>
+                    </p>
+                  {% else %}
+                    <p class="mt-auto">
+                      <span class="font-bold">{{ line_item.final_price | money }}</span>
+                      <span class="text-sm text-neutral-400">/ {{ 'order.fields.unit' | t }}</span>
+                    </p>
+                  {% endif %}
+                </div>
+              </div>
+            </td>
+            <td class="border-t border-neutral-200 py-4 pr-4 text-center {% unless line_item.fulfillment %} border-b{% endunless %}">
+              x{{ line_item.quantity }}
+            </td>
+            <td class="rounded-tr border-t border-r border-neutral-200 py-4 pr-4 text-right {% unless line_item.fulfillment %} rounded-br border-b{% endunless %}">
+              <p class="font-bold">{{ line_item.final_line_price | money }}</p>
+            </td>
+          </tr>
+
+          {%- if line_item.fulfillment -%}
+            <tr>
+              <td
+                class="rounded-b border border-t-0 border-neutral-200 bg-neutral-100 px-4 py-2"
+                colspan="3"
+              >
+                <div class="flex justify-between text-xs">
+                  <p>
+                    Shipment ({{ line_item.fulfillment.tracking_company }}):
+                    <a class="underline" href="{{ line_item.fulfillment.tracking_url }}"
+                      >#{{ line_item.fulfillment.tracking_number -}}
+                    </a>
+                  </p>
+
+                  {%- assign created_at = line_item.fulfillment.created_at
+                    | time_tag: format: 'date'
+                  -%}
+                  <p class="italic text-neutral-600">{{ created_at }}</p>
+                </div>
+              </td>
+            </tr>
+          {%- endif -%}
+
+          {% unless forloop.last %}
+            <tr>
+              <td colspan="5" class="py-1.5"></td>
+            </tr>
+          {% endunless %}
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="flex flex-col gap-8">
+      <section>
+        <header class="mb-4 rounded bg-neutral-100 py-3 px-4 text-left">
+          <h3 class="m-0 text-base font-bold">{{ 'order.page.order_totals_title' | t }}</h3>
+        </header>
+
+        <div class="px-3">
+          <ul class="flex flex-col gap-2">
+            <li class="flex justify-between">
+              <p class="text-neutral-400">{{ 'order.fields.subtotal' | t }}</p>
+              <p>
+                {{ order.line_items_subtotal_price | money }}
+              </p>
+            </li>
+
+            {%- if order.cart_level_discount_applications != blank -%}
+              {%- for discount_application in order.cart_level_discount_applications -%}
+                {{- discount_application.title -}}
+                {{ discount_application.total_allocated_amount | money }}
+              {%- endfor -%}
+            {%- endif -%}
+
+            {%- for shipping_method in order.shipping_methods -%}
+              <li class="flex justify-between">
+                <p class="text-neutral-400">
+                  {{ 'order.fields.shipment' | t }} ({{ shipping_method.title }})
+                </p>
+                <p>
+                  {{ shipping_method.price | money }}
+                </p>
+              </li>
+            {%- endfor -%}
+
+            {%- for tax_line in order.tax_lines -%}
+              <li class="flex justify-between">
+                <p class="text-neutral-400">
+                  {{ 'order.fields.tax' | t }} ({{ tax_line.title }}
+                  {{ tax_line.rate | times: 100 }}%)
+                </p>
+                <p>{{ tax_line.price | money }}</p>
+              </li>
+            {%- endfor -%}
+
+            {%- if order.total_duties -%}
+              <li class="flex justify-between">
+                <p class="text-neutral-400">{{ 'order.fields.duties' | t }}</p>
+                <p>{{ order.total_duties | money }}</p>
+              </li>
+            {%- endif -%}
+
+            {%- if order.total_refunded_amount > 0 -%}
+              <li class="flex justify-between">
+                <p class="text-neutral-400">{{ 'order.fields.refunded' | t }}</p>
+                <p>-{{ order.total_refunded_amount | money_with_currency }}</p>
+              </li>
+            {%- endif -%}
+
+            <li class="flex justify-between border-t border-neutral-200 pt-2 font-bold">
+              <p>{{ 'order.fields.total' | t }}</p>
+              <p>
+                {{ order.total_net_amount | money_with_currency }}
+              </p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <header class="mb-4 rounded bg-neutral-100 py-3 px-4 text-left">
+          <h3 class="m-0 text-base font-bold">{{ 'order.page.delivery_address_title' | t }}</h3>
+        </header>
+
+        <div class="px-3">
+          {{ order.shipping_address | format_address }}
+        </div>
+      </section>
+
+      <section>
+        <header class="mb-4 rounded bg-neutral-100 py-3 px-4 text-left">
+          <h3 class="m-0 text-base font-bold">{{ 'order.page.billing_address_title' | t }}</h3>
+        </header>
+
+        <div class="px-3">
+          {{ order.billing_address | format_address }}
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Customer order",
+  "tag": "section",
+  "settings": []
+}
+{% endschema %}

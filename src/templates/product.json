@@ -1,0 +1,263 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "df083654-5f62-4b47-8644-1a5e929797bb": {
+          "type": "title",
+          "settings": {}
+        },
+        "4d3e3b5b-5717-4e78-8e2a-2f12cea5b836": {
+          "type": "price",
+          "settings": {}
+        },
+        "69d27d50-5452-43a6-8fa7-f72937b76c73": {
+          "type": "product_variations",
+          "settings": {
+            "name": "Color"
+          }
+        },
+        "48695344-6af1-4cc2-8482-0142a2afba8a": {
+          "type": "variant_picker",
+          "settings": {}
+        },
+        "1c4341a6-4e7d-4a03-b2a6-0fd255169059": {
+          "type": "quantity",
+          "settings": {}
+        },
+        "9a528e10-2029-49c4-9857-75fb45708e4c": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_payment_button": false
+          }
+        },
+        "eb7d11c8-617a-4378-ae4d-07f294162feb": {
+          "type": "inventory",
+          "settings": {
+            "low_inventory_threshold": 0
+          }
+        },
+        "f8b3e8fb-83aa-4309-84e6-1d13c83046f1": {
+          "type": "offer",
+          "settings": {
+            "title": "Delivery 2-3 days",
+            "icon": "truck"
+          }
+        },
+        "fa325366-88b1-486d-b070-f6eb6801663a": {
+          "type": "offer",
+          "settings": {
+            "title": "Free shipping above 50€",
+            "icon": "truck"
+          }
+        },
+        "9f26f898-dd61-4ca0-af55-667089593af4": {
+          "type": "offer",
+          "settings": {
+            "title": "30 day return",
+            "icon": "truck"
+          }
+        },
+        "cb651478-b5d4-4ad1-a652-b9b464b8101f": {
+          "type": "description",
+          "settings": {
+            "is_open": true
+          }
+        },
+        "d7226703-1afe-4244-907a-a5efa50bd4f3": {
+          "type": "collapsible_text",
+          "settings": {
+            "title": "Materials",
+            "content": "<p>Share some content to your customers about your products.</p>",
+            "is_open": false
+          }
+        },
+        "032c97cc-c440-4307-ac5b-d7ef0590a67c": {
+          "type": "collapsible_text",
+          "settings": {
+            "title": "Delivery & Returns",
+            "content": "<p>Share some content to your customers about your products.</p>",
+            "is_open": false
+          }
+        }
+      },
+      "block_order": [
+        "df083654-5f62-4b47-8644-1a5e929797bb",
+        "4d3e3b5b-5717-4e78-8e2a-2f12cea5b836",
+        "69d27d50-5452-43a6-8fa7-f72937b76c73",
+        "48695344-6af1-4cc2-8482-0142a2afba8a",
+        "1c4341a6-4e7d-4a03-b2a6-0fd255169059",
+        "9a528e10-2029-49c4-9857-75fb45708e4c",
+        "eb7d11c8-617a-4378-ae4d-07f294162feb",
+        "f8b3e8fb-83aa-4309-84e6-1d13c83046f1",
+        "fa325366-88b1-486d-b070-f6eb6801663a",
+        "9f26f898-dd61-4ca0-af55-667089593af4",
+        "cb651478-b5d4-4ad1-a652-b9b464b8101f",
+        "d7226703-1afe-4244-907a-a5efa50bd4f3",
+        "032c97cc-c440-4307-ac5b-d7ef0590a67c"
+      ],
+      "settings": {
+        "color_scheme": ""
+      }
+    },
+    "dd74ff93-4357-4997-a1c0-23ce7aba6292": {
+      "type": "feature-list",
+      "blocks": {
+        "template--19545783206172__dd74ff93-4357-4997-a1c0-23ce7aba6292-feature-1": {
+          "type": "feature",
+          "settings": {
+            "title": "Durable",
+            "description": "<p>High quality and high functional materials, that will ensure that everlasting fit, shape and extend the product lifecycle</p>"
+          }
+        },
+        "template--19545783206172__dd74ff93-4357-4997-a1c0-23ce7aba6292-feature-2": {
+          "type": "feature",
+          "settings": {
+            "title": "Flexible",
+            "description": "<p>Each product have been engineered to expand and respond to intensified movement or body temperature.</p>"
+          }
+        },
+        "template--19545783206172__dd74ff93-4357-4997-a1c0-23ce7aba6292-feature-3": {
+          "type": "feature",
+          "settings": {
+            "title": "Washable",
+            "description": "<p>All materials and fabrics inside out are carefully developed and tested, to create the perfect washable product.</p>"
+          }
+        },
+        "template--19545783206172__dd74ff93-4357-4997-a1c0-23ce7aba6292-feature-4": {
+          "type": "feature",
+          "settings": {
+            "title": "Responsible",
+            "description": "<p>Actiivate products are thoughtfully made using recycled materials whenever possible.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "template--19545783206172__dd74ff93-4357-4997-a1c0-23ce7aba6292-feature-1",
+        "template--19545783206172__dd74ff93-4357-4997-a1c0-23ce7aba6292-feature-2",
+        "template--19545783206172__dd74ff93-4357-4997-a1c0-23ce7aba6292-feature-3",
+        "template--19545783206172__dd74ff93-4357-4997-a1c0-23ce7aba6292-feature-4"
+      ],
+      "settings": {
+        "color_scheme": ""
+      }
+    },
+    "3393ba8a-5b16-4eeb-b592-45dce74a84bd": {
+      "type": "multi-column",
+      "blocks": {
+        "template--19545783206172__3393ba8a-5b16-4eeb-b592-45dce74a84bd-image-1": {
+          "type": "image",
+          "settings": {}
+        },
+        "d75246de-167e-41c4-a8ca-a9a5d25f5748": {
+          "type": "image",
+          "settings": {}
+        },
+        "c719285a-1180-4907-8344-8a7739cbe1ea": {
+          "type": "image",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "template--19545783206172__3393ba8a-5b16-4eeb-b592-45dce74a84bd-image-1",
+        "d75246de-167e-41c4-a8ca-a9a5d25f5748",
+        "c719285a-1180-4907-8344-8a7739cbe1ea"
+      ],
+      "settings": {
+        "media_aspect": "aspect-w-4 aspect-h-6",
+        "cols_desktop": 4,
+        "rows_desktop": 1,
+        "mobile_slider": true,
+        "cols_mobile": "1",
+        "color_scheme": ""
+      }
+    },
+    "542075ff-53a1-4e9d-81d1-3b4ad9e98acf": {
+      "type": "multi-column",
+      "blocks": {
+        "template--19545783206172__542075ff-53a1-4e9d-81d1-3b4ad9e98acf-text-1": {
+          "type": "text",
+          "settings": {
+            "title": "<strong>Built to last</strong>",
+            "text": "<p>Our products are built to last, to endure all weather conditions, season after season. Made in high quality and high functional materials, that will ensure that everlasting fit, shape and extend the product lifecycle - please pass it on when it is time for new adventures. It deserves another go-around!</p>"
+          }
+        },
+        "template--19545783206172__542075ff-53a1-4e9d-81d1-3b4ad9e98acf-image-1": {
+          "type": "image",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "template--19545783206172__542075ff-53a1-4e9d-81d1-3b4ad9e98acf-text-1",
+        "template--19545783206172__542075ff-53a1-4e9d-81d1-3b4ad9e98acf-image-1"
+      ],
+      "settings": {
+        "media_aspect": "aspect-w-1 aspect-h-1",
+        "cols_desktop": 4,
+        "rows_desktop": 1,
+        "mobile_slider": false,
+        "cols_mobile": "1",
+        "color_scheme": ""
+      }
+    },
+    "7df2b13b-aecd-49c9-9d21-68c19db23ace": {
+      "type": "video",
+      "settings": {
+        "desktop_height": "aspect",
+        "mobile_height": "fullscreen",
+        "spacing": "fill",
+        "autoplay": true,
+        "color_scheme": ""
+      }
+    },
+    "08c714e6-a5ea-4aed-b00f-c235f94f8e88": {
+      "type": "multi-column",
+      "blocks": {
+        "template--19545783206172__08c714e6-a5ea-4aed-b00f-c235f94f8e88-image-1": {
+          "type": "image",
+          "settings": {}
+        },
+        "template--19545783206172__08c714e6-a5ea-4aed-b00f-c235f94f8e88-text-1": {
+          "type": "text",
+          "settings": {
+            "title": "<strong>Built to last</strong>",
+            "text": "<p>Our products are built to last, to endure all weather conditions, season after season. Made in high quality and high functional materials, that will ensure that everlasting fit, shape and extend the product lifecycle - please pass it on when it is time for new adventures. It deserves another go-around!</p>"
+          }
+        }
+      },
+      "block_order": [
+        "template--19545783206172__08c714e6-a5ea-4aed-b00f-c235f94f8e88-image-1",
+        "template--19545783206172__08c714e6-a5ea-4aed-b00f-c235f94f8e88-text-1"
+      ],
+      "settings": {
+        "media_aspect": "aspect-w-1 aspect-h-1",
+        "cols_desktop": 4,
+        "rows_desktop": 1,
+        "mobile_slider": false,
+        "cols_mobile": "1",
+        "color_scheme": ""
+      }
+    },
+    "2ef3ebce-d300-4fa7-bf08-5c5c52370c6f": {
+      "type": "related-products",
+      "settings": {
+        "title": "Related products",
+        "product_count": 8,
+        "desktop_carousel": true,
+        "desktop_columns": 2,
+        "mobile_carousel": true,
+        "mobile_columns": "columns_2",
+        "color_scheme": ""
+      }
+    }
+  },
+  "order": [
+    "main",
+    "dd74ff93-4357-4997-a1c0-23ce7aba6292",
+    "3393ba8a-5b16-4eeb-b592-45dce74a84bd",
+    "542075ff-53a1-4e9d-81d1-3b4ad9e98acf",
+    "7df2b13b-aecd-49c9-9d21-68c19db23ace",
+    "08c714e6-a5ea-4aed-b00f-c235f94f8e88",
+    "2ef3ebce-d300-4fa7-bf08-5c5c52370c6f"
+  ]
+}

@@ -1,0 +1,141 @@
+<div class="section bg-primary-bg color-scheme__{{ section.settings.color_scheme }} ">
+  <div
+    class="cart-page"
+    data-component="cart-page"
+    data-section="{{ section.id }}"
+    data-empty="{{ cart.empty? }}"
+  >
+    <div class="flex flex-wrap" data-cart-page>
+      <section class="w-full lg:w-2/3 xl:w-3/5">
+        <header class="mb-4 rounded bg-neutral-100 py-3 px-4 text-left">
+          <h1 class="m-0 text-base font-bold">
+            {{ 'cart.header.title' | t }} (<span data-cart-count>{{ cart.item_count }}</span>)
+          </h1>
+        </header>
+
+        {%- liquid
+          for block in section.blocks
+            case block.type
+              when 'shipping-bar'
+                render 'cart-shipping-bar'
+              when 'line-items'
+                render 'cart-items'
+            endcase
+          endfor
+        -%}
+      </section>
+
+      <section class="mt-6 w-full lg:mt-0 lg:w-1/3 lg:pl-12 xl:w-2/5">
+        <div class="lg:sticky lg:top-[calc(var(--navigation-height)+1rem)]">
+          <div class="relative overflow-hidden">
+            {%- liquid
+              for block in section.blocks
+                case block.type
+                  when 'order-note'
+                    render 'order-notes'
+                  when 'footer'
+                    render 'cart-footer'
+                endcase
+              endfor
+            -%}
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section
+      class="min-h-[calc(100vh-var(--navigation-height))] items-center justify-center"
+      data-cart-empty
+    >
+      <div class="flex flex-col items-center justify-center">
+        <h1 class="mb-8 font-bold">
+          {{ section.settings.title }}
+        </h1>
+        <a
+          class="button button--primary"
+          href="{{ section.settings.button_url | default: routes.all_products_collection_url }}"
+        >
+          <span>{{ section.settings.button_text }}</span>
+        </a>
+      </div>
+    </section>
+
+    <script type="application/json" data-cart-json>
+      {{ cart | json }}
+    </script>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Cart",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Empty cart state"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Your cart is empty"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Continue shopping"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button url",
+      "info": "Defaults to collections/all"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "shipping-bar",
+      "name": "Shipping bar",
+      "limit": 1
+    },
+    {
+      "type": "footer",
+      "name": "Footer",
+      "limit": 1
+    },
+    {
+      "type": "line-items",
+      "name": "Line items",
+      "limit": 1
+    },
+    {
+      "type": "order-note",
+      "name": "Order notes",
+      "limit": 1
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cart",
+      "blocks": [
+        {
+          "type": "shipping-bar"
+        },
+        {
+          "type": "line-items"
+        },
+        {
+          "type": "order-note"
+        },
+        {
+          "type": "footer"
+        }
+      ]
+    }
+  ],
+  "enabled_on": {
+    "templates": ["cart"]
+  }
+}
+{% endschema %}

@@ -1,0 +1,54 @@
+{%- liquid
+  assign paymentMethods = ''
+
+  for i in (1..20)
+    assign key = 'enable_payment_' | append: i
+
+    if settings[key] == true
+      case i
+        when 1
+          assign paymentType = 'american_express'
+        when 2
+          assign paymentType = 'dankort'
+        when 3
+          assign paymentType = 'discover'
+        when 4
+          assign paymentType = 'forbrugsforeningen'
+        when 5
+          assign paymentType = 'jcb'
+        when 6
+          assign paymentType = 'maestro'
+        when 7
+          assign paymentType = 'master'
+        when 8
+          assign paymentType = 'visa'
+        when 9
+          assign paymentType = 'dwolla'
+        when 10
+          assign paymentType = 'mobilepay'
+        when 11
+          assign paymentType = 'klarna'
+        when 12
+          assign paymentType = 'viabill'
+        when 13
+          assign paymentType = 'amazon_payments'
+        when 14
+          assign paymentType = 'apple_pay'
+        when 15
+          assign paymentType = 'google_pay'
+        when 16
+          assign paymentType = 'paypal'
+        when 17
+          assign paymentType = 'bitcoin'
+        when 18
+          assign paymentType = 'dogecoin'
+        when 19
+          assign paymentType = 'litecoin'
+      endcase
+
+      assign paymentMethods = paymentMethods | append: paymentType | append: ','
+    endif
+  endfor
+
+  echo paymentMethods
+-%}

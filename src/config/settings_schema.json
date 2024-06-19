@@ -1,0 +1,845 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Horizon",
+    "theme_version": "1.0",
+    "theme_author": "Spinnaker Nordic",
+    "theme_support_url": "https://spinnakernordic.com/",
+    "theme_documentation_url": "https://spinnakernordic.com/"
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "font_picker",
+        "id": "heading_font",
+        "label": "Heading",
+        "info": "Selecting different fonts can affect the speed of your online store. Learn more about [system fonts.](https://help.shopify.com/en/manual/online-store/os/store-speed/improving-speed#fonts)",
+        "default": "helvetica_n4"
+      },
+      {
+        "type": "range",
+        "min": -5,
+        "max": 10,
+        "step": 0.5,
+        "unit": "%",
+        "id": "heading_letter_spacing",
+        "label": "Heading letter spacing",
+        "default": 0
+      },
+      {
+        "type": "font_picker",
+        "id": "body_font",
+        "label": "Body",
+        "info": "Selecting different fonts can affect the speed of your online store. Learn more about [system fonts.](https://help.shopify.com/en/manual/online-store/os/store-speed/improving-speed#fonts)",
+        "default": "helvetica_n4"
+      },
+      {
+        "type": "range",
+        "min": -5,
+        "max": 10,
+        "step": 0.5,
+        "unit": "%",
+        "id": "body_letter_spacing",
+        "label": "Body letter spacing",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "Heading"
+      },
+      {
+        "type": "text",
+        "id": "custom_font_heading_name",
+        "label": "Font name"
+      },
+      {
+        "type": "text",
+        "id": "custom_font_heading_regular",
+        "label": "Regular"
+      },
+      {
+        "type": "text",
+        "id": "custom_font_heading_bold",
+        "label": "Bold"
+      },
+      {
+        "type": "header",
+        "content": "Body"
+      },
+      {
+        "type": "text",
+        "id": "custom_font_body_name",
+        "label": "Font name"
+      },
+      {
+        "type": "text",
+        "id": "custom_font_body_regular",
+        "label": "Regular"
+      },
+      {
+        "type": "text",
+        "id": "custom_font_body_bold",
+        "label": "Bold"
+      }
+    ]
+  },
+  {
+    "name": "Domain verification",
+    "settings": [
+      {
+        "type": "text",
+        "label": "Facebook",
+        "id": "verification_facebook"
+      },
+      {
+        "type": "text",
+        "label": "Google",
+        "id": "verification_google"
+      }
+    ]
+  },
+  {
+    "name": "Tracking",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Google Tag Manager"
+      },
+      {
+        "type": "text",
+        "id": "gtm_id",
+        "label": "Container ID"
+      },
+      {
+        "type": "header",
+        "content": "Consent solution"
+      },
+      {
+        "type": "select",
+        "id": "consent_solution",
+        "label": "Platform",
+        "options": [
+          {
+            "value": "none",
+            "label": "None"
+          },
+          {
+            "value": "cookieinformation",
+            "label": "Cookieinformation"
+          }
+        ],
+        "default": "none"
+      }
+    ]
+  },
+  {
+    "name": "Search & Filters",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_filters",
+        "label": "Enable filters",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_search",
+        "label": "Enable search",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Appearance and spacing",
+    "settings": [
+      {
+        "type": "range",
+        "id": "page_width",
+        "min": 1280,
+        "max": 2000,
+        "step": 10,
+        "unit": "px",
+        "label": "Page width",
+        "default": 1600
+      },
+      {
+        "type": "header",
+        "content": "Rounding"
+      },
+      {
+        "type": "range",
+        "id": "block_border_radius",
+        "min": 0,
+        "max": 64,
+        "step": 2,
+        "unit": "px",
+        "label": "Block corner radius",
+        "default": 12
+      }
+    ]
+  },
+  {
+    "name": "Klaviyo",
+    "settings": [
+      {
+        "type": "text",
+        "id": "klaviyo_public_api_key",
+        "label": "Public API Key"
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "Cart type",
+        "options": [
+          {
+            "value": "drawer",
+            "label": "Drawer"
+          },
+          {
+            "value": "page",
+            "label": "Page"
+          }
+        ],
+        "default": "drawer"
+      },
+      {
+        "type": "select",
+        "id": "cart_icon",
+        "label": "Cart icon",
+        "options": [
+          {
+            "value": "cart",
+            "label": "Cart"
+          },
+          {
+            "value": "bag",
+            "label": "Bag"
+          },
+          {
+            "value": "basket",
+            "label": "Basket"
+          }
+        ],
+        "default": "cart"
+      },
+      {
+        "type": "header",
+        "content": "Free shipping"
+      },
+      {
+        "type": "number",
+        "id": "free_shipping_threshold",
+        "label": "Free shipping threshold",
+        "default": 0,
+        "info": "Set this value to 0 to disable"
+      },
+      {
+        "type": "header",
+        "content": "Terms and conditions"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_terms",
+        "label": "Enable terms and conditions requirement for checkout",
+        "default": false
+      },
+      {
+        "type": "richtext",
+        "id": "terms_label",
+        "label": "Checkbox label",
+        "default": "<p>I agree to the terms and conditions</p>"
+      },
+      {
+        "type": "text",
+        "id": "terms_popup_title",
+        "label": "Popup title",
+        "default": "Accept our terms & conditions"
+      },
+      {
+        "type": "richtext",
+        "id": "terms_popup_text",
+        "label": "Popup text",
+        "default": "<p>To continue to checkout you will need to accept our terms & conditions</p>"
+      }
+    ]
+  },
+  {
+    "name": "Product card",
+    "settings": [
+      {
+        "type": "select",
+        "id": "product_media_aspect",
+        "label": "Media aspect",
+        "options": [
+          {
+            "value": "product__media--aspect--1/1",
+            "label": "1:1"
+          },
+          {
+            "value": "product__media--aspect--4/5",
+            "label": "4:5"
+          },
+          {
+            "value": "product__media--aspect--5/7",
+            "label": "5:7"
+          }
+        ],
+        "default": "product__media--aspect--4/5"
+      },
+      {
+        "type": "select",
+        "id": "product_item_shadow",
+        "label": "Image shadow",
+        "options": [
+          {
+            "value": "none",
+            "label": "Off"
+          },
+          {
+            "value": "shadow-sm",
+            "label": "S"
+          },
+          {
+            "value": "shadow-md",
+            "label": "M"
+          },
+          {
+            "value": "shadow-lg",
+            "label": "L"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "checkbox",
+        "label": "Show vendor",
+        "id": "product_item_vendor",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Quick add to cart"
+      },
+      {
+        "type": "checkbox",
+        "label": "Enable",
+        "id": "quick_add_to_cart",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "quick_add_to_cart_behavior",
+        "label": "Behavior",
+        "options": [
+          {
+            "value": "cart",
+            "label": "Open drawer"
+          },
+          {
+            "value": "inline",
+            "label": "Inline"
+          }
+        ],
+        "default": "cart"
+      }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "color_scheme_group",
+        "id": "color_schemes",
+        "definition": [
+          {
+            "type": "header",
+            "content": "Typography"
+          },
+          {
+            "type": "color",
+            "id": "primary_text",
+            "label": "Primary",
+            "default": "#000000"
+          },
+          {
+            "type": "color",
+            "id": "secondary_text",
+            "label": "Secondary",
+            "default": "#FFFFFF"
+          },
+          {
+            "type": "color",
+            "id": "accent_1_text",
+            "label": "Accent 1",
+            "default": "#737373"
+          },
+          {
+            "type": "color",
+            "id": "accent_2_text",
+            "label": "Accent 2",
+            "default": "#A3A3A3"
+          },
+          {
+            "type": "header",
+            "content": "Background"
+          },
+          {
+            "type": "color",
+            "id": "primary_background",
+            "label": "Primary",
+            "default": "#FFFFFF"
+          },
+          {
+            "type": "color",
+            "id": "secondary_background",
+            "label": "Secondary",
+            "default": "#F5F5F5"
+          },
+          {
+            "type": "color",
+            "id": "accent_1_background",
+            "label": "Accent 1",
+            "default": "#F5F5F5"
+          },
+          {
+            "type": "color",
+            "id": "accent_2_background",
+            "label": "Accent 2",
+            "default": "#E5E5E5"
+          },
+          {
+            "type": "header",
+            "content": "Primary button"
+          },
+          {
+            "type": "color",
+            "id": "primary_button_background",
+            "label": "Background",
+            "default": "#121212"
+          },
+          {
+            "type": "color",
+            "id": "primary_button_background_hover",
+            "label": "Background Hover",
+            "default": "#FFFFFF"
+          },
+          {
+            "type": "color",
+            "id": "primary_button_text",
+            "label": "Text",
+            "default": "#000000"
+          },
+          {
+            "type": "color",
+            "id": "primary_button_text_hover",
+            "label": "Text Hover",
+            "default": "#000000"
+          },
+          {
+            "type": "header",
+            "content": "Secondary button"
+          },
+          {
+            "type": "color",
+            "id": "secondary_button_background",
+            "label": "Background",
+            "default": "#F5F5F5"
+          },
+          {
+            "type": "color",
+            "id": "secondary_button_background_hover",
+            "label": "Background Hover",
+            "default": "#A3A3A3"
+          },
+          {
+            "type": "color",
+            "id": "secondary_button_text",
+            "label": "Text",
+            "default": "#000000"
+          },
+          {
+            "type": "color",
+            "id": "secondary_button_text_hover",
+            "label": "Text Hover",
+            "default": "#A3A3A3"
+          },
+          {
+            "type": "header",
+            "content": "Accent button"
+          },
+          {
+            "type": "color",
+            "id": "accent_button_background",
+            "label": "Background",
+            "default": "#F5F5F5"
+          },
+          {
+            "type": "color",
+            "id": "accent_button_background_hover",
+            "label": "Background Hover",
+            "default": "#A3A3A3"
+          },
+          {
+            "type": "color",
+            "id": "accent_button_text",
+            "label": "Text",
+            "default": "#A3A3A3"
+          },
+          {
+            "type": "color",
+            "id": "accent_button_text_hover",
+            "label": "Text Hover",
+            "default": "#A3A3A3"
+          },
+          {
+            "type": "header",
+            "content": "Additional"
+          },
+          {
+            "type": "color",
+            "id": "success_color",
+            "label": "Success",
+            "default": "#1D726D"
+          },
+          {
+            "type": "color",
+            "id": "error_color",
+            "label": "Error",
+            "default": "#E44646"
+          },
+          {
+            "type": "color",
+            "id": "caution_color",
+            "label": "Caution",
+            "default": "#E48946"
+          }
+        ],
+        "role": {
+          "background": {
+            "solid": "primary_background"
+          },
+          "text": "primary_text",
+          "primary_button": "primary_background",
+          "on_primary_button": "primary_button_background_hover",
+          "primary_button_border": "primary_button_background",
+          "secondary_button": "secondary_button_background",
+          "on_secondary_button": "secondary_button_background_hover",
+          "secondary_button_border": "secondary_button_background",
+          "icons": "primary_text",
+          "links": "primary_text"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Custom scripts",
+    "settings": [
+      {
+        "type": "html",
+        "id": "custom_scripts_head",
+        "label": "Header",
+        "info": "Caution: please dont hesitate to reach out to us for implementing scripts. This field should only be used as a last resort."
+      }
+    ]
+  },
+  {
+    "name": "Payment methods",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Please read before continuing"
+      },
+      {
+        "type": "paragraph",
+        "content": "These settings have been implemented because some payment providers do not automatically show activated payment methods. Only use these settings if necessary."
+      },
+      {
+        "type": "paragraph",
+        "content": "Manually displayed payment methods should be set according to your [Payment providers](/admin/settings/payments)"
+      },
+      {
+        "type": "header",
+        "content": "Cards"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_payment_1",
+        "label": "American Express",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_payment_2",
+        "label": "Dankort",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_payment_3",
+        "label": "Discover",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_payment_4",
+        "label": "Forbrugsforeningen",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_payment_5",
+        "label": "JCB",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_payment_6",
+        "label": "Maestro",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_payment_7",
+        "label": "Master Card",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_payment_8",
+        "label": "Visa",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Services"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_payment_9",
+        "label": "Dwolla",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_payment_10",
+        "label": "MobilePay",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_payment_11",
+        "label": "Klarna",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_payment_12",
+        "label": "ViaBill",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_payment_13",
+        "label": "Amazon pay",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_payment_14",
+        "label": "Apple Pay",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_payment_15",
+        "label": "Google Pay",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_payment_16",
+        "label": "Paypal",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Crypto"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_payment_17",
+        "label": "Bitcoin",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_payment_18",
+        "label": "Dogecoin",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_payment_19",
+        "label": "Litecoin",
+        "default": false
+      }
+    ]
+  },
+  {
+    "name": "Delivery methods",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "delivery_method_1",
+        "label": "Postnord"
+      },
+      {
+        "type": "checkbox",
+        "id": "delivery_method_2",
+        "label": "GLS"
+      },
+      {
+        "type": "checkbox",
+        "id": "delivery_method_3",
+        "label": "DAO"
+      },
+      {
+        "type": "checkbox",
+        "id": "delivery_method_4",
+        "label": "Bird"
+      },
+      {
+        "type": "checkbox",
+        "id": "delivery_method_5",
+        "label": "Bring"
+      },
+      {
+        "type": "checkbox",
+        "id": "delivery_method_6",
+        "label": "FedEx"
+      },
+      {
+        "type": "checkbox",
+        "id": "delivery_method_7",
+        "label": "Budbee"
+      },
+      {
+        "type": "checkbox",
+        "id": "delivery_method_8",
+        "label": "DHL"
+      },
+      {
+        "type": "checkbox",
+        "id": "delivery_method_9",
+        "label": "UPS"
+      },
+      {
+        "type": "checkbox",
+        "id": "delivery_method_10",
+        "label": "DPD"
+      },
+      {
+        "type": "checkbox",
+        "id": "delivery_method_11",
+        "label": "Danske fragtmænd"
+      }
+    ]
+  },
+  {
+    "name": "Theme",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_breadcrumbs",
+        "label": "Enable breadcrumbs",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "theme_color",
+        "label": "Theme color",
+        "info": "Customize the color of the browsers surrounding user interface [Source](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta/name/theme-color)"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon_image",
+        "label": "Favicon"
+      },
+      {
+        "type": "text",
+        "id": "favicon_svg",
+        "label": "Favicon (SVG)",
+        "info": "Upload SVG to [files](/admin/settings/files)"
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Social accounts"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook_link",
+        "label": "Facebook",
+        "info": "https://facebook.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_instagram_link",
+        "label": "Instagram",
+        "info": "http://instagram.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube_link",
+        "label": "YouTube",
+        "info": "https://www.youtube.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok_link",
+        "label": "TikTok",
+        "info": "https://tiktok.com/@shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_twitter_link",
+        "label": "Twitter",
+        "info": "https://twitter.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_snapchat_link",
+        "label": "Snapchat",
+        "info": "https://www.snapchat.com/add/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_pinterest_link",
+        "label": "Pinterest",
+        "info": "https://pinterest.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_tumblr_link",
+        "label": "Tumblr",
+        "info": "https://shopify.tumblr.com"
+      },
+      {
+        "type": "text",
+        "id": "social_vimeo_link",
+        "label": "Vimeo",
+        "info": "https://vimeo.com/shopify"
+      }
+    ]
+  }
+]

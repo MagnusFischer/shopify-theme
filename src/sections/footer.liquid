@@ -1,0 +1,259 @@
+<footer
+  class="color-scheme__{{ section.settings.color_scheme }} rounded bg-secondary-bg text-primary-text"
+>
+  <div class="block-container">
+    <div class="flex flex-col gap-6 pt-12 pb-6">
+      {%- comment -%}Content{%- endcomment -%}
+      <div class="flex flex-col flex-wrap justify-between gap-12 pb-12 lg:flex-row">
+        {% for block in section.blocks %}
+          {% assign this = block.settings %}
+          {% case block.type %}
+            {% when 'text' %}
+              <div class="max-w-sm flex-[14rem_1_1]">
+                {%- capture logo_content -%}
+                  {%- if this.logo -%}
+                    {%- capture sizes -%}{{ this.logo_width }}px{%- endcapture -%}
+                    {%- capture widths -%}{{ this.logo_width }}{%- endcapture -%}
+                    {{- this.logo 
+                      | image_url: width: this.logo_width 
+                      | image_tag: sizes: sizes, widths: widths, class: 'pb-4'
+                    -}}
+                  {%- else -%}
+                    <h3 class="h5 font-bold">{{ this.heading }}</h3>
+                  {%- endif -%}
+                {%- endcapture -%}
+
+                {{ logo_content }}
+                <div class="rte max-w-md">
+                  {{ this.subtext }}
+                </div>
+              </div>
+            {% when 'link_list' %}
+              <div class="max-w-[10rem] flex-[10rem_1_1] ">
+                <h3 class="h5 font-bold">{{ this.heading }}</h3>
+                <ul>
+                  {% for link in this.menu.links %}
+                    <li class="mb-2 last:mb-0">
+                      <a href="{{ link.url }}" class="hover:underline">
+                        {{ link.title -}}
+                      </a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+          {% endcase %}
+        {% endfor %}
+      </div>
+
+      {%- comment -%}Icons{%- endcomment -%}
+      <div class="flex flex-col flex-wrap gap-9 md:flex-row">
+        {%- if section.settings.show_payment_methods -%}
+          <div>
+            <h3 class="h5 font-bold">{{ 'sections.footer.payment_title' | t }}</h3>
+            <ul class="flex flex-wrap gap-2">
+              {%- for type in shop.enabled_payment_types -%}
+                <li class="h-8 w-12">
+                  <img
+                    class="h-full w-full"
+                    src="{{ type | payment_type_img_url }}"
+                    alt="{{ type }}"
+                  >
+                </li>
+              {%- endfor -%}
+
+              {%- capture manualPaymentMethods -%}
+                {%- render 'payment-methods' -%}
+              {%- endcapture -%}
+
+              {% assign manualPaymentMethods = manualPaymentMethods | split: ',' %}
+              {% for manualPayment in manualPaymentMethods %}
+                <li class="h-8 w-12">
+                  <img
+                    class="h-full w-full"
+                    src="{{ manualPayment | payment_type_img_url }}"
+                    alt="{{ manualPayment }}"
+                  >
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {%- endif -%}
+
+        {% if section.settings.show_delivery_methods %}
+          {%- liquid
+            capture delivery_icons
+              for i in (1..11)
+                assign setting = 'delivery_method_' | append: i
+                if settings[setting] != blank
+                  echo '<li class="h-8 w-12">'
+                  render 'icons', icon: setting
+                  echo '</li>'
+                endif
+              endfor
+            endcapture
+          -%}
+
+          {% if delivery_icons != blank %}
+            <div>
+              <h3 class="h5 font-bold">{{ 'sections.footer.delivery_title' | t }}</h3>
+              <ul class="flex flex-wrap gap-2">
+                {{ delivery_icons }}
+              </ul>
+            </div>
+          {% endif %}
+        {% endif %}
+
+        {% if section.settings.show_social_media %}
+          {%- capture social_icons -%}
+            {% render 'social-icons' %}
+          {%- endcapture -%}
+
+          {%- if social_icons != blank -%}
+            <div>
+              <h3 class="h5 font-bold">{{ 'sections.footer.social_media_title' | t }}</h3>
+              {{ social_icons }}
+            </div>
+          {%- endif -%}
+        {% endif %}
+      </div>
+
+      {%- comment -%}Sub footer{%- endcomment -%}
+      <div class="flex items-center border-t border-accent-1-bg pt-6">
+        {% if section.settings.show_country_selector %}
+          <button
+            class="flex items-center gap-3 rounded border bg-primary-bg py-2 px-4 transition-colors duration-300 hover:border-primary-text"
+            data-load="store-picker"
+          >
+            {{ localization.country | image_url: width: 24 | image_tag: loading: 'lazy' }}
+            {{ localization.language.name }}
+            <span class="block h-4 w-4 text-primary-text">
+              {% render 'icons', icon: 'select' %}
+            </span>
+          </button>
+        {% endif %}
+        <p class="ml-auto text-xs">&copy; {{ 'now' | date: '%Y' }}, {{ shop.name -}}</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "class": "footer",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Social Media Icons",
+      "info": "To display your social media accounts, link them in your [theme settings](/editor?context=theme)."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social_media",
+      "label": "Show social media",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Payment Methods"
+    },
+    {
+      "type": "checkbox",
+      "label": "Show payment methods",
+      "id": "show_payment_methods",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Delivery Methods"
+    },
+    {
+      "type": "checkbox",
+      "label": "Show delivery methods",
+      "id": "show_delivery_methods",
+      "default": true,
+      "info": "To display your delivery methods, activate them in your [theme settings](/editor?context=theme)."
+    },
+    {
+      "type": "header",
+      "content": "Country/region selector"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_country_selector",
+      "label": "Show country/region selector",
+      "default": false
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme",
+      "default": "background-1"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Text",
+      "type": "text",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Logo"
+        },
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Image",
+          "info": ".svg format recommended"
+        },
+        {
+          "type": "range",
+          "id": "logo_width",
+          "min": 60,
+          "max": 300,
+          "step": 10,
+          "label": "Width",
+          "unit": "px",
+          "default": 120
+        },
+        {
+          "type": "header",
+          "content": "Content"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "default": "Heading",
+          "label": "Heading",
+          "info": "Heading will not be visible if there is an image selected."
+        },
+        {
+          "type": "richtext",
+          "id": "subtext",
+          "default": "<p>Share contact information, store details, and brand content with your customers.</p>",
+          "label": "Subtext"
+        }
+      ]
+    },
+    {
+      "name": "Menu",
+      "type": "link_list",
+      "settings": [
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "default": "Heading",
+          "label": "Heading"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "default": "footer",
+          "label": "Menu",
+          "info": "Displays only top-level menu items."
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

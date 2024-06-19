@@ -1,0 +1,30 @@
+{%- if paginate.parts.size > 0 -%}
+  <div class="my-6 flex flex-col items-center pt-4 text-center" data-pagination>
+    {% assign shownProducts = paginate.current_page
+      | times: paginate.page_size
+      | at_most: paginate.items
+    %}
+
+    {% assign progress = shownProducts | times: 1.0 | divided_by: paginate.items | times: 100.0 %}
+    <p class="mb-2">
+      {{ 'collection.pagination.progress_text' | t: count: shownProducts, total: paginate.items }}
+    </p>
+
+    <div class="relative mb-4 h-1 w-full max-w-xs rounded-full bg-neutral-100">
+      <div
+        class="absolute top-0 left-0 h-full rounded-l-full bg-black {% if progress >= 100 %}rounded-r-full{% endif %} "
+        style="width: {{ progress }}%;"
+      ></div>
+    </div>
+
+    {% if paginate.next %}
+      <a
+        href="{{ paginate.next.url }}{{ anchor }}"
+        class="button button--primary block"
+        data-paginate-next
+      >
+        <span>{{ 'collection.pagination.load_more_button_label' | t }}</span>
+      </a>
+    {% endif %}
+  </div>
+{%- endif -%}

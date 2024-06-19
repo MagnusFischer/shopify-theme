@@ -1,0 +1,105 @@
+{% if settings.consent_solution == 'cookieinformation' %}
+  {% render 'cookieinformation' %}
+{% endif %}
+
+{% if settings.gtm_id != blank %}
+  <script>
+    (function (w, d, s, l, i) {
+      w[l] = w[l] || [];
+      w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+      var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s),
+        dl = l != 'dataLayer' ? '&l=' + l : '';
+      j.async = true;
+      j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+      f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', '{{ settings.gtm_id | escape | strip }}');
+  </script>
+{% endif %}
+
+<style>
+  {% if settings.custom_font_heading_regular != blank and settings.custom_font_heading_name != blank %}
+    {%- capture heading_font_name -%}"{{ settings.custom_font_heading_name | strip | downcase }}"{%- endcapture -%}
+    @font-face {
+      font-family: {{ heading_font_name }};
+      src: url('{{ settings.custom_font_heading_regular | file_url }}') format('woff2');
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+    }
+
+    {% if settings.custom_font_heading_bold != blank %}
+      @font-face {
+        font-family: {{ heading_font_name }};
+        src: url('{{ settings.custom_font_heading_bold | file_url }}') format('woff2');
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+      }
+    {% endif %}
+  {% else %}
+    {%- liquid
+      assign heading_font_name = settings.heading_font.family
+      assign heading_font_italic = settings.heading_font | font_modify: 'style', 'italic'
+
+      echo settings.heading_font | font_face: font_display: 'swap'
+
+      if heading_font_italic
+        echo heading_font_italic | font_face: font_display: 'swap'
+      endif
+    -%}
+  {% endif %}
+
+  {% if settings.custom_font_body_regular != blank and settings.custom_font_body_name != blank %}
+    {%- capture body_font_name -%}"{{ settings.custom_font_body_name | strip | downcase }}"{%- endcapture -%}
+    @font-face {
+      font-family: {{ body_font_name }};
+      src: url('{{ settings.custom_font_body_regular | file_url }}') format('woff2');
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+    }
+
+    {% if settings.custom_font_body_bold != blank %}
+      @font-face {
+        font-family: {{ body_font_name }};
+        src: url('{{ settings.custom_font_body_bold | file_url }}') format('woff2');
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+      }
+    {% endif %}
+  {% else %}
+    {%- liquid
+      assign body_font_name = settings.body_font.family
+      assign body_font_italic = settings.body_font | font_modify: 'style', 'italic'
+      assign body_font_bold = settings.body_font | font_modify: 'weight', 'bold'
+      assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
+
+      echo settings.body_font | font_face: font_display: 'swap'
+
+      if body_font_italic
+        echo body_font_italic | font_face: font_display: 'swap'
+      endif
+
+      if body_font_bold
+        echo body_font_bold | font_face: font_display: 'swap'
+      endif
+
+      if body_font_bold_italic
+        echo body_font_bold_italic | font_face: font_display: 'swap'
+      endif
+    -%}
+  {% endif %}
+
+  :root {
+    --heading-font-family: {{ heading_font_name }};
+    --heading-font-spacing: {{ settings.heading_letter_spacing | divided_by: 100.0 }}em;
+    --body-font-family: {{ body_font_name }};
+    --body-font-spacing: {{ settings.body_letter_spacing | divided_by: 100.0 }}em;
+  }
+</style>
+
+{{- 'app.css' | asset_url | stylesheet_tag -}}
+
+<script src="{{ 'app.js' | asset_url }}" defer></script>

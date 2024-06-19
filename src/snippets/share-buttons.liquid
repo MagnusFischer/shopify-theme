@@ -1,0 +1,57 @@
+<ul class="flex gap-2">
+  <li>
+    <a
+      class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-button-bg"
+      href="{% render 'share-link', host: 'facebook', title: article.title, url: article.url %}"
+      aria-label="{{ 'accessibility.social_media.facebook' | t }}"
+    >
+      <span class="block h-4 w-4 text-primary-button-text">
+        {% render 'icons', icon: 'facebook' %}
+      </span>
+    </a>
+  </li>
+  <li>
+    <a
+      class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-button-bg"
+      href="{% render 'share-link', host: 'twitter', title: article.title, url: article.url %}"
+      aria-label="{{ 'accessibility.social_media.twitter' | t }}"
+    >
+      <span class="block h-4 w-4 text-primary-button-text">
+        {% render 'icons', icon: 'twitter' %}
+      </span>
+    </a>
+  </li>
+  <li>
+    <a
+      class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-button-bg"
+      href="{% render 'share-link', host: 'pinterest', title: article.title, url: article.url %}"
+      aria-label="{{ 'accessibility.social_media.pinterest' | t }}"
+    >
+      <span class="block h-4 w-4 text-primary-button-text">
+        {% render 'icons', icon: 'pinterest' %}
+      </span>
+    </a>
+  </li>
+  <li>
+    <a
+      class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-button-bg"
+      href="{% render 'share-link', host: 'linkedin', title: article.title, url: article.url %}"
+      aria-label="{{ 'accessibility.social_media.linkedin' | t }}"
+    >
+      <span class="block h-4 w-4 text-primary-button-text">
+        {% render 'icons', icon: 'linkedin' %}
+      </span>
+    </a>
+  </li>
+  <li>
+    <a
+      class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-button-bg"
+      href="{% render 'share-link', host: 'email', title: article.title, url: article.url %}"
+      aria-label="{{ 'accessibility.social_media.email' | t }}"
+    >
+      <span class="block h-4 w-4 text-primary-button-text">
+        {% render 'icons', icon: 'mail' %}
+      </span>
+    </a>
+  </li>
+</ul>

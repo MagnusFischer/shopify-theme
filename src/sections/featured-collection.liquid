@@ -1,0 +1,207 @@
+{%- liquid
+  assign productGridClasses = ''
+  assign productItemClasses = ''
+
+  if section.settings.desktop_carousel == false
+    assign productGridClasses = productGridClasses | append: ' lg:!grid lg:!gap-4'
+
+    case section.settings.desktop_columns
+      when 1
+        assign productGridClasses = productGridClasses | append: ' lg:!grid-cols-1'
+      when 2
+        assign productGridClasses = productGridClasses | append: ' lg:!grid-cols-2'
+      when 3
+        assign productGridClasses = productGridClasses | append: ' lg:!grid-cols-3'
+      when 4
+        assign productGridClasses = productGridClasses | append: ' lg:!grid-cols-4'
+    endcase
+  else
+    assign productGridClasses = productGridClasses | append: ' lg:!flex lg:!flex-nowrap'
+    assign productItemClasses = productItemClasses | append: ' swiper-slide lg:!flex-[calc(25%-0.75rem)_0_0]'
+  endif
+
+  if section.settings.mobile_carousel == false
+    assign productGridClasses = productGridClasses | append: ' !box-border !grid max-lg:!gap-4 max-lg:!gap-y-6'
+    case section.settings.mobile_columns
+      when 'columns_1'
+        assign productGridClasses = productGridClasses | append: ' !grid-cols-1'
+      when 'columns_2'
+        assign productGridClasses = productGridClasses | append: ' !grid-cols-2'
+    endcase
+  else
+    assign mobileScroll = 'max-lg:!overflow-x-auto scrollbar-hide'
+    assign productGridClasses = productGridClasses | append: ' flex flex-nowrap !box-border max-lg:gap-4 lg:overflow-visible'
+    assign productItemClasses = productItemClasses | append: ' max-lg:flex-[90%_0_0]'
+  endif
+-%}
+<div class="section bg-primary-bg color-scheme__{{ section.settings.color_scheme }} ">
+  <section data-component="featured-collection">
+    <header class="flex flex-col lg:flex-row lg:justify-between">
+      <h2 class="order-2 lg:order-1">{{ section.settings.title }}</h2>
+
+      {% if section.settings.link_text != blank %}
+        <a
+          href="{{ section.settings.link_url | default: section.settings.collection.url }}"
+          class="order-1 underline lg:order-2"
+        >
+          {{ section.settings.link_text }}
+        </a>
+      {% endif %}
+    </header>
+
+    <div
+      class="section--bleed {{ mobileScroll }} swiper {% if section.settings.desktop_carousel %}carousel--collection{% endif %}"
+      {% if section.settings.desktop_carousel %}
+        data-swiper
+      {% endif %}
+    >
+      <div class="swiper-wrapper {{ productGridClasses }} ">
+        {% for product in section.settings.collection.products
+          limit: section.settings.product_count
+        %}
+          <div
+            class="featured-collection__product {% if productItemClasses != blank %}{{ productItemClasses }}{% endif %} {% if section.settings.mobile_carousel %}!block{% endif %}"
+          >
+            {% render 'product-item', product_item: product %}
+          </div>
+        {% else %}
+          {%- for i in (1..4) -%}
+            <div
+              {% if productItemClasses != blank %}
+                class="{{ productItemClasses }}"
+              {% endif %}
+            >
+              {%- assign placeholder_image = 'product-apparel-' | append: forloop.rindex -%}
+              {% render 'product-item',
+                product_item: product,
+                placeholder_image: placeholder_image
+              %}
+            </div>
+          {%- endfor -%}
+        {% endfor %}
+      </div>
+
+      {% if section.settings.desktop_carousel %}
+        <button
+          class="carousel--prev max-lg:!hidden"
+          disabled
+          aria-label="{{ 'accessibility.carousel.previous_button_label' | t }}"
+        >
+          <span class="h-6 w-6">
+            {% render 'icons', icon: 'chevron-left' %}
+          </span>
+        </button>
+        <button
+          class="carousel--next max-lg:!hidden"
+          aria-label="{{ 'accessibility.carousel.next_button_label' | t }}"
+        >
+          <span class="h-6 w-6">
+            {% render 'icons', icon: 'chevron-right' %}
+          </span>
+        </button>
+      {% endif %}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{
+  "name": "Featured collection",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Heading",
+      "default": "Featured products"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link URL",
+      "info": "Defaults to collection URL if left empty."
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "Link text",
+      "default": "View all"
+    },
+    {
+      "type": "header",
+      "content": "Collection"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "product_count",
+      "min": 2,
+      "max": 20,
+      "step": 2,
+      "label": "Maximum products to show",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "desktop_carousel",
+      "label": "Enable carousel on deskop",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "desktop_columns",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "label": "Number of columns on desktop",
+      "default": 2,
+      "info": "Only applicable if carousel is turned off for desktop"
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_carousel",
+      "label": "Enable carousel on mobile",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "mobile_columns",
+      "label": "Number of columns on mobile",
+      "options": [
+        {
+          "value": "columns_1",
+          "label": "1 column"
+        },
+        {
+          "value": "columns_2",
+          "label": "2 columns"
+        }
+      ],
+      "default": "columns_2",
+      "info": "Only applicable if carousel is turned off for mobile"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured collection"
+    }
+  ]
+}
+{% endschema %}

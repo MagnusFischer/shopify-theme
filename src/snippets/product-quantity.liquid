@@ -1,0 +1,30 @@
+<div data-component="product-quantity">
+  <p class="mb-3 font-bold">
+    {{ 'product.sections.quantity_title' | t }}
+  </p>
+
+  <div class="flex gap-0.5">
+    <button class="product__quantity--button" type="button" data-decrement>
+      <span class="block h-5 w-5">
+        {% render 'icons', icon: 'minus' %}
+      </span>
+    </button>
+    <input
+      class="product__quantity"
+      type="number"
+      name="quantity"
+      min="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+      {% if product.selected_or_first_available_variant.quantity_rule.max != null %}
+        max="{{ product.selected_or_first_available_variant.quantity_rule.max }}"
+      {% endif %}
+      step="{{ product.selected_or_first_available_variant.quantity_rule.increment }}"
+      value="{{ product.selected_or_first_available_variant.quantity_rule.min }}"
+      form="{{ form_id }}"
+    >
+    <button class="product__quantity--button" type="button" data-increment>
+      <span class="block h-5 w-5">
+        {% render 'icons', icon: 'plus' %}
+      </span>
+    </button>
+  </div>
+</div>

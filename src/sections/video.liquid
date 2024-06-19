@@ -1,0 +1,225 @@
+{%- liquid
+  assign videoAttributes = ''
+  assign placeholderClasses = 'placeholder-svg placeholder'
+
+  if section.settings.spacing == 'contained'
+    assign placeholderClasses = placeholderClasses | append: ' rounded'
+  endif
+
+  if section.settings.autoplay == true
+    assign videoAttributes = 'autoplay muted loop playsinline'
+  endif
+
+  capture classes
+    if section.settings.desktop_height != 'aspect'
+      assign dekstopClass = 'lg:h-[var(--fullscreen-height)] lg:fullscreen '
+      echo dekstopClass
+    endif
+
+    if section.settings.mobile_height != 'aspect'
+      assign mobileClass = 'max-lg:h-[var(--fullscreen-height)] max-lg:fullscreen '
+      echo mobileClass
+    endif
+  endcapture
+-%}
+
+{% if section.settings.spacing == 'fill' %}
+  <style>
+    #shopify-section-{{ section.id }} {
+      --container-offset-height: 0px;
+    }
+  </style>
+{% endif %}
+
+<section
+  class="video bg-primary-bg color-scheme__{{ section.settings.color_scheme }}{% if section.settings.spacing == 'contained' %} section{% endif %} {{- classes -}} "
+  data-component="video"
+>
+  {%- liquid
+    assign mobileVideoAspect = 125
+    if section.settings.video_mobile != blank
+      assign mobileVideoAspect = section.settings.video_mobile.sources[1].height | plus: 0.0 | divided_by: section.settings.video_mobile.sources[1].width | times: 100.0
+    endif
+  -%}
+
+  {%- capture mobileVideo -%}
+    {% if section.settings.video_mobile != blank %}
+      {% assign poster = section.settings.video_mobile.preview_image.src | image_url %}
+      <video {{ videoAttributes }} poster="{{ poster }}" data-mobile {% if section.settings.spacing == 'contained' %}class="rounded"{% endif %}>
+        <source
+          data-src="{{ section.settings.video_mobile.sources[1].url }}"
+          type="{{ section.settings.video_mobile.sources[1].mime_type }}"
+        >
+      </video>
+    {% else %}
+      {{ 'hero-apparel-3' | placeholder_svg_tag: placeholderClasses }}
+    {% endif %}
+    {% if section.settings.autoplay == false %}
+      <button
+        class="absolute inset-0 m-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary-button-bg text-primary-button-text hover:bg-primary-button-bg-hover hover:text-primary-button-text-hover"
+        data-play
+        disabled
+        aria-label="{{ 'accessibility.video.play_button_label' | t }}"
+      >
+        <span class="block h-8 w-8">
+          {% render 'icons', icon: 'play' %}
+        </span>
+      </button>
+    {% endif %}
+  {%- endcapture -%}
+
+  {% if section.settings.mobile_height == 'aspect' %}
+    <div
+      class="aspect lg:hidden"
+      style="padding-top: {{ mobileVideoAspect }}%;"
+    >
+      {{ mobileVideo }}
+    </div>
+  {% else %}
+    <div class="video--cover lg:hidden">
+      {{ mobileVideo }}
+    </div>
+  {% endif %}
+
+  {%- liquid
+    assign desktopVideoAspect = 56.25
+    if section.settings.video_desktop != blank
+      assign desktopVideoAspect = section.settings.video_desktop.sources[1].height | plus: 0.0 | divided_by: section.settings.video_desktop.sources[1].width | times: 100.0
+    endif
+  -%}
+
+  {%- capture desktopVideo -%}
+    {% if section.settings.video_desktop != blank %}
+      {% assign poster = section.settings.video_desktop.preview_image.src | image_url %}
+      <video {{ videoAttributes }} poster="{{ poster }}" data-desktop {% if section.settings.spacing == 'contained' %}class="rounded"{% endif %}>
+        <source
+          data-src="{{ section.settings.video_desktop.sources[1].url }}"
+          type="{{ section.settings.video_desktop.sources[1].mime_type }}"
+        >
+      </video>
+    {% else %}
+      {{ 'hero-apparel-3' | placeholder_svg_tag: placeholderClasses }}
+    {% endif %}
+    {% if section.settings.autoplay == false %}
+      <button
+        class="absolute inset-0 m-auto flex h-24 w-24 items-center justify-center rounded-full bg-primary-button-bg text-primary-button-text hover:bg-primary-button-bg-hover hover:text-primary-button-text-hover"
+        data-play
+        disabled
+        aria-label="{{ 'accessibility.video.play_button_label' | t }}"
+      >
+        <span class="block h-10 w-10">
+          {% render 'icons', icon: 'play' %}
+        </span>
+      </button>
+    {% endif %}
+  {%- endcapture -%}
+
+  {% if section.settings.desktop_height == 'aspect' %}
+    <div
+      class="aspect hidden lg:block"
+      style="padding-top: {{ desktopVideoAspect }}%;"
+    >
+      {{ desktopVideo }}
+    </div>
+  {% else %}
+    <div class="video--cover hidden lg:block">
+      {{ desktopVideo }}
+    </div>
+  {% endif %}
+</section>
+
+{% schema %}
+{
+  "name": "Video",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Shopify video",
+      "info": "Upload your videos to Shopify's CDN"
+    },
+    {
+      "type": "video",
+      "id": "video_desktop",
+      "label": "Desktop"
+    },
+    {
+      "type": "video",
+      "id": "video_mobile",
+      "label": "Mobile"
+    },
+    {
+      "type": "header",
+      "content": "Positioning"
+    },
+    {
+      "type": "select",
+      "id": "desktop_height",
+      "label": "Desktop height",
+      "options": [
+        {
+          "value": "aspect",
+          "label": "Original aspect ratio"
+        },
+        {
+          "value": "fullscreen",
+          "label": "Full screen height"
+        }
+      ],
+      "default": "aspect"
+    },
+    {
+      "type": "select",
+      "id": "mobile_height",
+      "label": "Mobile height",
+      "options": [
+        {
+          "value": "aspect",
+          "label": "Original aspect ratio"
+        },
+        {
+          "value": "fullscreen",
+          "label": "Full screen height"
+        }
+      ],
+      "default": "aspect"
+    },
+    {
+      "type": "select",
+      "id": "spacing",
+      "label": "Spacing",
+      "options": [
+        {
+          "value": "fill",
+          "label": "Full-width"
+        },
+        {
+          "value": "contained",
+          "label": "Contained"
+        }
+      ],
+      "default": "fill"
+    },
+    {
+      "type": "header",
+      "content": "Playback"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay",
+      "default": false
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme",
+      "default": "background-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Video"
+    }
+  ]
+}
+{% endschema %}

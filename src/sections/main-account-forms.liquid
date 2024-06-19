@@ -1,0 +1,154 @@
+{%- capture height -%}
+  {%- if settings.block_border_radius > 0 -%}
+    lg:min-h-[calc(100vh-var(--navigation-height)-var(--announcement-bar-height)-1.5rem)] lg:m-3
+  {%- else -%}
+    lg:min-h-[calc(100vh-var(--navigation-height)-var(--announcement-bar-height))]
+  {%- endif -%}
+{%- endcapture -%}
+
+<section class="grid px-3 py-3 lg:grid-cols-2 lg:p-0 {{ height }} text-primary-text color-scheme__{{ section.settings.color_scheme }} ">
+  {%- capture sizes -%}
+    (min-width: 1024px) calc(100vw / 2),
+    100vw
+    {%- endcapture -%}
+  <div class="aspect hidden h-full w-full lg:block">
+    {% if section.settings.image != blank %}
+      {{
+        section.settings.image
+        | image_url: width: section.settings.image.width
+        | image_tag:
+          loading: 'lazy',
+          sizes: sizes,
+          widths: '300, 330, 410, 490, 570, 650, 730, 810, 890, 970, 1050, 1200, 1500, 2000',
+          class: 'object-cover rounded bg-secondary-bg'
+      }}
+    {% else %}
+      {{ 'hero-apparel-2' | placeholder_svg_tag: 'placeholder-svg placeholder rounded' }}
+    {% endif %}
+  </div>
+
+  <div class="mt-6 flex items-center justify-center">
+    <div class="w-full max-w-xl lg:px-6">
+      <div class="account__forms">
+        {%- liquid
+          render 'account-form-recover'
+          if request.page_type == 'customers/login'
+            render 'account-form-create'
+            render 'account-form-login'
+          else
+            render 'account-form-login'
+            render 'account-form-create'
+          endif
+        -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if request.design_mode %}
+  <script>
+    document.addEventListener('shopify:block:select', (event) => {
+      const form = event.target.parentElement;
+      const id = form.getAttribute('id');
+      window.location.hash = `#${id}`;
+    });
+  </script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Account forms",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "login",
+      "name": "Login",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Login"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "default": "<p>Write some text here</p>"
+        }
+      ]
+    },
+    {
+      "type": "register",
+      "name": "Register",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Register account"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "default": "<p>Write some text here</p>"
+        }
+      ]
+    },
+    {
+      "type": "recover",
+      "name": "Recover",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Reset password"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "default": "<p>Write some text here</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Account forms",
+      "blocks": [
+        {
+          "type": "login"
+        },
+        {
+          "type": "register"
+        },
+        {
+          "type": "recover"
+        }
+      ]
+    }
+  ],
+  "enabled_on": {
+    "groups": ["custom.account"],
+    "templates": ["customers/login", "customers/register", "customers/reset_password"]
+  }
+}
+{% endschema %}

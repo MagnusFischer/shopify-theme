@@ -1,0 +1,86 @@
+<div class="section overflow-visible bg-primary-bg text-primary-text color-scheme__{{ section.settings.color_scheme }} ">
+  {% render 'article-header' %}
+  {% render 'article-content' %}
+</div>
+
+{% schema %}
+{
+  "name": "Blog post",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "label": "Show image",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "image_size",
+      "label": "Image size",
+      "options": [
+        {
+          "value": "5:2",
+          "label": "5:2"
+        },
+        {
+          "value": "16:9",
+          "label": "16:9"
+        }
+      ],
+      "default": "5:2"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "Show date",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_categories",
+      "label": "Show categories",
+      "default": true,
+      "info": "Add tags to orginize blog posts. [Learn more](https://help.shopify.com/en/manual/online-store/blogs/writing-blogs#add-tags-to-a-blog-post)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show author",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_share",
+      "label": "Show share buttons",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Table of contents"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_toc",
+      "label": "Enable table of contents",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["article"]
+  }
+}
+{% endschema %}

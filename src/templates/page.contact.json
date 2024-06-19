@@ -1,0 +1,48 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-contact",
+      "blocks": {
+        "ca90d709-ea12-43fb-b2a1-1b244451d2f6": {
+          "type": "option",
+          "settings": {
+            "icon": "question-bubble",
+            "title": "Frequently asked questions (FAQ)",
+            "text": "Find the answers to most questions here",
+            "url": "shopify://pages/faq"
+          }
+        },
+        "7660bb46-85d7-472d-bdf2-a3270972ae11": {
+          "type": "option",
+          "settings": {
+            "icon": "question-bubble",
+            "title": "Write to us",
+            "text": "Didn’t find an answer? Click here to get in touch",
+            "url": "mailto:mfi@spinnakernordic.com"
+          }
+        },
+        "6e306013-d1ac-4304-bdc4-28c74e40e826": {
+          "type": "option",
+          "settings": {
+            "icon": "question-bubble",
+            "title": "Call us",
+            "text": "+45 0000 0000 (mon - fri 10am -14pm)",
+            "url": ""
+          }
+        }
+      },
+      "block_order": [
+        "ca90d709-ea12-43fb-b2a1-1b244451d2f6",
+        "7660bb46-85d7-472d-bdf2-a3270972ae11",
+        "6e306013-d1ac-4304-bdc4-28c74e40e826"
+      ],
+      "settings": {
+        "title": "Contact us",
+        "text": "<p>Need help with your order or do you have any questions? We're ready to help.</p>",
+        "image": "shopify://shop_images/rupam-dutta-5OMff2RDqPs-unsplash.jpg",
+        "color_scheme": ""
+      }
+    }
+  },
+  "order": ["main"]
+}

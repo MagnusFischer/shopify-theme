@@ -1,0 +1,100 @@
+@layer base {
+  :root {
+    --container-gutter: 0.75rem;
+
+    @screen lg {
+      --container-gutter: 1.5rem;
+    }
+
+    --container-offset-height: var(--container-gutter);
+  }
+
+  .block-container {
+    --container-inner-width: min(
+      (100vw - var(--scrollbar-width, 0px)) - var(--container-gutter) * 2,
+      var(--container-max-width)
+    );
+    --container-outer-width: calc(
+      ((100vw - var(--scrollbar-width, 0px)) - var(--container-inner-width)) / 2
+    );
+
+    margin-inline-start: max(var(--container-gutter), 50% - var(--container-max-width) / 2);
+    margin-inline-end: max(var(--container-gutter), 50% - var(--container-max-width) / 2);
+  }
+
+  .shopify-section {
+    &:first-child .section {
+      @apply pt-3 lg:pt-6;
+    }
+  }
+
+  .section {
+    --container-inner-width: min(
+      (100vw - var(--scrollbar-width, 0px)) - var(--calculated-section-spacing-inline, 0px) * 2,
+      var(--container-max-width)
+    );
+    --container-outer-width: calc(
+      ((100vw - var(--scrollbar-width, 0px)) - var(--container-inner-width, 0px)) / 2
+    );
+    --context-section-spacing-inline: var(--container-gutter);
+    --calculated-section-spacing-inline: var(
+      --section-spacing-inline,
+      var(--context-section-spacing-inline)
+    );
+
+    padding-inline-start: max(
+      var(--calculated-section-spacing-inline),
+      50% - var(--container-max-width) / 2
+    );
+    padding-inline-end: max(
+      var(--calculated-section-spacing-inline),
+      50% - var(--container-max-width) / 2
+    );
+
+    @apply overflow-hidden py-6 lg:py-12;
+
+    &--bleed {
+      scroll-padding-inline: var(--container-outer-width) !important;
+      margin-inline-start: calc(-1 * var(--container-outer-width)) !important;
+      margin-inline-end: calc(-1 * var(--container-outer-width)) !important;
+      padding-inline-start: var(--container-outer-width) !important;
+      padding-inline-end: var(--container-outer-width) !important;
+    }
+
+    &:empty {
+      @apply hidden;
+    }
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .scrollbar {
+    &::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    &::-webkit-scrollbar-track {
+      margin: 0.5rem 0;
+      box-shadow: inset 0 0 10px 10px transparent;
+      border: solid 3px transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      @apply rounded-full;
+
+      box-shadow: inset 0 0 10px 10px #e5e5e5;
+      border: solid 3px transparent;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      box-shadow: inset 0 0 10px 10px #a3a3a3;
+    }
+  }
+}

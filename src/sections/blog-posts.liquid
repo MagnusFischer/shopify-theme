@@ -1,0 +1,145 @@
+{%- liquid
+  assign current_article = article
+  assign limiter = 4
+
+  if section.settings.blog == blank and blog != blank
+    assign featured_blog = blog
+  else
+    assign featured_blog = section.settings.blog
+  endif
+-%}
+
+{%- capture articles -%}
+  {%- capture sizes -%}
+    (min-width: 1024px) {{ 100 | divided_by: 4 }}vw, (min-width: 768px) {{ 100 | divided_by: 2 }}vw, 100vw
+  {%- endcapture -%}
+
+  {%- for article in featured_blog.articles -%}
+    {%- liquid 
+      if current_article != blank and article == current_article
+        assign limiter = limiter | plus: 1
+        continue
+      endif
+
+      if forloop.index > limiter
+        break
+      endif
+    -%}
+
+    {% render 'article-card', 
+      article: article, 
+      show_date: section.settings.show_date, 
+      show_author: section.settings.show_author, 
+      show_excerpt: section.settings.show_excerpt, 
+      show_categories: section.settings.show_categories,
+      sizes: sizes
+    %}
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- capture header -%}
+  {% if section.settings.heading != blank %}
+    <h2 class="order-2 lg:order-1">
+      {{ section.settings.heading }}
+    </h2>
+
+    {% if section.settings.show_readmore and section.settings.readmore_text != blank %}
+      {% if featured_blog.articles.size > limiter %}
+        <a 
+          href="{{ featured_blog.url }}"
+          class="order-1 lg:order-2 hover:underline" 
+        >
+          {{ section.settings.readmore_text }}
+        </a>
+      {% endif %}
+    {% endif %}
+  {% endif %}
+{%- endcapture -%}
+
+<section class="section bg-primary-bg text-primary-text color-scheme__{{ section.settings.color_scheme }} ">
+  {% if header != blank %}
+    <header class="flex flex-col items-start justify-between lg:flex-row">
+      {{ header }}
+    </header>
+  {% endif %}
+
+  <div class="grid gap-4 gap-y-12 md:grid-cols-2 lg:grid-cols-4">
+    {{ articles }}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Blog posts",
+  "settings": [
+    {
+      "type": "blog",
+      "id": "blog",
+      "label": "Blog"
+    },
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Blog posts"
+    },
+    {
+      "type": "text",
+      "id": "readmore_text",
+      "label": "Read more text",
+      "default": "Read more"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_readmore",
+      "label": "Show read more button",
+      "default": true,
+      "info": "Read more button will only show if selected blog includes more posts than shown"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "Show date",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_categories",
+      "label": "Show categories",
+      "default": true,
+      "info": "Add tags to orginize blog posts. [Learn more](https://help.shopify.com/en/manual/online-store/blogs/writing-blogs#add-tags-to-a-blog-post)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show author",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "label": "Show excerpt",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Blog posts"
+    }
+  ]
+}
+{% endschema %}

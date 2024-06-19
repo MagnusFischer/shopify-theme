@@ -1,0 +1,13 @@
+{%- assign variant = product.selected_or_first_available_variant | default: product.variants[0] -%}
+<div class="flex items-center gap-2">
+  <span data-price class="h3 m-0 font-bold">{{ variant.price | money }}</span>
+  <del
+    class="text-accent-1"
+    data-compare-at-price
+    {% if variant.price >= variant.compare_at_price %}
+      hidden
+    {% endif %}
+  >
+    {{ variant.compare_at_price | money }}
+  </del>
+</div>

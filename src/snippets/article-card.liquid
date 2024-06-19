@@ -1,0 +1,46 @@
+{%- liquid
+  assign show_date = show_date | default: true, allow_false: true
+  assign show_author = show_author | default: true, allow_false: true
+  assign show_excerpt = show_excerpt | default: true, allow_false: true
+  assign show_categories = show_categories | default: true, allow_false: true
+-%}
+
+<div class="flex flex-col gap-4">
+  <a href="{{ article.url }}">
+    <div class="aspect aspect-w-4 aspect-h-3">
+      {% if article.image != blank %}
+        {{
+          article.image
+          | image_url: width: article.image.width
+          | image_tag:
+            loading: 'lazy',
+            sizes: sizes,
+            widths: '30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 410, 490, 570, 650, 730, 810, 890, 970, 1050',
+            class: 'rounded object-cover bg-secondary-bg'
+        }}
+      {% else %}
+        {{ 'image' | placeholder_svg_tag: 'placeholder-svg placeholder rounded bg-secondary-bg' }}
+      {% endif %}
+    </div>
+  </a>
+
+  <div class="mr-4">
+    <h3>
+      <a class="h4 font-bold line-clamp-2 hover:underline" href="{{ article.url }}">
+        {{- article.title -}}
+      </a>
+    </h3>
+
+    {% render 'article-byline', article: article, show_date: show_date, show_author: show_author %}
+
+    {% if show_excerpt %}
+      <div class="line-clamp-2">
+        {{ article.excerpt_or_content | strip_html | truncate: 200 }}
+      </div>
+    {% endif %}
+
+    {% if show_categories %}
+      {% render 'article-categories', article: article %}
+    {% endif %}
+  </div>
+</div>

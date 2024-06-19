@@ -1,0 +1,229 @@
+{% if request.page_type != 'captcha' %}
+  {% assign classes = '' %}
+
+  {% if section.blocks.size > 1 %}
+    {% assign classes = 'grid lg:grid-cols-2 gap-4' %}
+  {% endif %}
+
+  <div class="section bg-primary-bg color-scheme__{{ section.settings.color_scheme }} ">
+    <section class="{{ classes }}">
+      {% for block in section.blocks %}
+        {% assign this = block.settings %}
+        {% case block.type %}
+          {% when 'newsletter' %}
+            <section class="flex flex-col gap-6 py-4 text-primary-text lg:px-12 lg:py-12">
+              <header>
+                {% if this.title != blank %}
+                  <h2>{{ this.title }}</h2>
+                {% endif %}
+
+                {% if this.subtext != blank %}
+                  <div class="rte max-w-md xl:max-w-xl">{{ this.subtext }}</div>
+                {% endif %}
+              </header>
+
+              {% form 'customer', class: 'flex flex-col gap-3 xl:gap-4' %}
+                <input type="hidden" name="contact[tags]" value="newsletter">
+
+                {%- if form.posted_successfully? -%}
+                  <h3
+                    class="flex items-start gap-2 bg-success px-6 py-4 text-base text-secondary-text"
+                    tabindex="-1"
+                    autofocus
+                  >
+                    <span class="block h-6 w-6 flex-shrink-0">
+                      {% render 'icons', icon: 'success' %}
+                    </span>
+                    {{ 'sections.newsletter.success_text' | t }}
+                  </h3>
+                {%- endif -%}
+
+                {%- if form.errors -%}
+                  <p class="flex items-start gap-2 bg-error px-6 py-4 text-base text-secondary-text">
+                    {{- form.errors.translated_fields.email | capitalize }}
+                    {{ form.errors.messages.email -}}
+                  </p>
+                {%- endif -%}
+
+                {% if this.show_name_input %}
+                  <div class="form__input">
+                    <input
+                      id="NewsletterFormName--{{ section.id }}"
+                      class="form__input--text"
+                      type="text"
+                      name="contact[first_name]"
+                      autocomplete="name"
+                      placeholder=" "
+                    >
+                    <div class="form__input--text--hover"></div>
+                    <label
+                      class="form__input--label"
+                      for="NewsletterFormName--{{ section.id }}"
+                    >
+                      {{ 'sections.newsletter.name_label' | t }}
+                    </label>
+                  </div>
+                {% endif %}
+
+                <div class="form__input">
+                  <input
+                    id="NewsletterForm--{{ section.id }}"
+                    type="email"
+                    name="contact[email]"
+                    class="form__input--text"
+                    value="{{ form.email }}"
+                    aria-required="true"
+                    autocorrect="off"
+                    autocapitalize="off"
+                    autocomplete="email"
+                    {% if form.errors %}
+                      autofocus
+                      aria-invalid="true"
+                      aria-describedby="ContactFooter-error"
+                    {% elsif form.posted_successfully? %}
+                      aria-describedby="ContactFooter-success"
+                    {% endif %}
+                    placeholder=" "
+                    required
+                  >
+                  <div class="form__input--text--hover"></div>
+                  <label
+                    class="form__input--label"
+                    for="NewsletterForm--{{ section.id }}"
+                  >
+                    {{ 'sections.newsletter.email_label' | t }}
+                  </label>
+                </div>
+
+                <button class="button button--primary" type="submit">
+                  <span>{{ this.button_text }}</span>
+                </button>
+              {% endform %}
+
+              {% if this.footer != blank %}
+                <div class="rte text-accent-1">{{ this.footer }}</div>
+              {% endif %}
+            </section>
+
+          {% when 'image' %}
+            <div class="relative">
+              <div class="relative z-10 flex h-full w-full flex-col items-center justify-center rounded bg-black/30 py-16 px-4 text-center text-secondary-text">
+                <h3>{{ this.title }}</h3>
+                <div class="rte">{{ this.subtext }}</div>
+              </div>
+
+              {% if this.image != blank %}
+                {%- capture sizes -%}
+              (min-width: 1024px) calc(100vw / 2),
+              100vw
+              {%- endcapture -%}
+
+                {{
+                  this.image
+                  | image_url: width: this.image.width
+                  | image_tag:
+                    loading: 'lazy',
+                    sizes: sizes,
+                    widths: '410, 490, 570, 650, 730, 810, 890, 970, 1050, 1290, 1530, 1770, 2090, 2410, 2730',
+                    style: 'object-fit: cover',
+                    class: 'absolute inset-0 w-full h-full rounded bg-secondary-bg'
+                }}
+              {% else %}
+                {{
+                  'hero-apparel-2'
+                  | placeholder_svg_tag: 'placeholder-svg placeholder absolute inset-0 h-full w-full rounded'
+                }}
+              {% endif %}
+            </div>
+        {% endcase %}
+      {% endfor %}
+    </section>
+  </div>
+{% endif %}
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "default": "background-1",
+      "label": "Color Scheme"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Newsletter",
+      "type": "newsletter",
+      "settings": [
+        {
+          "type": "inline_richtext",
+          "id": "title",
+          "label": "Heading",
+          "default": "Newsletter form"
+        },
+        {
+          "type": "richtext",
+          "id": "subtext",
+          "label": "Subtext",
+          "default": "<p>Don’t miss out on the latest and greatest. Be the first to know about the latest promotional offers.</p>"
+        },
+        {
+          "type": "richtext",
+          "id": "footer",
+          "label": "Footer",
+          "default": "<p>By signing up to our newsletter you agree to our <a href=\"/policies/privacy-policy\">privacy policy</a>.</p>"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button text",
+          "default": "Signup"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_name_input",
+          "label": "Show name input",
+          "default": false
+        }
+      ]
+    },
+    {
+      "name": "Image",
+      "type": "image",
+      "settings": [
+        {
+          "type": "inline_richtext",
+          "id": "title",
+          "label": "Heading",
+          "default": "How can we help?"
+        },
+        {
+          "type": "richtext",
+          "id": "subtext",
+          "label": "Subtext",
+          "default": "<p>Mon - Fri, 10:00 - 18:00<br>Sat, closed<br>Sun, closed</p>"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "newsletter"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

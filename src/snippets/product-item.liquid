@@ -1,0 +1,164 @@
+{% assign hide_labels = hide_labels | default: false, allow_false: true %}
+
+{%- capture product_labels -%}
+  {%- if product_item.price < product_item.compare_at_price -%}
+    {% assign percent_off = product_item.compare_at_price | minus: product_item.price | times: 100.0 | divided_by: product_item.compare_at_price | floor %}
+    <li class="product-item__label label__scheme-sale">-{{ percent_off }}%</li>
+  {%- endif -%}
+
+  {%- assign metafieldLabels = product_item.metafields.horizon.labels.value -%}
+  {%- for label in metafieldLabels -%}
+    <li class="product-item__label label__scheme-{{ label.name | handle }}">{{ label.name }}</li>
+  {%- endfor -%}
+
+  {% for tag in product_item.tags %}
+    {% assign productTagLabel = shop.metaobjects['horizon-label'].values
+      | where: 'product_tag', tag
+      | first
+    %}
+
+    {% if productTagLabel != blank %}
+      <li class="product-item__label label__scheme-{{ productTagLabel.name | handle }}">{{ productTagLabel.name }}</li>
+    {% endif %}
+  {% endfor %}
+{%- endcapture -%}
+
+{% if product_item and product_item != blank %}
+  <div class="color-scheme__background-1 product-item flex h-full flex-col text-primary-text">
+    <div class="relative">
+      {% if settings.quick_add_to_cart and product_item.available %}
+        {% if product_item.variants.size == 1 and product_item.selling_plan_groups.size == 0 %}
+          <div
+            class="absolute bottom-0 right-0 z-10 h-fit w-fit p-3"
+            data-behavior="{{ settings.quick_add_to_cart_behavior }}"
+            data-component="quick-buy"
+          >
+            {% form 'product', product_item %}
+              <input
+                type="hidden"
+                name="id"
+                value="{{ product_item.selected_or_first_available_variant.id }}"
+              >
+
+              <button type="submit" class="button button--secondary rounded-sm p-2">
+                <span class="block h-6 w-6">
+                  <div data-default>
+                    {% render 'icons', icon: settings.cart_icon %}
+                  </div>
+
+                  {% if settings.quick_add_to_cart_behavior == 'inline' %}
+                    <div data-loading hidden class="animate-spin">
+                      {% render 'icons', icon: 'rotate' %}
+                    </div>
+
+                    <div data-success hidden>
+                      {% render 'icons', icon: 'success' %}
+                    </div>
+                  {% endif %}
+                </span>
+              </button>
+            {% endform %}
+          </div>
+        {% endif %}
+      {% endif %}
+      <a href="{{ product_item.url | within: collection }}" class="block">
+        {% if product_labels != blank and hide_labels == false %}
+          <ul class="absolute top-0 left-0 z-10 flex h-fit w-fit flex-wrap gap-1 p-3">
+            {{ product_labels }}
+          </ul>
+        {% endif %}
+
+        <div class="aspect {{ settings.product_media_aspect }} overflow-hidden rounded-sm {% if settings.product_item_shadow != 'none' %}{{ settings.product_item_shadow }}{% endif %} ">
+          {% if product_item.featured_image != blank %}
+            {%- capture sizes -%}
+            (min-width: 1280px) calc({{ 100 | divided_by: 4 }}vw), (min-width: 1024px) calc({{ 100 | divided_by: 4 }}vw), 50vw)
+            {%- endcapture -%}
+            {{
+              product_item.featured_image
+              | image_url: width: product_item.featured_image.width
+              | image_tag:
+                loading: 'lazy',
+                sizes: sizes,
+                widths: '30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 410, 490, 570, 650, 730, 810, 890, 970, 1050',
+                class: 'rounded-sm object-cover bg-secondary-bg'
+            }}
+          {% else %}
+            {{
+              'image'
+              | placeholder_svg_tag: 'placeholder-svg placeholder rounded-sm bg-secondary-bg'
+            }}
+          {% endif %}
+
+          {% if product_item.media.size > 1 %}
+            {{
+              product_item.media[1]
+              | image_url: width: product_item.product_item.media[1].width
+              | image_tag:
+                loading: 'lazy',
+                sizes: sizes,
+                widths: '30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 410, 490, 570, 650, 730, 810, 890, 970, 1050',
+                class: 'product-item__image--secondary rounded-sm object-cover bg-secondary-bg'
+            }}
+          {% endif %}
+        </div>
+      </a>
+    </div>
+
+    <div class="pt-2">
+      {%- if settings.product_item_vendor and product_item.vendor != blank -%}
+        {%- liquid
+          assign collection_handle = product_item.vendor | handle
+          assign collection_for_vendor = collections[collection_handle]
+
+          if collection_for_vendor != blank
+            assign url = collection_for_vendor.url
+          else
+            assign url = product_item.vendor | url_for_vendor
+          endif
+        -%}
+
+        <a href="{{ url }}" class="text-sm text-accent-1 hover:underline">
+          {{- product_item.vendor -}}
+        </a>
+      {%- endif -%}
+
+      <p class="mb-2 line-clamp-2">
+        <a class="lg:h5" href="{{ product_item.url | within: collection }}">
+          {{- product_item.title -}}
+        </a>
+      </p>
+    </div>
+
+    {% if product_item.available %}
+      <p class="mt-auto flex flex-wrap items-center gap-2">
+        <span class="font-bold">{{ product_item.price | money }}</span>
+        {%- if product_item.price < product_item.compare_at_price -%}
+          <del class="text-sm text-accent-1">{{ product_item.compare_at_price | money }}</del>
+        {%- endif -%}
+      </p>
+    {% else %}
+      <p class="mt-auto text-accent-1">{{ 'product.form.sold_out_button_label' | t }}</p>
+    {% endif %}
+  </div>
+
+{% else %}
+  <div class="flex h-full flex-col">
+    <a href="{{ product_item.url | within: collection }}" class="block">
+      <div class="aspect-w-1 aspect-h-1">
+        {%- if placeholder_image -%}
+          {{ placeholder_image | placeholder_svg_tag: 'placeholder-svg rounded-sm' }}
+        {%- else -%}
+          {{ 'product-apparel-2' | placeholder_svg_tag: 'placeholder-svg rounded-sm' }}
+        {% endif %}
+      </div>
+    </a>
+
+    <p class="pt-2 line-clamp-2">
+      <a>Product title</a>
+    </p>
+
+    <p class="mt-auto pt-2">
+      <span class="font-bold">{{ 1499 | money }}</span>
+    </p>
+  </div>
+{% endif %}
